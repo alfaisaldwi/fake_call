@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fwc_incoming_message">Message</string>
+    <string name="fwc_incoming_swipe_accept">Swipe up to accept</string>
+    <string name="fwc_incoming_turn_off_video">Turn off your video</string>
+</resources>

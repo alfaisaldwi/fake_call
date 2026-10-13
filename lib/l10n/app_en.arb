@@ -1,0 +1,221 @@
+{
+  "@@locale": "en",
+  "appTitle": "Fake Call: Prank & Escape",
+  "languageMenuTooltip": "Change language",
+  "languageSystem": "Use phone language",
+  "languageIndonesian": "Bahasa Indonesia",
+  "languageEnglish": "English",
+  "previewLabel": "Preview",
+  "endToEndEncrypted": "End-to-end encrypted",
+  "callerNamePlaceholder": "Mom",
+  "incomingVideoCall": "Incoming video call",
+  "incomingVoiceCall": "Incoming voice call",
+  "pickPhotoSemantic": "Choose caller photo",
+  "pickPhotoFromGallery": "Choose from gallery",
+  "changePhoto": "Change photo",
+  "removePhoto": "Remove",
+  "callerSectionTitle": "Caller",
+  "callerSectionSubtitle": "Shows up on the incoming call screen",
+  "callerNameLabel": "Caller name",
+  "callerNameHint": "e.g. Mom",
+  "callTypeLabel": "Call type",
+  "callTypeVoice": "Voice",
+  "callTypeVideo": "Video",
+  "timingSectionTitle": "Timing",
+  "timingSectionSubtitle": "When it rings and when it hangs up",
+  "ringAfterLabel": "Ring after",
+  "autoHangupLabel": "Auto hang up",
+  "autoHangupDescription": "Hangs up on its own, while ringing or after you answer.",
+  "recallSectionTitle": "Auto redial",
+  "recallSectionSubtitle": "When the call is declined or missed",
+  "recallIntervalLabel": "Redial interval",
+  "recallDecrease": "Decrease",
+  "recallIncrease": "Increase",
+  "recallNone": "No redial",
+  "recallTimes": "redial(s)",
+  "optionImmediately": "Now",
+  "optionOff": "Off",
+  "durationSeconds": "{seconds} sec",
+  "@durationSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "summaryVideoCall": "Video call",
+  "summaryVoiceCall": "Voice call",
+  "summaryRingsNow": "rings now",
+  "summaryRingsIn": "rings in {duration}",
+  "@summaryRingsIn": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryRedial": "redial {count}x",
+  "@summaryRedial": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scheduleCall": "Schedule call",
+  "invalidConfigTitle": "Hold on, can't schedule yet",
+  "ok": "OK",
+  "callerNameRequiredShort": "Caller name is empty",
+  "cancel": "Cancel",
+  "progressWillCall": "{name} will call you",
+  "@progressWillCall": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "progressLockScreenHint": "Feel free to lock your screen, the call will still come in.",
+  "progressRedialIn": "Calling again in {seconds} seconds",
+  "@progressRedialIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "progressAttempt": "Attempt {attempt} of {total}",
+  "@progressAttempt": {
+    "placeholders": {
+      "attempt": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "progressRinging": "Ringing...",
+  "progressAnswerHint": "Pick up from the incoming call screen.",
+  "progressInCall": "In a call",
+  "progressOpeningCall": "Opening call screen...",
+  "callDeclined": "You declined the call.",
+  "callMissed": "Nobody picked up.",
+  "callCancelled": "Call cancelled.",
+  "callEnded": "Call ended.",
+  "back": "Back",
+  "switchCamera": "Switch camera",
+  "turnOffVideo": "Turn off video",
+  "turnOnVideo": "Turn on video",
+  "muteMic": "Mute microphone",
+  "unmuteMic": "Unmute microphone",
+  "endCall": "End call",
+  "speaker": "Speaker",
+  "switchToVideo": "Switch to video call",
+  "switchingToVideo": "Switching to video...",
+  "nativeAccept": "Accept",
+  "nativeDecline": "Decline",
+  "nativeMissedCall": "Missed call",
+  "nativeIncomingChannel": "Incoming calls",
+  "nativeMissedChannel": "Missed calls",
+  "notificationPermissionTitle": "Notification permission",
+  "notificationPermissionRationale": "Notifications are needed to show incoming calls.",
+  "notificationPermissionSettings": "Enable notifications in Settings so calls can appear.",
+  "cropTitle": "Adjust photo",
+  "cropDone": "Done",
+  "cropCancel": "Cancel",
+  "errorUnknown": "Something went wrong. Give it another try.",
+  "errorFullScreenPermission": "Enable the \"Full screen notification\" permission, then try again.",
+  "errorPermissionRequest": "Couldn't request permission.",
+  "errorGalleryPermission": "Gallery access was denied.",
+  "errorCameraPermission": "Camera access was denied.",
+  "errorPhotoPick": "Couldn't pick the photo.",
+  "errorPhotoCrop": "Couldn't crop the photo.",
+  "errorCallStart": "Couldn't show the call.",
+  "errorCallEnd": "Couldn't end the call.",
+  "errorCallEvents": "Couldn't read call status.",
+  "errorAvatar": "Couldn't prepare the caller photo.",
+  "errorCamera": "Couldn't open the camera.",
+  "errorVideo": "The caller video can't be played.",
+  "errorSettings": "Couldn't save the setting.",
+  "errorCallerNameRequired": "Add a caller name first.",
+  "errorInvalidDelay": "Delay can't be negative.",
+  "errorInvalidAutoHangup": "Auto hang up can't be negative.",
+  "errorInvalidRecallCount": "Redial count must be 0 to {max}.",
+  "@errorInvalidRecallCount": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "errorRecallIntervalTooShort": "The interval needs to be at least {min} seconds.",
+  "@errorRecallIntervalTooShort": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "backBlockedHint": "Want to stop? Tap Cancel.",
+  "errorHistory": "Couldn't update recent names.",
+  "recentNamesLabel": "Recently used",
+  "forgetName": "Remove {name} from history",
+  "@forgetName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "callerVideoLabel": "Caller video",
+  "callerVideoDescription": "Plays after you answer the video call.",
+  "callerVideoDefault": "Default video",
+  "callerVideoCustom": "Video from gallery",
+  "pickVideo": "Choose video",
+  "changeVideo": "Change",
+  "useDefaultVideo": "Use default",
+  "errorVideoPick": "Couldn't pick the video. Give it another try.",
+  "chipAutoHangup": "Hangs up in {duration}",
+  "chipRedial": "Redial {count}x",
+  "@chipAutoHangup": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@chipRedial": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "missedVoiceCall": "Missed voice call",
+  "missedVideoCall": "Missed video call",
+  "missedVoiceCalls": "{count} missed voice calls",
+  "missedVideoCalls": "{count} missed video calls",
+  "@missedVoiceCalls": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@missedVideoCalls": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fwc_avatar_video">84dp</dimen>
+    <dimen name="fwc_avatar_voice">164dp</dimen>
+</resources>

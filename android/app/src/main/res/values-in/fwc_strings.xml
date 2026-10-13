@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fwc_incoming_message">Pesan</string>
+    <string name="fwc_incoming_swipe_accept">Geser ke atas untuk menerima</string>
+    <string name="fwc_incoming_turn_off_video">Matikan video kamu</string>
+</resources>
