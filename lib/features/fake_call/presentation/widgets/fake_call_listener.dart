@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/router/app_router.dart';
+import '../../../../core/widgets/top_toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/call_event.dart';
 import '../bloc/fake_call_bloc.dart';
@@ -20,25 +21,19 @@ class FakeCallListener extends StatelessWidget {
             AppRouter.openActiveCall(config);
           case FakeCallFinished(:final reason):
             AppRouter.backToHome();
-            _showMessage(
+            TopToast.show(
               context,
               _finishedMessage(AppLocalizations.of(context), reason),
             );
             context.read<FakeCallBloc>().add(const FakeCallReset());
           case FakeCallError(:final message, invalidField: null):
-            _showMessage(context, message);
+            TopToast.show(context, message, type: ToastType.error);
           default:
             break;
         }
       },
       child: child,
     );
-  }
-
-  void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   String _finishedMessage(AppLocalizations l10n, CallEventType reason) {

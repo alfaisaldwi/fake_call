@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_call"
+        android:shortcutId="quick_call_10s"
+        android:shortcutLongLabel="@string/fwc_shortcut_10s_long"
+        android:shortcutShortLabel="@string/fwc_shortcut_10s">
+        <intent
+            android:action="com.elumi.prankcall.QUICK_CALL"
+            android:targetClass="com.elumi.prankcall.MainActivity"
+            android:targetPackage="com.elumi.prankcall">
+            <extra android:name="delay_seconds" android:value="10" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_call"
+        android:shortcutId="quick_call_1m"
+        android:shortcutLongLabel="@string/fwc_shortcut_1m_long"
+        android:shortcutShortLabel="@string/fwc_shortcut_1m">
+        <intent
+            android:action="com.elumi.prankcall.QUICK_CALL"
+            android:targetClass="com.elumi.prankcall.MainActivity"
+            android:targetPackage="com.elumi.prankcall">
+            <extra android:name="delay_seconds" android:value="60" />
+        </intent>
+    </shortcut>
+</shortcuts>

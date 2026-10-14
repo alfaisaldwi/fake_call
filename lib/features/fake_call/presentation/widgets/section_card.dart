@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 
 class SectionCard extends StatelessWidget {
   final IconData icon;
@@ -32,10 +32,10 @@ class SectionCard extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: AppColors.greenTint,
+                    color: context.palette.primaryTint,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(icon, size: 20, color: AppColors.teal),
+                  child: Icon(icon, size: 20, color: context.palette.primary),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -45,14 +45,14 @@ class SectionCard extends StatelessWidget {
                       Text(
                         title,
                         style: textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       if (sub != null)
                         Text(
                           sub,
                           style: textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.palette.textSecondary,
                           ),
                         ),
                     ],

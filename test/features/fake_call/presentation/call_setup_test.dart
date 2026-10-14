@@ -1,33 +1,56 @@
 import 'package:dartz/dartz.dart';
-import 'package:fake_whatsapp_call/core/error/failures.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_config.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_config_issue.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_event.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/repositories/caller_avatar_repository.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/repositories/fake_call_repository.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/end_fake_call.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/listen_to_call_events.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/pick_caller_avatar.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/schedule_fake_call.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/sync_active_call.dart';
-import 'package:fake_whatsapp_call/features/fake_call/presentation/bloc/fake_call_bloc.dart';
-import 'package:fake_whatsapp_call/features/fake_call/presentation/pages/call_setup_page.dart';
-import 'package:fake_whatsapp_call/core/l10n/app_locale_holder.dart';
-import 'package:fake_whatsapp_call/core/l10n/failure_messages.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/entities/app_language.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/repositories/language_repository.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/usecases/get_app_language.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/usecases/save_app_language.dart';
-import 'package:fake_whatsapp_call/features/settings/presentation/bloc/language_bloc.dart';
-import 'package:fake_whatsapp_call/l10n/app_localizations.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/caller_name_history.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/repositories/caller_name_history_repository.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/forget_caller_name.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/get_caller_name_history.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/remember_caller_name.dart';
-import 'package:fake_whatsapp_call/features/fake_call/presentation/bloc/caller_suggestions_bloc.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/repositories/caller_video_repository.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/pick_caller_video.dart';
+import 'package:fake_call/core/error/failures.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_config.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_config_issue.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_event.dart';
+import 'package:fake_call/features/fake_call/domain/repositories/caller_avatar_repository.dart';
+import 'package:fake_call/features/fake_call/domain/repositories/fake_call_repository.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/end_fake_call.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/listen_to_call_events.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/pick_caller_avatar.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/schedule_fake_call.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/sync_active_call.dart';
+import 'package:fake_call/features/fake_call/presentation/bloc/fake_call_bloc.dart';
+import 'package:fake_call/features/fake_call/presentation/pages/call_setup_page.dart';
+import 'package:fake_call/core/l10n/app_locale_holder.dart';
+import 'package:fake_call/core/l10n/failure_messages.dart';
+import 'package:fake_call/features/settings/domain/entities/app_language.dart';
+import 'package:fake_call/features/settings/domain/repositories/language_repository.dart';
+import 'package:fake_call/features/settings/domain/usecases/get_app_language.dart';
+import 'package:fake_call/features/settings/domain/usecases/save_app_language.dart';
+import 'package:fake_call/features/settings/presentation/bloc/language_bloc.dart';
+import 'package:fake_call/l10n/app_localizations.dart';
+import 'package:fake_call/features/fake_call/domain/entities/caller_name_history.dart';
+import 'package:fake_call/features/fake_call/domain/repositories/caller_name_history_repository.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/forget_caller_name.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/get_caller_name_history.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/remember_caller_name.dart';
+import 'package:fake_call/features/fake_call/presentation/bloc/caller_suggestions_bloc.dart';
+import 'package:fake_call/features/fake_call/domain/repositories/caller_video_repository.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/pick_caller_video.dart';
+import 'package:fake_call/features/fake_call/domain/entities/caller_preset.dart';
+import 'package:fake_call/features/fake_call/domain/repositories/caller_preset_repository.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/delete_caller_preset.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/get_caller_presets.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/save_caller_preset.dart';
+import 'package:fake_call/features/fake_call/presentation/bloc/caller_presets_bloc.dart';
+
+import 'dart:async';
+
+import 'package:fake_call/features/fake_call/domain/repositories/last_call_config_repository.dart';
+import 'package:fake_call/features/fake_call/domain/repositories/quick_trigger_repository.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/get_last_call_config.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/listen_to_quick_triggers.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/save_last_call_config.dart';
+import 'package:fake_call/features/settings/domain/entities/app_theme_mode.dart';
+import 'package:fake_call/features/settings/domain/repositories/theme_mode_repository.dart';
+import 'package:fake_call/features/settings/domain/usecases/get_theme_mode.dart';
+import 'package:fake_call/features/settings/domain/usecases/save_theme_mode.dart';
+import 'package:fake_call/features/settings/presentation/bloc/theme_mode_bloc.dart';
+import 'package:fake_call/features/onboarding/domain/repositories/coach_marks_repository.dart';
+import 'package:fake_call/features/onboarding/domain/usecases/check_coach_marks_seen.dart';
+import 'package:fake_call/features/onboarding/domain/usecases/set_coach_marks_seen.dart';
+import 'package:fake_call/features/onboarding/presentation/bloc/coach_marks_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -65,6 +88,111 @@ class _FakeAvatarRepository implements CallerAvatarRepository {
   @override
   Future<Either<Failure, String?>> pickFromGallery() async => result;
 }
+
+class _FakeCoachRepository implements CoachMarksRepository {
+  bool seen = true;
+
+  @override
+  Future<Either<Failure, bool>> isSeen() async => Right(seen);
+
+  @override
+  Future<Either<Failure, Unit>> setSeen(bool value) async {
+    seen = value;
+    return const Right(unit);
+  }
+}
+
+final _coach = _FakeCoachRepository();
+
+CoachMarksBloc _coachBloc() => CoachMarksBloc(
+  checkCoachMarksSeen: CheckCoachMarksSeen(_coach),
+  setCoachMarksSeen: SetCoachMarksSeen(_coach),
+  failureMessages: _messages,
+)..add(const CoachMarksRequested());
+
+class _FakeThemeRepository implements ThemeModeRepository {
+  AppThemeMode stored = AppThemeMode.system;
+
+  @override
+  Future<Either<Failure, AppThemeMode>> getThemeMode() async => Right(stored);
+
+  @override
+  Future<Either<Failure, Unit>> saveThemeMode(AppThemeMode mode) async {
+    stored = mode;
+    return const Right(unit);
+  }
+}
+
+final _theme = _FakeThemeRepository();
+
+ThemeModeBloc _themeBloc() => ThemeModeBloc(
+  getThemeMode: GetThemeMode(_theme),
+  saveThemeMode: SaveThemeMode(_theme),
+  failureMessages: _messages,
+);
+
+class _FakeLastConfigRepository implements LastCallConfigRepository {
+  CallConfig? stored;
+
+  @override
+  Future<Either<Failure, CallConfig?>> load() async => Right(stored);
+
+  @override
+  Future<Either<Failure, Unit>> save(CallConfig config) async {
+    stored = config;
+    return const Right(unit);
+  }
+}
+
+class _FakeQuickTriggerRepository implements QuickTriggerRepository {
+  final controller = StreamController<int>.broadcast();
+
+  @override
+  Future<Either<Failure, Stream<int>>> listen() async =>
+      Right(controller.stream);
+}
+
+final _lastConfig = _FakeLastConfigRepository();
+final _quickTriggers = _FakeQuickTriggerRepository();
+
+class _FakePresetRepository implements CallerPresetRepository {
+  List<CallerPreset> presets = [];
+
+  @override
+  Future<Either<Failure, List<CallerPreset>>> getPresets() async =>
+      Right(presets);
+
+  @override
+  Future<Either<Failure, List<CallerPreset>>> savePreset(
+    CallConfig config,
+  ) async {
+    presets = [
+      CallerPreset(
+        id: config.callerName,
+        name: config.callerName,
+        callType: config.callType,
+        avatarPath: config.callerAvatarPath,
+      ),
+      ...presets.where((p) => !p.matches(config)),
+    ];
+    return Right(presets);
+  }
+
+  @override
+  Future<Either<Failure, List<CallerPreset>>> deletePreset(String id) async {
+    presets = presets.where((p) => p.id != id).toList();
+    return Right(presets);
+  }
+}
+
+final _presets = _FakePresetRepository();
+
+CallerPresetsBloc _presetsBloc() => CallerPresetsBloc(
+  getCallerPresets: GetCallerPresets(_presets),
+  saveCallerPreset: SaveCallerPreset(_presets),
+  deleteCallerPreset: DeleteCallerPreset(_presets),
+  failureMessages: _messages,
+)..add(const CallerPresetsRequested());
 
 class _FakeHistoryRepository implements CallerNameHistoryRepository {
   CallerNameHistory stored = const CallerNameHistory.empty();
@@ -107,6 +235,9 @@ Widget _host(FakeCallBloc bloc) {
     providers: [
       BlocProvider.value(value: bloc),
       BlocProvider(create: (_) => _suggestionsBloc()),
+      BlocProvider(create: (_) => _presetsBloc()),
+      BlocProvider(create: (_) => _coachBloc()),
+      BlocProvider(create: (_) => _themeBloc()),
       BlocProvider(
         create: (_) => LanguageBloc(
           getAppLanguage: GetAppLanguage(languageRepository),
@@ -124,31 +255,6 @@ Widget _host(FakeCallBloc bloc) {
   );
 }
 
-Widget _hostWithLanguage(FakeCallBloc bloc) {
-  final languageRepository = _FakeLanguageRepository();
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(value: bloc),
-      BlocProvider(create: (_) => _suggestionsBloc()),
-      BlocProvider(
-        create: (_) => LanguageBloc(
-          getAppLanguage: GetAppLanguage(languageRepository),
-          saveAppLanguage: SaveAppLanguage(languageRepository),
-          failureMessages: _messages,
-        )..add(const LanguageStarted()),
-      ),
-    ],
-    child: BlocBuilder<LanguageBloc, LanguageState>(
-      builder: (context, state) => MaterialApp(
-        locale: state.locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const CallSetupPage(),
-      ),
-    ),
-  );
-}
-
 void main() {
   late _FakeCallRepository callRepository;
   late _FakeAvatarRepository avatarRepository;
@@ -162,6 +268,9 @@ void main() {
     pickCallerVideo: PickCallerVideo(videoRepository),
     rememberCallerName: RememberCallerName(_history),
     syncActiveCall: SyncActiveCall(callRepository),
+    getLastCallConfig: GetLastCallConfig(_lastConfig),
+    saveLastCallConfig: SaveLastCallConfig(_lastConfig),
+    listenToQuickTriggers: ListenToQuickTriggers(_quickTriggers),
     failureMessages: _messages,
   );
 
@@ -169,6 +278,9 @@ void main() {
 
   setUp(() {
     _history.stored = const CallerNameHistory.empty();
+    _presets.presets = [];
+    _lastConfig.stored = null;
+    _coach.seen = true;
     callRepository = _FakeCallRepository();
     avatarRepository = _FakeAvatarRepository();
     videoRepository = _FakeVideoRepository();
@@ -201,6 +313,47 @@ void main() {
       expect(callRepository.scheduled, isNull);
       await bloc.close();
     });
+
+    test('pengaturan terakhir disimpan lalu dipulihkan', () async {
+      final bloc = buildBloc();
+      final config = bloc.state.config.copyWith(
+        callerName: 'Pak Bos',
+        autoRecallCount: 2,
+      );
+      bloc
+        ..add(FakeCallConfigChanged(config))
+        ..add(const FakeCallScheduleRequested());
+      await settle();
+      expect(_lastConfig.stored, config);
+      await bloc.close();
+
+      final next = buildBloc()..add(const FakeCallRestoreRequested());
+      await settle();
+      expect(next.state.config, config);
+      await next.close();
+    });
+
+    test(
+      'pemicu cepat menjadwalkan pengaturan terakhir dengan jeda baru',
+      () async {
+        _lastConfig.stored = const CallConfig(
+          delayInSeconds: 300,
+          callerName: 'Mama',
+          callType: CallType.voice,
+        );
+        final bloc = buildBloc()..add(const FakeCallQuickTriggersStarted());
+        await settle();
+        _quickTriggers.controller.add(10);
+        await settle();
+        await settle();
+
+        expect(callRepository.scheduled?.callerName, 'Mama');
+        expect(callRepository.scheduled?.delayInSeconds, 10);
+        expect(callRepository.scheduled?.callType, CallType.voice);
+        expect(bloc.state, isA<FakeCallCountingDown>());
+        await bloc.close();
+      },
+    );
 
     test('nama tersimpan ke riwayat setelah dijadwalkan', () async {
       final bloc = buildBloc();
@@ -288,7 +441,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.text(_l10n.invalidConfigTitle), findsOneWidget);
     expect(find.text(_l10n.errorCallerNameRequired), findsOneWidget);
 
     await tester.tap(find.text(_l10n.ok));
@@ -300,25 +453,6 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.text(_l10n.callerNameRequiredShort), findsNothing);
-    await tester.runAsync(bloc.close);
-  });
-
-  testWidgets('ganti bahasa dari AppBar langsung mengubah teks', (
-    tester,
-  ) async {
-    final bloc = buildBloc();
-    await tester.pumpWidget(_hostWithLanguage(bloc));
-    await tester.pumpAndSettle();
-    final english = lookupAppLocalizations(const Locale('en'));
-    expect(find.text(_l10n.scheduleCall), findsOneWidget);
-
-    await tester.tap(find.text('ID'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(_l10n.languageEnglish));
-    await tester.pumpAndSettle();
-
-    expect(find.text(english.scheduleCall), findsOneWidget);
-    expect(find.text('EN'), findsOneWidget);
     await tester.runAsync(bloc.close);
   });
 
@@ -334,6 +468,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(_l10n.recentNamesLabel), findsNothing);
 
+    await tester.ensureVisible(find.byType(TextField));
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(TextField));
     await tester.pumpAndSettle();
     expect(find.text(_l10n.recentNamesLabel), findsOneWidget);
@@ -384,6 +520,58 @@ void main() {
     await tester.tap(find.text(_l10n.callTypeVoice));
     await tester.pumpAndSettle();
     expect(find.text(_l10n.callerVideoLabel), findsNothing);
+    await tester.runAsync(bloc.close);
+  });
+
+  testWidgets('menyimpan lalu memakai preset penelepon', (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    _presets.presets = const [
+      CallerPreset(id: 'bos', name: 'Pak Bos', callType: CallType.voice),
+    ];
+    final bloc = buildBloc();
+    await tester.pumpWidget(_host(bloc));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Pak Bos').first);
+    await tester.pumpAndSettle();
+    expect(bloc.state.config.callerName, 'Pak Bos');
+    expect(bloc.state.config.callType, CallType.voice);
+    expect(find.widgetWithText(TextField, 'Pak Bos'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'Mama');
+    await tester.pump();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byIcon(Icons.bookmark_add_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.bookmark_add_outlined));
+    await tester.pumpAndSettle();
+    expect(_presets.presets.map((p) => p.name), ['Mama', 'Pak Bos']);
+    expect(find.text(_l10n.presetsSaved('Mama')), findsOneWidget);
+    await tester.runAsync(bloc.close);
+  });
+
+  testWidgets('tur panduan muncul sekali lalu ditandai selesai', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    _coach.seen = false;
+    final bloc = buildBloc();
+    await tester.pumpWidget(_host(bloc));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    expect(find.text(_l10n.coachPreviewTitle), findsOneWidget);
+    await tester.tap(find.text(_l10n.coachSkip));
+    await tester.pumpAndSettle();
+
+    expect(find.text(_l10n.coachPreviewTitle), findsNothing);
+    expect(_coach.seen, isTrue);
     await tester.runAsync(bloc.close);
   });
 

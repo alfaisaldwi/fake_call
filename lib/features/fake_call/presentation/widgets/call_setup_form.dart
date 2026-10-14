@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/app_dialog.dart';
+import '../../../../core/widgets/coach_mark.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/call_config.dart';
 import '../../domain/entities/call_config_issue.dart';
+import '../../domain/entities/caller_preset.dart';
 import '../bloc/caller_suggestions_bloc.dart';
 import '../bloc/fake_call_bloc.dart';
 import 'call_preview_card.dart';
 import 'call_type_selector.dart';
 import 'caller_name_suggestions.dart';
+import 'caller_preset_bar.dart';
 import 'caller_video_picker.dart';
+import 'home_coach_keys.dart';
 import 'option_group.dart';
 import 'recall_count_stepper.dart';
 import 'schedule_bar.dart';
@@ -20,8 +24,14 @@ import 'section_card.dart';
 class CallSetupForm extends StatefulWidget {
   final CallConfig config;
   final CallConfigField? invalidField;
+  final HomeCoachKeys coachKeys;
 
-  const CallSetupForm({super.key, required this.config, this.invalidField});
+  const CallSetupForm({
+    super.key,
+    required this.config,
+    required this.coachKeys,
+    this.invalidField,
+  });
 
   @override
   State<CallSetupForm> createState() => _CallSetupFormState();
@@ -45,6 +55,18 @@ class _CallSetupFormState extends State<CallSetupForm> {
   }
 
   @override
+  void didUpdateWidget(CallSetupForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final name = widget.config.callerName;
+    if (!_nameFocus.hasFocus && _nameController.text != name) {
+      _nameController.value = TextEditingValue(
+        text: name,
+        selection: TextSelection.collapsed(offset: name.length),
+      );
+    }
+  }
+
+  @override
   void dispose() {
     _nameFocus.removeListener(_onNameFocusChanged);
     _nameController.dispose();
@@ -61,6 +83,15 @@ class _CallSetupFormState extends State<CallSetupForm> {
     setState(() {});
   }
 
+  void _applyPreset(CallerPreset preset) {
+    _nameController.value = TextEditingValue(
+      text: preset.name,
+      selection: TextSelection.collapsed(offset: preset.name.length),
+    );
+    _update(preset.applyTo);
+    _nameFocus.unfocus();
+  }
+
   void _selectSuggestion(String name) {
     _nameController.value = TextEditingValue(
       text: name,
@@ -72,6 +103,8 @@ class _CallSetupFormState extends State<CallSetupForm> {
 
   FakeCallBloc get _bloc => context.read<FakeCallBloc>();
 
+  HomeCoachKeys get _keys => widget.coachKeys;
+
   AppLocalizations get _l10n => AppLocalizations.of(context);
 
   void _update(CallConfig Function(CallConfig current) change) {
@@ -80,20 +113,13 @@ class _CallSetupFormState extends State<CallSetupForm> {
 
   Future<void> _showInvalidConfig(BuildContext context, FakeCallState state) {
     if (state is! FakeCallError) return Future.value();
-    return showDialog<void>(
+    return showAppDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: const Icon(Icons.error_outline, color: AppColors.error),
-        title: Text(_l10n.invalidConfigTitle),
-        content: Text(state.message, textAlign: TextAlign.center),
-        actions: [
-          FilledButton(
-            style: FilledButton.styleFrom(minimumSize: const Size(96, 44)),
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(_l10n.ok),
-          ),
-        ],
-      ),
+      icon: Icons.edit_note_rounded,
+      tone: DialogTone.warning,
+      title: _l10n.invalidConfigTitle,
+      message: state.message,
+      confirmLabel: _l10n.ok,
     ).then((_) {
       if (mounted && state.invalidField == CallConfigField.callerName) {
         _nameFocus.requestFocus();
@@ -129,26 +155,54 @@ class _CallSetupFormState extends State<CallSetupForm> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               children: [
-                CallPreviewCard(
-                  callerName: config.callerName,
-                  avatarPath: config.callerAvatarPath,
-                  isVideoCall: config.isVideoCall,
-                  onPickPhoto: () =>
-                      _bloc.add(const FakeCallAvatarPickRequested()),
-                  onRemovePhoto: () => _bloc.add(const FakeCallAvatarRemoved()),
+                CoachMark(
+                  showcaseKey: _keys.preview,
+                  title: _l10n.coachPreviewTitle,
+                  description: _l10n.coachPreviewBody,
+                  radius: 24,
+                  child: CallPreviewCard(
+                    callerName: config.callerName,
+                    avatarPath: config.callerAvatarPath,
+                    isVideoCall: config.isVideoCall,
+                    onPickPhoto: () =>
+                        _bloc.add(const FakeCallAvatarPickRequested()),
+                    onRemovePhoto: () =>
+                        _bloc.add(const FakeCallAvatarRemoved()),
+                  ),
+                ),
+                _sectionGap,
+                CoachMark(
+                  showcaseKey: _keys.presets,
+                  title: _l10n.coachPresetsTitle,
+                  description: _l10n.coachPresetsBody,
+                  radius: 16,
+                  padding: const EdgeInsets.all(8),
+                  child: CallerPresetBar(config: config, onApply: _applyPreset),
                 ),
                 _sectionGap,
                 _buildCallerCard(config),
                 _sectionGap,
-                _buildTimingCard(config),
+                CoachMark(
+                  showcaseKey: _keys.timing,
+                  title: _l10n.coachTimingTitle,
+                  description: _l10n.coachTimingBody,
+                  child: _buildTimingCard(config),
+                ),
                 _sectionGap,
                 _buildRecallCard(config),
               ],
             ),
           ),
-          ScheduleBar(
-            summary: _summary(config),
-            onSchedule: () => _bloc.add(const FakeCallScheduleRequested()),
+          CoachMark(
+            showcaseKey: _keys.schedule,
+            title: _l10n.coachScheduleTitle,
+            description: _l10n.coachScheduleBody,
+            radius: 16,
+            padding: EdgeInsets.zero,
+            child: ScheduleBar(
+              summary: _summary(config),
+              onSchedule: () => _bloc.add(const FakeCallScheduleRequested()),
+            ),
           ),
         ],
       ),
@@ -163,21 +217,29 @@ class _CallSetupFormState extends State<CallSetupForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          OptionGroup(
-            title: _l10n.callerNameLabel,
-            child: TextField(
-              controller: _nameController,
-              focusNode: _nameFocus,
-              textCapitalization: TextCapitalization.words,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                hintText: _l10n.callerNameHint,
-                prefixIcon: const Icon(Icons.badge_outlined),
-                errorText: widget.invalidField == CallConfigField.callerName
-                    ? _l10n.callerNameRequiredShort
-                    : null,
+          CoachMark(
+            showcaseKey: _keys.name,
+            title: _l10n.coachNameTitle,
+            description: _l10n.coachNameBody,
+            radius: 16,
+            padding: const EdgeInsets.all(8),
+            child: OptionGroup(
+              title: _l10n.callerNameLabel,
+              child: TextField(
+                controller: _nameController,
+                focusNode: _nameFocus,
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  hintText: _l10n.callerNameHint,
+                  prefixIcon: const Icon(Icons.badge_outlined),
+                  errorText: widget.invalidField == CallConfigField.callerName
+                      ? _l10n.callerNameRequiredShort
+                      : null,
+                ),
+                onChanged: (name) =>
+                    _update((c) => c.copyWith(callerName: name)),
               ),
-              onChanged: (name) => _update((c) => c.copyWith(callerName: name)),
             ),
           ),
           AnimatedSize(
@@ -186,11 +248,18 @@ class _CallSetupFormState extends State<CallSetupForm> {
             child: _buildNameSuggestions(config),
           ),
           const SizedBox(height: 20),
-          OptionGroup(
-            title: _l10n.callTypeLabel,
-            child: CallTypeSelector(
-              selected: config.callType,
-              onChanged: (type) => _update((c) => c.copyWith(callType: type)),
+          CoachMark(
+            showcaseKey: _keys.callType,
+            title: _l10n.coachTypeTitle,
+            description: _l10n.coachTypeBody,
+            radius: 16,
+            padding: const EdgeInsets.all(8),
+            child: OptionGroup(
+              title: _l10n.callTypeLabel,
+              child: CallTypeSelector(
+                selected: config.callType,
+                onChanged: (type) => _update((c) => c.copyWith(callType: type)),
+              ),
             ),
           ),
           AnimatedSize(

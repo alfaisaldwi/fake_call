@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/l10n/app_locale_holder.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_appearance_holder.dart';
 
 abstract class CallerAvatarLocalDataSource {
   Future<String?> pickFromGallery();
@@ -19,11 +18,13 @@ class CallerAvatarLocalDataSourceImpl implements CallerAvatarLocalDataSource {
   final ImagePicker imagePicker;
   final ImageCropper imageCropper;
   final AppLocaleHolder localeHolder;
+  final AppAppearanceHolder appearance;
 
   CallerAvatarLocalDataSourceImpl({
     required this.imagePicker,
     required this.imageCropper,
     required this.localeHolder,
+    required this.appearance,
   });
 
   @override
@@ -55,6 +56,7 @@ class CallerAvatarLocalDataSourceImpl implements CallerAvatarLocalDataSource {
 
   Future<String?> _crop(String sourcePath) async {
     final strings = localeHolder.strings;
+    final palette = appearance.palette;
     try {
       final cropped = await imageCropper.cropImage(
         sourcePath: sourcePath,
@@ -65,10 +67,14 @@ class CallerAvatarLocalDataSourceImpl implements CallerAvatarLocalDataSource {
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: strings.cropTitle,
-            toolbarColor: AppColors.teal,
-            statusBarLight: false,
-            toolbarWidgetColor: Colors.white,
-            activeControlsWidgetColor: AppColors.green,
+            toolbarColor: palette.background,
+            statusBarLight: !appearance.isDark,
+            navBarLight: !appearance.isDark,
+            toolbarWidgetColor: palette.textPrimary,
+            backgroundColor: palette.background,
+            dimmedLayerColor: palette.background.withValues(alpha: 0.82),
+            cropFrameColor: palette.primary,
+            activeControlsWidgetColor: palette.primary,
             cropStyle: CropStyle.circle,
             lockAspectRatio: true,
             hideBottomControls: true,

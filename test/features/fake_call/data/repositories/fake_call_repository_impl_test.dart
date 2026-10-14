@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:fake_async/fake_async.dart';
-import 'package:fake_whatsapp_call/core/error/exceptions.dart';
-import 'package:fake_whatsapp_call/features/fake_call/data/datasources/fake_call_native_data_source.dart';
-import 'package:fake_whatsapp_call/features/fake_call/data/datasources/missed_call_notification_data_source.dart';
-import 'package:fake_whatsapp_call/features/fake_call/data/models/call_config_model.dart';
-import 'package:fake_whatsapp_call/features/fake_call/data/models/call_event_model.dart';
-import 'package:fake_whatsapp_call/features/fake_call/data/repositories/fake_call_repository_impl.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_config.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_event.dart';
+import 'package:fake_call/core/error/exceptions.dart';
+import 'package:fake_call/features/fake_call/data/datasources/fake_call_native_data_source.dart';
+import 'package:fake_call/features/fake_call/data/datasources/missed_call_notification_data_source.dart';
+import 'package:fake_call/features/fake_call/data/datasources/ring_vibration_data_source.dart';
+import 'package:fake_call/features/fake_call/data/models/call_config_model.dart';
+import 'package:fake_call/features/fake_call/data/models/call_event_model.dart';
+import 'package:fake_call/features/fake_call/data/repositories/fake_call_repository_impl.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_config.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_event.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
 
@@ -65,9 +66,22 @@ class _FakeMissedCallNotifier implements MissedCallNotificationDataSource {
   }
 }
 
+class _FakeRingVibration implements RingVibrationDataSource {
+  final log = <String>[];
+
+  bool get isOn => log.isNotEmpty && log.last == 'start';
+
+  @override
+  Future<void> start() async => log.add('start');
+
+  @override
+  Future<void> stop() async => log.add('stop');
+}
+
 void main() {
   late _FakeNativeDataSource dataSource;
   late _FakeMissedCallNotifier notifier;
+  late _FakeRingVibration vibration;
   late FakeCallRepositoryImpl repository;
   late List<CallEvent> events;
 
@@ -86,9 +100,11 @@ void main() {
   setUp(() {
     dataSource = _FakeNativeDataSource();
     notifier = _FakeMissedCallNotifier();
+    vibration = _FakeRingVibration();
     repository = FakeCallRepositoryImpl(
       dataSource: dataSource,
       missedCallNotifier: notifier,
+      ringVibration: vibration,
       uuid: const Uuid(),
     );
     events = [];
@@ -306,6 +322,42 @@ void main() {
       async.flushMicrotasks();
 
       expect(notifier.shown, isEmpty);
+    });
+  });
+
+  test('getar mulai saat berdering dan berhenti saat diangkat', () {
+    fakeAsync((async) {
+      start(async, config);
+      async.elapse(const Duration(seconds: 5));
+      expect(vibration.isOn, isTrue);
+
+      dataSource.send(CallEventType.accepted);
+      async.flushMicrotasks();
+      expect(vibration.isOn, isFalse);
+    });
+  });
+
+  test('getar berhenti saat tidak diangkat', () {
+    fakeAsync((async) {
+      start(async, config.copyWith(autoRecallCount: 1, autoRecallInterval: 5));
+      async.elapse(const Duration(seconds: 5));
+      dataSource.send(CallEventType.timeout);
+      async.flushMicrotasks();
+      expect(vibration.isOn, isFalse);
+
+      async.elapse(const Duration(seconds: 5));
+      expect(vibration.isOn, isTrue);
+    });
+  });
+
+  test('getar berhenti saat dibatalkan dari aplikasi', () {
+    fakeAsync((async) {
+      start(async, config);
+      async.elapse(const Duration(seconds: 5));
+      repository.endCall();
+      async.flushMicrotasks();
+
+      expect(vibration.isOn, isFalse);
     });
   });
 

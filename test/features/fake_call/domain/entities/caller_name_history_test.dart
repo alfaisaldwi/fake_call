@@ -1,4 +1,4 @@
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/caller_name_history.dart';
+import 'package:fake_call/features/fake_call/domain/entities/caller_name_history.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

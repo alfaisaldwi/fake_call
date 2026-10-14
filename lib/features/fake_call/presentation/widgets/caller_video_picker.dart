@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class CallerVideoPicker extends StatelessWidget {
@@ -24,7 +24,7 @@ class CallerVideoPicker extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: context.palette.background,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -33,12 +33,14 @@ class CallerVideoPicker extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: isCustom ? AppColors.teal : AppColors.surface,
+              color: isCustom
+                  ? context.palette.primary
+                  : context.palette.surface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               isCustom ? Icons.movie : Icons.movie_outlined,
-              color: isCustom ? Colors.white : AppColors.textSecondary,
+              color: isCustom ? Colors.white : context.palette.textSecondary,
             ),
           ),
           const SizedBox(width: 12),
@@ -49,7 +51,7 @@ class CallerVideoPicker extends StatelessWidget {
                 Text(
                   isCustom ? l10n.callerVideoCustom : l10n.callerVideoDefault,
                   style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 if (isCustom)
@@ -58,7 +60,7 @@ class CallerVideoPicker extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.palette.textSecondary,
                     ),
                   ),
               ],

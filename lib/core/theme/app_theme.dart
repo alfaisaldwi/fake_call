@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'app_palette.dart';
 
 abstract final class AppTheme {
   static final ThemeData light = build();
+  static final ThemeData dark = build(brightness: Brightness.dark);
 
-  static ThemeData build({String? fontFamily}) {
+  static ThemeData build({
+    String? fontFamily,
+    Brightness brightness = Brightness.light,
+  }) {
+    final p = brightness == Brightness.dark
+        ? AppPalette.dark
+        : AppPalette.light;
     final colorScheme =
         ColorScheme.fromSeed(
-          seedColor: AppColors.teal,
-          primary: AppColors.teal,
-          secondary: AppColors.green,
+          seedColor: AppColors.primary,
+          brightness: brightness,
+          primary: p.primary,
+          secondary: AppColors.accent,
           error: AppColors.error,
         ).copyWith(
-          surface: AppColors.surface,
-          onSurface: AppColors.textPrimary,
-          onSurfaceVariant: AppColors.textSecondary,
-          outlineVariant: AppColors.outline,
+          surface: p.surface,
+          onSurface: p.textPrimary,
+          onSurfaceVariant: p.textSecondary,
+          outlineVariant: p.outline,
         );
     final rounded = BorderRadius.circular(14);
     return ThemeData(
+      brightness: brightness,
+      extensions: [p],
       fontFamily: fontFamily,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: AppColors.background,
+      scaffoldBackgroundColor: p.background,
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.teal,
+        backgroundColor: AppColors.primaryDark,
         foregroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -32,39 +43,39 @@ abstract final class AppTheme {
           fontFamily: fontFamily,
           color: Colors.white,
           fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
         ),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.surface,
+        color: p.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.outline),
+          side: BorderSide(color: p.outline),
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: AppColors.surface,
-        selectedColor: AppColors.greenTint,
-        checkmarkColor: AppColors.teal,
+        backgroundColor: p.surface,
+        selectedColor: p.primaryTint,
+        checkmarkColor: p.primary,
         side: WidgetStateBorderSide.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? const BorderSide(color: AppColors.teal, width: 1.4)
-              : const BorderSide(color: AppColors.outline),
+              ? BorderSide(color: p.primary, width: 1.4)
+              : BorderSide(color: p.outline),
         ),
         shape: const StadiumBorder(),
         labelStyle: TextStyle(
           fontFamily: fontFamily,
-          color: AppColors.textPrimary,
+          color: p.textPrimary,
           fontWeight: FontWeight.w500,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.background,
-        hintStyle: const TextStyle(color: AppColors.textSecondary),
+        fillColor: p.background,
+        hintStyle: TextStyle(color: p.textSecondary),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
@@ -79,7 +90,7 @@ abstract final class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: rounded,
-          borderSide: const BorderSide(color: AppColors.teal, width: 1.6),
+          borderSide: BorderSide(color: p.primary, width: 1.6),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: rounded,
@@ -92,7 +103,7 @@ abstract final class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.teal,
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(56),
           shape: RoundedRectangleBorder(
@@ -101,21 +112,41 @@ abstract final class AppTheme {
           textStyle: TextStyle(
             fontFamily: fontFamily,
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
-      dividerTheme: const DividerThemeData(
-        color: AppColors.outline,
-        thickness: 1,
-        space: 32,
-      ),
+      dividerTheme: DividerThemeData(color: p.outline, thickness: 1, space: 32),
       dialogTheme: DialogThemeData(
+        backgroundColor: p.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          color: p.textPrimary,
+          fontSize: 17,
+          fontWeight: FontWeight.w500,
+        ),
+        contentTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          color: p.textSecondary,
+          fontSize: 14,
+          height: 1.45,
+        ),
       ),
-      snackBarTheme: SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: p.surface,
+        surfaceTintColor: Colors.transparent,
+        modalBackgroundColor: p.surface,
+        elevation: 0,
+        modalElevation: 0,
+        dragHandleColor: p.outline,
+        dragHandleSize: const Size(36, 4),
+        modalBarrierColor: Colors.black.withValues(alpha: 0.32),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
       ),
     );
   }

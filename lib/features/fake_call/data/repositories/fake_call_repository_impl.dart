@@ -11,12 +11,14 @@ import '../../domain/entities/call_event.dart';
 import '../../domain/repositories/fake_call_repository.dart';
 import '../datasources/fake_call_native_data_source.dart';
 import '../datasources/missed_call_notification_data_source.dart';
+import '../datasources/ring_vibration_data_source.dart';
 import '../models/call_config_model.dart';
 import '../models/call_event_model.dart';
 
 class FakeCallRepositoryImpl implements FakeCallRepository {
   final FakeCallNativeDataSource dataSource;
   final MissedCallNotificationDataSource missedCallNotifier;
+  final RingVibrationDataSource ringVibration;
   final Uuid uuid;
 
   final _events = StreamController<CallEvent>.broadcast();
@@ -26,6 +28,7 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
   FakeCallRepositoryImpl({
     required this.dataSource,
     required this.missedCallNotifier,
+    required this.ringVibration,
     required this.uuid,
   });
 
@@ -125,6 +128,9 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
         callId: callId,
         attempt: session.attempt,
       );
+      if (identical(_session, session) && !session.isAccepted) {
+        _setVibration(true);
+      }
     } on CallKitException catch (e) {
       if (!identical(_session, session)) return;
       _closeSession();
@@ -159,6 +165,7 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
   }
 
   void _handleMissedCall(_CallSession session, CallEventType reason) {
+    _setVibration(false);
     if (reason == CallEventType.timeout) session.missedCount++;
     if (!session.config.canRecallAfter(session.attempt)) {
       _closeSession();
@@ -181,6 +188,7 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
   }
 
   void _markAccepted(_CallSession session) {
+    _setVibration(false);
     session.isAccepted = true;
     _scheduleAutoHangup(session);
     _emit(session, CallEventType.accepted);
@@ -220,7 +228,13 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
     );
   }
 
+  void _setVibration(bool on) {
+    final action = on ? ringVibration.start() : ringVibration.stop();
+    action.catchError((Object e) => log('Ring vibration failed', error: e));
+  }
+
   void _closeSession() {
+    if (_session != null) _setVibration(false);
     _session?.timer?.cancel();
     _session = null;
   }

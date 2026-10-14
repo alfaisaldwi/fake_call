@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
-import 'package:fake_whatsapp_call/core/error/failures.dart';
-import 'package:fake_whatsapp_call/core/l10n/app_locale_holder.dart';
-import 'package:fake_whatsapp_call/core/l10n/failure_messages.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/entities/app_language.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/repositories/language_repository.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/usecases/get_app_language.dart';
-import 'package:fake_whatsapp_call/features/settings/domain/usecases/save_app_language.dart';
-import 'package:fake_whatsapp_call/features/settings/presentation/bloc/language_bloc.dart';
+import 'package:fake_call/core/error/failures.dart';
+import 'package:fake_call/core/l10n/app_locale_holder.dart';
+import 'package:fake_call/core/l10n/failure_messages.dart';
+import 'package:fake_call/features/settings/domain/entities/app_language.dart';
+import 'package:fake_call/features/settings/domain/repositories/language_repository.dart';
+import 'package:fake_call/features/settings/domain/usecases/get_app_language.dart';
+import 'package:fake_call/features/settings/domain/usecases/save_app_language.dart';
+import 'package:fake_call/features/settings/presentation/bloc/language_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

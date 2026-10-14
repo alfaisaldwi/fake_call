@@ -13,9 +13,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get appTitle => 'Fake Call: Prank & Escape';
 
   @override
-  String get languageMenuTooltip => 'Ganti bahasa';
-
-  @override
   String get languageSystem => 'Ikuti bahasa HP';
 
   @override
@@ -395,4 +392,223 @@ class AppLocalizationsId extends AppLocalizations {
   String missedVideoCalls(int count) {
     return '$count panggilan video tak terjawab';
   }
+
+  @override
+  String get onboardingSkip => 'Lewati';
+
+  @override
+  String get onboardingNext => 'Lanjut';
+
+  @override
+  String get onboardingStart => 'Mulai sekarang';
+
+  @override
+  String get onboarding1Title => 'Telepon palsu, rasa asli';
+
+  @override
+  String get onboarding1Body =>
+      'Panggilan masuk layar penuh lengkap dengan nada dering dan getar, bahkan saat HP terkunci.';
+
+  @override
+  String get onboarding2Title => 'Atur sesukamu';
+
+  @override
+  String get onboarding2Body =>
+      'Pilih nama, foto, dan video penelepon. Atur kapan bunyinya, dari sekarang sampai 30 menit lagi.';
+
+  @override
+  String get onboarding3Title => 'Kabur dengan mulus';
+
+  @override
+  String get onboarding3Body =>
+      'Tutup otomatis, telepon ulang otomatis, dan notifikasi tak terjawab. Nggak ada yang bakal curiga.';
+
+  @override
+  String get splashTagline => 'Jalan keluar dari situasi canggung';
+
+  @override
+  String get onboarding4Title => 'Satu langkah lagi';
+
+  @override
+  String get onboarding4Body =>
+      'Izinkan ini dulu supaya telepon palsumu bisa berdering kayak aslinya.';
+
+  @override
+  String get permissionNotificationTitle => 'Notifikasi';
+
+  @override
+  String get permissionNotificationBody =>
+      'Buat menampilkan panggilan masuk dan panggilan tak terjawab.';
+
+  @override
+  String get permissionFullScreenTitle => 'Panggilan layar penuh';
+
+  @override
+  String get permissionFullScreenBody =>
+      'Supaya panggilan tetap muncul walau HP terkunci.';
+
+  @override
+  String get permissionCameraTitle => 'Kamera';
+
+  @override
+  String get permissionCameraBody =>
+      'Buat wajahmu saat video call. Nggak ada yang direkam.';
+
+  @override
+  String get permissionAllow => 'Izinkan';
+
+  @override
+  String get permissionGranted => 'Diizinkan';
+
+  @override
+  String get errorPreset => 'Daftar penelepon tersimpan gagal diperbarui.';
+
+  @override
+  String get presetsTitle => 'Penelepon tersimpan';
+
+  @override
+  String get presetsSave => 'Simpan';
+
+  @override
+  String presetsSaved(String name) {
+    return '$name disimpan.';
+  }
+
+  @override
+  String presetsDeleteTitle(String name) {
+    return 'Hapus $name?';
+  }
+
+  @override
+  String get presetsDeleteBody =>
+      'Foto dan video yang tersimpan bareng penelepon ini juga ikut dihapus.';
+
+  @override
+  String get presetsDelete => 'Hapus';
+
+  @override
+  String get presetsEmpty =>
+      'Simpan penelepon yang sering dipakai biar tinggal sekali ketuk.';
+
+  @override
+  String get themeSystem => 'Ikuti pengaturan HP';
+
+  @override
+  String get themeLight => 'Terang';
+
+  @override
+  String get themeDark => 'Gelap';
+
+  @override
+  String get settingsTitle => 'Pengaturan';
+
+  @override
+  String get settingsTooltip => 'Pengaturan';
+
+  @override
+  String get settingsTheme => 'Tema';
+
+  @override
+  String get settingsLanguage => 'Bahasa';
+
+  @override
+  String get settingsAbout => 'Tentang';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Versi $version';
+  }
+
+  @override
+  String get aboutDescription =>
+      'Jadwalkan telepon palsu yang realistis buat kabur dari situasi canggung, atau sekadar nge-prank teman.';
+
+  @override
+  String get aboutPrivacyTitle => 'Privasi';
+
+  @override
+  String get aboutPrivacyBody =>
+      'Tanpa akun dan nggak ada data yang dikirim ke internet. Semuanya tetap di HP kamu.';
+
+  @override
+  String get aboutUseTitle => 'Pakai dengan bijak';
+
+  @override
+  String get aboutUseBody =>
+      'Dibuat buat seru-seruan. Jangan dipakai untuk menipu atau merugikan orang lain, ya.';
+
+  @override
+  String get aboutLicenses => 'Lisensi open source';
+
+  @override
+  String get aboutMadeBy => 'Dibuat oleh';
+
+  @override
+  String get settingsPreferences => 'Preferensi';
+
+  @override
+  String get homeTitle => 'Fake Call';
+
+  @override
+  String get homeSubtitle => 'Jalan keluar, tinggal sekali ketuk';
+
+  @override
+  String get coachSkip => 'Lewati';
+
+  @override
+  String get coachNext => 'Lanjut';
+
+  @override
+  String get coachDone => 'Oke, paham';
+
+  @override
+  String get coachPreviewTitle => 'Begini nanti tampilannya';
+
+  @override
+  String get coachPreviewBody =>
+      'Pratinjau panggilan masuk. Ketuk fotonya buat pilih dari galeri.';
+
+  @override
+  String get coachPresetsTitle => 'Penelepon tersimpan';
+
+  @override
+  String get coachPresetsBody =>
+      'Simpan penelepon yang sering dipakai, nanti tinggal sekali ketuk.';
+
+  @override
+  String get coachNameTitle => 'Siapa yang nelepon?';
+
+  @override
+  String get coachNameBody =>
+      'Tulis nama apa aja. Nama yang pernah dipakai bakal muncul jadi saran.';
+
+  @override
+  String get coachTypeTitle => 'Suara atau video';
+
+  @override
+  String get coachTypeBody =>
+      'Pilih jenis panggilan. Video call bisa pakai video penelepon sendiri.';
+
+  @override
+  String get coachTimingTitle => 'Atur waktunya';
+
+  @override
+  String get coachTimingBody =>
+      'Tentukan kapan HP bunyi dan kapan panggilan ditutup sendiri.';
+
+  @override
+  String get coachScheduleTitle => 'Siap meluncur';
+
+  @override
+  String get coachScheduleBody =>
+      'Ketuk di sini buat menjadwalkan. Habis itu kunci layar juga boleh.';
+
+  @override
+  String get coachSettingsTitle => 'Pengaturan';
+
+  @override
+  String get coachSettingsBody => 'Tema, bahasa, dan panduan ini ada di sini.';
+
+  @override
+  String get settingsReplayTour => 'Lihat panduan lagi';
 }

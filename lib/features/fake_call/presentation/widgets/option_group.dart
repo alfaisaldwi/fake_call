@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 
 class OptionGroup extends StatelessWidget {
   final String title;
@@ -24,8 +24,8 @@ class OptionGroup extends StatelessWidget {
         Text(
           title,
           style: textTheme.labelLarge?.copyWith(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w600,
+            color: context.palette.textPrimary,
+            fontWeight: FontWeight.w500,
           ),
         ),
         if (desc != null) ...[
@@ -33,7 +33,7 @@ class OptionGroup extends StatelessWidget {
           Text(
             desc,
             style: textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.palette.textSecondary,
             ),
           ),
         ],

@@ -48,6 +48,23 @@ final class FakeCallAppResumed extends FakeCallEvent {
   const FakeCallAppResumed();
 }
 
+final class FakeCallRestoreRequested extends FakeCallEvent {
+  const FakeCallRestoreRequested();
+}
+
+final class FakeCallQuickTriggersStarted extends FakeCallEvent {
+  const FakeCallQuickTriggersStarted();
+}
+
+final class _QuickTriggered extends FakeCallEvent {
+  final int delayInSeconds;
+
+  const _QuickTriggered(this.delayInSeconds);
+
+  @override
+  List<Object?> get props => [delayInSeconds];
+}
+
 final class FakeCallReset extends FakeCallEvent {
   const FakeCallReset();
 }

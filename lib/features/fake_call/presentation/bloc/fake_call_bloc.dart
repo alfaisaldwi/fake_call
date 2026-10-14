@@ -14,6 +14,9 @@ import '../../domain/usecases/listen_to_call_events.dart';
 import '../../domain/usecases/pick_caller_avatar.dart';
 import '../../domain/usecases/pick_caller_video.dart';
 import '../../domain/usecases/remember_caller_name.dart';
+import '../../domain/usecases/get_last_call_config.dart';
+import '../../domain/usecases/listen_to_quick_triggers.dart';
+import '../../domain/usecases/save_last_call_config.dart';
 import '../../domain/usecases/schedule_fake_call.dart';
 import '../../domain/usecases/sync_active_call.dart';
 
@@ -30,6 +33,9 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
   final PickCallerVideo pickCallerVideo;
   final RememberCallerName rememberCallerName;
   final SyncActiveCall syncActiveCall;
+  final GetLastCallConfig getLastCallConfig;
+  final SaveLastCallConfig saveLastCallConfig;
+  final ListenToQuickTriggers listenToQuickTriggers;
   final FailureMessages failureMessages;
 
   StreamSubscription<int>? _ticker;
@@ -42,6 +48,9 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     required this.pickCallerVideo,
     required this.rememberCallerName,
     required this.syncActiveCall,
+    required this.getLastCallConfig,
+    required this.saveLastCallConfig,
+    required this.listenToQuickTriggers,
     required this.failureMessages,
     CallConfig initialConfig = defaultConfig,
   }) : super(FakeCallIdle(initialConfig)) {
@@ -54,6 +63,9 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     on<FakeCallScheduleRequested>(_onScheduleRequested);
     on<FakeCallEndRequested>(_onEndRequested);
     on<FakeCallAppResumed>(_onAppResumed);
+    on<FakeCallRestoreRequested>(_onRestoreRequested);
+    on<FakeCallQuickTriggersStarted>(_onQuickTriggersStarted);
+    on<_QuickTriggered>(_onQuickTriggered);
     on<FakeCallReset>(_onReset);
     on<_CountdownTicked>(_onCountdownTicked);
   }
@@ -146,12 +158,50 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     }
   }
 
+  Future<void> _onRestoreRequested(
+    FakeCallRestoreRequested event,
+    Emitter<FakeCallState> emit,
+  ) async {
+    final result = await getLastCallConfig(const NoParams());
+    result.fold((_) {}, (config) {
+      if (config != null && state is FakeCallIdle) emit(FakeCallIdle(config));
+    });
+  }
+
+  Future<void> _onQuickTriggersStarted(
+    FakeCallQuickTriggersStarted event,
+    Emitter<FakeCallState> emit,
+  ) async {
+    final result = await listenToQuickTriggers(const NoParams());
+    await result.fold(
+      (_) async {},
+      (stream) => emit.onEach<int>(
+        stream,
+        onData: (delay) => add(_QuickTriggered(delay)),
+        onError: (_, _) {},
+      ),
+    );
+  }
+
+  Future<void> _onQuickTriggered(
+    _QuickTriggered event,
+    Emitter<FakeCallState> emit,
+  ) async {
+    if (!state.isEditable) return;
+    final saved = await getLastCallConfig(const NoParams());
+    final base = saved.fold((_) => null, (config) => config) ?? state.config;
+    await _schedule(base.copyWith(delayInSeconds: event.delayInSeconds), emit);
+  }
+
   Future<void> _onScheduleRequested(
     FakeCallScheduleRequested event,
     Emitter<FakeCallState> emit,
   ) async {
     if (!state.isEditable) return;
-    final config = state.config;
+    await _schedule(state.config, emit);
+  }
+
+  Future<void> _schedule(CallConfig config, Emitter<FakeCallState> emit) async {
     final result = await scheduleFakeCall(config);
     result.fold(
       (failure) => emit(
@@ -170,7 +220,9 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
         _startTicker(config.delayInSeconds);
       },
     );
-    if (result.isRight()) await rememberCallerName(config.callerName);
+    if (result.isLeft()) return;
+    await rememberCallerName(config.callerName);
+    await saveLastCallConfig(config);
   }
 
   Future<void> _onEndRequested(

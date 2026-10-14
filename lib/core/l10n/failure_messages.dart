@@ -29,6 +29,7 @@ class FailureMessages {
       FailureReason.videoUnavailable => l10n.errorVideo,
       FailureReason.settingsFailed => l10n.errorSettings,
       FailureReason.historyFailed => l10n.errorHistory,
+      FailureReason.presetFailed => l10n.errorPreset,
       FailureReason.callerNameRequired => l10n.errorCallerNameRequired,
       FailureReason.invalidDelay => l10n.errorInvalidDelay,
       FailureReason.invalidAutoHangup => l10n.errorInvalidAutoHangup,

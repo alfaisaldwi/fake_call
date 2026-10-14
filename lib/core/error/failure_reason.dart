@@ -15,6 +15,7 @@ enum FailureReason {
   videoUnavailable,
   settingsFailed,
   historyFailed,
+  presetFailed,
   callerNameRequired,
   invalidDelay,
   invalidAutoHangup,

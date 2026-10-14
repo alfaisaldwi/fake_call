@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/widgets/top_toast.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../injection_container.dart';
 import '../../../fake_call/domain/entities/call_config.dart';
@@ -46,9 +47,7 @@ class _ActiveCallView extends StatelessWidget {
 
   void _showError(BuildContext context, ActiveCallState state) {
     if (state is! ActiveCallError) return;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(state.message)));
+    TopToast.show(context, state.message, type: ToastType.error);
   }
 
   @override

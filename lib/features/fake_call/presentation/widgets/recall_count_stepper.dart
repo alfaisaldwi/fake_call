@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 
 class RecallCountStepper extends StatelessWidget {
   final int count;
@@ -22,7 +22,7 @@ class RecallCountStepper extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: context.palette.background,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -38,16 +38,16 @@ class RecallCountStepper extends StatelessWidget {
                 Text(
                   '$count',
                   style: textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: count == 0
-                        ? AppColors.textSecondary
-                        : AppColors.teal,
+                        ? context.palette.textSecondary
+                        : context.palette.primary,
                   ),
                 ),
                 Text(
                   count == 0 ? l10n.recallNone : l10n.recallTimes,
                   style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.palette.textSecondary,
                   ),
                 ),
               ],
@@ -81,10 +81,10 @@ class _StepButton extends StatelessWidget {
       tooltip: tooltip,
       onPressed: onPressed,
       style: IconButton.styleFrom(
-        backgroundColor: AppColors.surface,
-        foregroundColor: AppColors.teal,
-        disabledBackgroundColor: AppColors.surface.withValues(alpha: 0.6),
-        disabledForegroundColor: AppColors.outline,
+        backgroundColor: context.palette.surface,
+        foregroundColor: context.palette.primary,
+        disabledBackgroundColor: context.palette.surface.withValues(alpha: 0.6),
+        disabledForegroundColor: context.palette.outline,
         fixedSize: const Size.square(44),
       ),
       icon: Icon(icon),

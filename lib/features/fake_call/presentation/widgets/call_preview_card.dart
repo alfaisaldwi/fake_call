@@ -52,7 +52,7 @@ class CallPreviewCard extends StatelessWidget {
             style: TextStyle(
               color: name.isEmpty ? Colors.white38 : Colors.white,
               fontSize: 22,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 4),
@@ -106,7 +106,7 @@ class _PreviewLabel extends StatelessWidget {
             style: const TextStyle(
               color: AppColors.callSecondaryText,
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -169,7 +169,7 @@ class _PhotoButton extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: AppColors.green,
+                  color: AppColors.accent,
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.callBackground, width: 3),
                 ),

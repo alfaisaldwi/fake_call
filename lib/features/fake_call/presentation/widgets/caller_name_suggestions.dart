@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class CallerNameSuggestions extends StatelessWidget {
@@ -26,16 +26,16 @@ class CallerNameSuggestions extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.history,
                   size: 16,
-                  color: AppColors.textSecondary,
+                  color: context.palette.textSecondary,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   l10n.recentNamesLabel,
                   style: Theme.of(context).textTheme.labelMedium
-                      ?.copyWith(color: AppColors.textSecondary),
+                      ?.copyWith(color: context.palette.textSecondary),
                 ),
               ],
             ),

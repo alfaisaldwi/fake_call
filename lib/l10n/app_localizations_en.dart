@@ -13,9 +13,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Fake Call: Prank & Escape';
 
   @override
-  String get languageMenuTooltip => 'Change language';
-
-  @override
   String get languageSystem => 'Use phone language';
 
   @override
@@ -392,4 +389,223 @@ class AppLocalizationsEn extends AppLocalizations {
   String missedVideoCalls(int count) {
     return '$count missed video calls';
   }
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingStart => 'Get started';
+
+  @override
+  String get onboarding1Title => 'Fake calls that feel real';
+
+  @override
+  String get onboarding1Body =>
+      'A full-screen incoming call with a real ringtone and vibration, even when your phone is locked.';
+
+  @override
+  String get onboarding2Title => 'Make it yours';
+
+  @override
+  String get onboarding2Body =>
+      'Pick the caller\'s name, photo, and video. Choose when it rings, from right now to 30 minutes later.';
+
+  @override
+  String get onboarding3Title => 'Escape like a pro';
+
+  @override
+  String get onboarding3Body =>
+      'Auto hang up, auto redial, and missed call alerts. Nobody will ever know.';
+
+  @override
+  String get splashTagline => 'Your way out of awkward moments';
+
+  @override
+  String get onboarding4Title => 'One last thing';
+
+  @override
+  String get onboarding4Body =>
+      'Allow these so your fake call can ring like the real thing.';
+
+  @override
+  String get permissionNotificationTitle => 'Notifications';
+
+  @override
+  String get permissionNotificationBody =>
+      'To show the incoming call and missed calls.';
+
+  @override
+  String get permissionFullScreenTitle => 'Full-screen calls';
+
+  @override
+  String get permissionFullScreenBody =>
+      'So the call shows up even when your phone is locked.';
+
+  @override
+  String get permissionCameraTitle => 'Camera';
+
+  @override
+  String get permissionCameraBody =>
+      'For your face during video calls. Nothing is recorded.';
+
+  @override
+  String get permissionAllow => 'Allow';
+
+  @override
+  String get permissionGranted => 'Allowed';
+
+  @override
+  String get errorPreset => 'Couldn\'t update saved callers.';
+
+  @override
+  String get presetsTitle => 'Saved callers';
+
+  @override
+  String get presetsSave => 'Save';
+
+  @override
+  String presetsSaved(String name) {
+    return '$name saved.';
+  }
+
+  @override
+  String presetsDeleteTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get presetsDeleteBody =>
+      'The photo and video saved with this caller will be removed too.';
+
+  @override
+  String get presetsDelete => 'Remove';
+
+  @override
+  String get presetsEmpty =>
+      'Save callers you use often to set them up in one tap.';
+
+  @override
+  String get themeSystem => 'Use phone setting';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsTooltip => 'Settings';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get aboutDescription =>
+      'Schedule a realistic fake incoming call to escape awkward moments, or just to prank a friend.';
+
+  @override
+  String get aboutPrivacyTitle => 'Privacy';
+
+  @override
+  String get aboutPrivacyBody =>
+      'No account and nothing sent over the internet. Everything stays on your phone.';
+
+  @override
+  String get aboutUseTitle => 'Use it kindly';
+
+  @override
+  String get aboutUseBody =>
+      'Made for fun. Please don\'t use it to deceive or harm anyone.';
+
+  @override
+  String get aboutLicenses => 'Open-source licenses';
+
+  @override
+  String get aboutMadeBy => 'Made by';
+
+  @override
+  String get settingsPreferences => 'Preferences';
+
+  @override
+  String get homeTitle => 'Fake Call';
+
+  @override
+  String get homeSubtitle => 'Your way out, one tap away';
+
+  @override
+  String get coachSkip => 'Skip';
+
+  @override
+  String get coachNext => 'Next';
+
+  @override
+  String get coachDone => 'Got it';
+
+  @override
+  String get coachPreviewTitle => 'This is how it looks';
+
+  @override
+  String get coachPreviewBody =>
+      'A live preview of the incoming call. Tap the photo to pick one from your gallery.';
+
+  @override
+  String get coachPresetsTitle => 'Saved callers';
+
+  @override
+  String get coachPresetsBody =>
+      'Save callers you use often, then set them up again in one tap.';
+
+  @override
+  String get coachNameTitle => 'Who\'s calling?';
+
+  @override
+  String get coachNameBody =>
+      'Type any name. Names you\'ve used before show up as suggestions.';
+
+  @override
+  String get coachTypeTitle => 'Voice or video';
+
+  @override
+  String get coachTypeBody =>
+      'Pick the call type. Video calls can use your own caller video.';
+
+  @override
+  String get coachTimingTitle => 'Set the timing';
+
+  @override
+  String get coachTimingBody =>
+      'Choose when it rings and when it hangs up on its own.';
+
+  @override
+  String get coachScheduleTitle => 'Ready to go';
+
+  @override
+  String get coachScheduleBody =>
+      'Tap here to schedule the call. Feel free to lock your phone after.';
+
+  @override
+  String get coachSettingsTitle => 'Settings';
+
+  @override
+  String get coachSettingsBody => 'Theme, language, and this tour live here.';
+
+  @override
+  String get settingsReplayTour => 'Show the tour again';
 }

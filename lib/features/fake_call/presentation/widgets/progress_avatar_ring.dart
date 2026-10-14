@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/caller_avatar.dart';
 
 class ProgressAvatarRing extends StatelessWidget {
@@ -35,8 +36,14 @@ class ProgressAvatarRing extends StatelessWidget {
               tween: Tween(end: value),
               duration: const Duration(milliseconds: 950),
               curve: Curves.linear,
-              builder: (context, animated, child) =>
-                  CustomPaint(painter: _RingPainter(animated), child: child),
+              builder: (context, animated, child) => CustomPaint(
+                painter: _RingPainter(
+                  animated,
+                  track: context.palette.surface,
+                  color: context.palette.primary,
+                ),
+                child: child,
+              ),
               child: Center(child: avatar),
             ),
     );
@@ -47,27 +54,29 @@ class _RingPainter extends CustomPainter {
   static const _stroke = 7.0;
 
   final double progress;
+  final Color track;
+  final Color color;
 
-  const _RingPainter(this.progress);
+  const _RingPainter(this.progress, {required this.track, required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
     final arcRect = rect.deflate(_stroke / 2);
-    final track = Paint()
-      ..color = Colors.white
+    final trackPaint = Paint()
+      ..color = track
       ..style = PaintingStyle.stroke
       ..strokeWidth = _stroke;
     final arc = Paint()
-      ..shader = const SweepGradient(
+      ..shader = SweepGradient(
         startAngle: -math.pi / 2,
         endAngle: 3 * math.pi / 2,
-        colors: [AppColors.green, AppColors.teal],
+        colors: [AppColors.accent, color],
       ).createShader(rect)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = _stroke;
-    canvas.drawCircle(rect.center, arcRect.width / 2, track);
+    canvas.drawCircle(rect.center, arcRect.width / 2, trackPaint);
     canvas.drawArc(
       arcRect,
       -math.pi / 2,
@@ -79,7 +88,9 @@ class _RingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_RingPainter oldDelegate) =>
-      oldDelegate.progress != progress;
+      oldDelegate.progress != progress ||
+      oldDelegate.track != track ||
+      oldDelegate.color != color;
 }
 
 class _PulseRings extends StatefulWidget {
@@ -129,7 +140,7 @@ class _PulsePainter extends CustomPainter {
       final t = (animation.value + i / _waves) % 1;
       final radius = _innerRadius + (maxRadius - _innerRadius) * t;
       final paint = Paint()
-        ..color = AppColors.green.withValues(alpha: 0.28 * (1 - t));
+        ..color = AppColors.accent.withValues(alpha: 0.28 * (1 - t));
       canvas.drawCircle(center, radius, paint);
     }
   }

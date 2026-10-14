@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../domain/entities/call_config.dart';
 
 class CallTypeSelector extends StatelessWidget {
@@ -60,11 +61,13 @@ class _CallTypeTile extends StatelessWidget {
       button: true,
       selected: isSelected,
       child: Material(
-        color: isSelected ? AppColors.greenTint : AppColors.background,
+        color: isSelected
+            ? context.palette.primaryTint
+            : context.palette.background,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: isSelected ? AppColors.teal : Colors.transparent,
+            color: isSelected ? context.palette.primary : Colors.transparent,
             width: 1.6,
           ),
         ),
@@ -81,21 +84,25 @@ class _CallTypeTile extends StatelessWidget {
                   height: 44,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? AppColors.teal : AppColors.surface,
+                    color: isSelected
+                        ? context.palette.primary
+                        : context.palette.surface,
                   ),
                   child: Icon(
                     icon,
-                    color: isSelected ? Colors.white : AppColors.textSecondary,
+                    color: isSelected
+                        ? Colors.white
+                        : context.palette.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   label,
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     color: isSelected
-                        ? AppColors.tealDark
-                        : AppColors.textSecondary,
+                        ? AppColors.primaryDark
+                        : context.palette.textSecondary,
                   ),
                 ),
               ],

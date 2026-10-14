@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:fake_whatsapp_call/core/error/failures.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_config.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_config_issue.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/entities/call_event.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/repositories/fake_call_repository.dart';
-import 'package:fake_whatsapp_call/features/fake_call/domain/usecases/schedule_fake_call.dart';
+import 'package:fake_call/core/error/failures.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_config.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_config_issue.dart';
+import 'package:fake_call/features/fake_call/domain/entities/call_event.dart';
+import 'package:fake_call/features/fake_call/domain/repositories/fake_call_repository.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/schedule_fake_call.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeRepository implements FakeCallRepository {

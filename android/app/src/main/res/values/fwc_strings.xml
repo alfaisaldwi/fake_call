@@ -3,4 +3,9 @@
     <string name="fwc_incoming_message">Message</string>
     <string name="fwc_incoming_swipe_accept">Swipe up to accept</string>
     <string name="fwc_incoming_turn_off_video">Turn off your video</string>
+    <string name="fwc_shortcut_10s">Call in 10 sec</string>
+    <string name="fwc_shortcut_10s_long">Fake call in 10 seconds</string>
+    <string name="fwc_shortcut_1m">Call in 1 min</string>
+    <string name="fwc_shortcut_1m_long">Fake call in 1 minute</string>
+    <string name="fwc_tile_label">Fake call</string>
 </resources>

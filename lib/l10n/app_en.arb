@@ -1,7 +1,6 @@
 {
   "@@locale": "en",
   "appTitle": "Fake Call: Prank & Escape",
-  "languageMenuTooltip": "Change language",
   "languageSystem": "Use phone language",
   "languageIndonesian": "Bahasa Indonesia",
   "languageEnglish": "English",
@@ -217,5 +216,91 @@
         "type": "int"
       }
     }
-  }
+  },
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingStart": "Get started",
+  "onboarding1Title": "Fake calls that feel real",
+  "onboarding1Body": "A full-screen incoming call with a real ringtone and vibration, even when your phone is locked.",
+  "onboarding2Title": "Make it yours",
+  "onboarding2Body": "Pick the caller's name, photo, and video. Choose when it rings, from right now to 30 minutes later.",
+  "onboarding3Title": "Escape like a pro",
+  "onboarding3Body": "Auto hang up, auto redial, and missed call alerts. Nobody will ever know.",
+  "splashTagline": "Your way out of awkward moments",
+  "onboarding4Title": "One last thing",
+  "onboarding4Body": "Allow these so your fake call can ring like the real thing.",
+  "permissionNotificationTitle": "Notifications",
+  "permissionNotificationBody": "To show the incoming call and missed calls.",
+  "permissionFullScreenTitle": "Full-screen calls",
+  "permissionFullScreenBody": "So the call shows up even when your phone is locked.",
+  "permissionCameraTitle": "Camera",
+  "permissionCameraBody": "For your face during video calls. Nothing is recorded.",
+  "permissionAllow": "Allow",
+  "permissionGranted": "Allowed",
+  "errorPreset": "Couldn't update saved callers.",
+  "presetsTitle": "Saved callers",
+  "presetsSave": "Save",
+  "presetsSaved": "{name} saved.",
+  "@presetsSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "presetsDeleteTitle": "Remove {name}?",
+  "@presetsDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "presetsDeleteBody": "The photo and video saved with this caller will be removed too.",
+  "presetsDelete": "Remove",
+  "presetsEmpty": "Save callers you use often to set them up in one tap.",
+  "themeSystem": "Use phone setting",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "settingsTitle": "Settings",
+  "settingsTooltip": "Settings",
+  "settingsTheme": "Theme",
+  "settingsLanguage": "Language",
+  "settingsAbout": "About",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutDescription": "Schedule a realistic fake incoming call to escape awkward moments, or just to prank a friend.",
+  "aboutPrivacyTitle": "Privacy",
+  "aboutPrivacyBody": "No account and nothing sent over the internet. Everything stays on your phone.",
+  "aboutUseTitle": "Use it kindly",
+  "aboutUseBody": "Made for fun. Please don't use it to deceive or harm anyone.",
+  "aboutLicenses": "Open-source licenses",
+  "aboutMadeBy": "Made by",
+  "settingsPreferences": "Preferences",
+  "homeTitle": "Fake Call",
+  "homeSubtitle": "Your way out, one tap away",
+  "coachSkip": "Skip",
+  "coachNext": "Next",
+  "coachDone": "Got it",
+  "coachPreviewTitle": "This is how it looks",
+  "coachPreviewBody": "A live preview of the incoming call. Tap the photo to pick one from your gallery.",
+  "coachPresetsTitle": "Saved callers",
+  "coachPresetsBody": "Save callers you use often, then set them up again in one tap.",
+  "coachNameTitle": "Who's calling?",
+  "coachNameBody": "Type any name. Names you've used before show up as suggestions.",
+  "coachTypeTitle": "Voice or video",
+  "coachTypeBody": "Pick the call type. Video calls can use your own caller video.",
+  "coachTimingTitle": "Set the timing",
+  "coachTimingBody": "Choose when it rings and when it hangs up on its own.",
+  "coachScheduleTitle": "Ready to go",
+  "coachScheduleBody": "Tap here to schedule the call. Feel free to lock your phone after.",
+  "coachSettingsTitle": "Settings",
+  "coachSettingsBody": "Theme, language, and this tour live here.",
+  "settingsReplayTour": "Show the tour again"
 }

@@ -38,8 +38,8 @@ class SecondsOptionSelector extends StatelessWidget {
               label(l10n, seconds, zeroLabel: zeroLabel),
               style: selected == seconds
                   ? const TextStyle(
-                      color: AppColors.tealDark,
-                      fontWeight: FontWeight.w700,
+                      color: AppColors.primaryDark,
+                      fontWeight: FontWeight.w600,
                     )
                   : null,
             ),

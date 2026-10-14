@@ -104,12 +104,6 @@ abstract class AppLocalizations {
   /// **'Fake Call: Prank & Escape'**
   String get appTitle;
 
-  /// No description provided for @languageMenuTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Change language'**
-  String get languageMenuTooltip;
-
   /// No description provided for @languageSystem.
   ///
   /// In en, this message translates to:
@@ -799,6 +793,396 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} missed video calls'**
   String missedVideoCalls(int count);
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get onboardingStart;
+
+  /// No description provided for @onboarding1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Fake calls that feel real'**
+  String get onboarding1Title;
+
+  /// No description provided for @onboarding1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'A full-screen incoming call with a real ringtone and vibration, even when your phone is locked.'**
+  String get onboarding1Body;
+
+  /// No description provided for @onboarding2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it yours'**
+  String get onboarding2Title;
+
+  /// No description provided for @onboarding2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the caller\'s name, photo, and video. Choose when it rings, from right now to 30 minutes later.'**
+  String get onboarding2Body;
+
+  /// No description provided for @onboarding3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Escape like a pro'**
+  String get onboarding3Title;
+
+  /// No description provided for @onboarding3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto hang up, auto redial, and missed call alerts. Nobody will ever know.'**
+  String get onboarding3Body;
+
+  /// No description provided for @splashTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your way out of awkward moments'**
+  String get splashTagline;
+
+  /// No description provided for @onboarding4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'One last thing'**
+  String get onboarding4Title;
+
+  /// No description provided for @onboarding4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow these so your fake call can ring like the real thing.'**
+  String get onboarding4Body;
+
+  /// No description provided for @permissionNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get permissionNotificationTitle;
+
+  /// No description provided for @permissionNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To show the incoming call and missed calls.'**
+  String get permissionNotificationBody;
+
+  /// No description provided for @permissionFullScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-screen calls'**
+  String get permissionFullScreenTitle;
+
+  /// No description provided for @permissionFullScreenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'So the call shows up even when your phone is locked.'**
+  String get permissionFullScreenBody;
+
+  /// No description provided for @permissionCameraTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get permissionCameraTitle;
+
+  /// No description provided for @permissionCameraBody.
+  ///
+  /// In en, this message translates to:
+  /// **'For your face during video calls. Nothing is recorded.'**
+  String get permissionCameraBody;
+
+  /// No description provided for @permissionAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get permissionAllow;
+
+  /// No description provided for @permissionGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed'**
+  String get permissionGranted;
+
+  /// No description provided for @errorPreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t update saved callers.'**
+  String get errorPreset;
+
+  /// No description provided for @presetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved callers'**
+  String get presetsTitle;
+
+  /// No description provided for @presetsSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get presetsSave;
+
+  /// No description provided for @presetsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} saved.'**
+  String presetsSaved(String name);
+
+  /// No description provided for @presetsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String presetsDeleteTitle(String name);
+
+  /// No description provided for @presetsDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo and video saved with this caller will be removed too.'**
+  String get presetsDeleteBody;
+
+  /// No description provided for @presetsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get presetsDelete;
+
+  /// No description provided for @presetsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Save callers you use often to set them up in one tap.'**
+  String get presetsEmpty;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Use phone setting'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTooltip;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsAbout;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String aboutVersion(String version);
+
+  /// No description provided for @aboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule a realistic fake incoming call to escape awkward moments, or just to prank a friend.'**
+  String get aboutDescription;
+
+  /// No description provided for @aboutPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get aboutPrivacyTitle;
+
+  /// No description provided for @aboutPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No account and nothing sent over the internet. Everything stays on your phone.'**
+  String get aboutPrivacyBody;
+
+  /// No description provided for @aboutUseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it kindly'**
+  String get aboutUseTitle;
+
+  /// No description provided for @aboutUseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Made for fun. Please don\'t use it to deceive or harm anyone.'**
+  String get aboutUseBody;
+
+  /// No description provided for @aboutLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get aboutLicenses;
+
+  /// No description provided for @aboutMadeBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Made by'**
+  String get aboutMadeBy;
+
+  /// No description provided for @settingsPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get settingsPreferences;
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fake Call'**
+  String get homeTitle;
+
+  /// No description provided for @homeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your way out, one tap away'**
+  String get homeSubtitle;
+
+  /// No description provided for @coachSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get coachSkip;
+
+  /// No description provided for @coachNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get coachNext;
+
+  /// No description provided for @coachDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get coachDone;
+
+  /// No description provided for @coachPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This is how it looks'**
+  String get coachPreviewTitle;
+
+  /// No description provided for @coachPreviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A live preview of the incoming call. Tap the photo to pick one from your gallery.'**
+  String get coachPreviewBody;
+
+  /// No description provided for @coachPresetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved callers'**
+  String get coachPresetsTitle;
+
+  /// No description provided for @coachPresetsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Save callers you use often, then set them up again in one tap.'**
+  String get coachPresetsBody;
+
+  /// No description provided for @coachNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who\'s calling?'**
+  String get coachNameTitle;
+
+  /// No description provided for @coachNameBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Type any name. Names you\'ve used before show up as suggestions.'**
+  String get coachNameBody;
+
+  /// No description provided for @coachTypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice or video'**
+  String get coachTypeTitle;
+
+  /// No description provided for @coachTypeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the call type. Video calls can use your own caller video.'**
+  String get coachTypeBody;
+
+  /// No description provided for @coachTimingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the timing'**
+  String get coachTimingTitle;
+
+  /// No description provided for @coachTimingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose when it rings and when it hangs up on its own.'**
+  String get coachTimingBody;
+
+  /// No description provided for @coachScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to go'**
+  String get coachScheduleTitle;
+
+  /// No description provided for @coachScheduleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap here to schedule the call. Feel free to lock your phone after.'**
+  String get coachScheduleBody;
+
+  /// No description provided for @coachSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get coachSettingsTitle;
+
+  /// No description provided for @coachSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme, language, and this tour live here.'**
+  String get coachSettingsBody;
+
+  /// No description provided for @settingsReplayTour.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the tour again'**
+  String get settingsReplayTour;
 }
 
 class _AppLocalizationsDelegate

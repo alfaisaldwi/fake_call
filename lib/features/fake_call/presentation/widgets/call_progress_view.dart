@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/duration_format.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/call_config.dart';
@@ -38,11 +39,11 @@ class CallProgressView extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final remaining = remainingSeconds;
     return DecoratedBox(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [AppColors.greenTint, AppColors.background],
+          colors: [context.palette.primaryTint, context.palette.background],
         ),
       ),
       child: SafeArea(
@@ -66,8 +67,8 @@ class CallProgressView extends StatelessWidget {
                         Text(
                           Duration(seconds: remaining).toCallTimer(),
                           style: textTheme.displayMedium?.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w700,
+                            color: context.palette.textPrimary,
+                            fontWeight: FontWeight.w600,
                             fontFeatures: const [FontFeature.tabularFigures()],
                           ),
                         ),
@@ -77,7 +78,7 @@ class CallProgressView extends StatelessWidget {
                         title,
                         textAlign: TextAlign.center,
                         style: textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -85,7 +86,7 @@ class CallProgressView extends StatelessWidget {
                         subtitle,
                         textAlign: TextAlign.center,
                         style: textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.palette.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -101,14 +102,14 @@ class CallProgressView extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(56),
                   foregroundColor: AppColors.error,
-                  backgroundColor: AppColors.surface,
-                  side: const BorderSide(color: AppColors.outline),
+                  backgroundColor: context.palette.surface,
+                  side: BorderSide(color: context.palette.outline),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                   textStyle: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 onPressed: onCancel,
@@ -170,19 +171,19 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.palette.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.outline),
+        border: Border.all(color: context.palette.outline),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppColors.teal),
+          Icon(icon, size: 16, color: context.palette.primary),
           const SizedBox(width: 6),
           Text(
             label,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: context.palette.textPrimary,
               fontWeight: FontWeight.w500,
             ),
           ),

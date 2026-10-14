@@ -3,4 +3,9 @@
     <string name="fwc_incoming_message">Pesan</string>
     <string name="fwc_incoming_swipe_accept">Geser ke atas untuk menerima</string>
     <string name="fwc_incoming_turn_off_video">Matikan video kamu</string>
+    <string name="fwc_shortcut_10s">Telepon 10 dtk</string>
+    <string name="fwc_shortcut_10s_long">Telepon palsu dalam 10 detik</string>
+    <string name="fwc_shortcut_1m">Telepon 1 mnt</string>
+    <string name="fwc_shortcut_1m_long">Telepon palsu dalam 1 menit</string>
+    <string name="fwc_tile_label">Telepon palsu</string>
 </resources>
