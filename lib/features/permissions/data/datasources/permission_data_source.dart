@@ -14,6 +14,8 @@ abstract class PermissionDataSource {
 }
 
 class PermissionDataSourceImpl implements PermissionDataSource {
+  static const _power = MethodChannel('com.elumi.prankcall/power');
+
   @override
   Future<bool> isGranted(AppPermission permission) async {
     try {
@@ -23,6 +25,8 @@ class PermissionDataSourceImpl implements PermissionDataSource {
         AppPermission.fullScreen =>
           !Platform.isAndroid ||
               await FlutterCallkitIncoming.canUseFullScreenIntent(),
+        AppPermission.exactAlarm => await _powerFlag('canScheduleExact'),
+        AppPermission.battery => await _powerFlag('isBatteryUnrestricted'),
       };
     } on PlatformException catch (e) {
       throw PermissionException(
@@ -46,6 +50,10 @@ class PermissionDataSourceImpl implements PermissionDataSource {
           if (Platform.isAndroid) {
             await FlutterCallkitIncoming.requestFullIntentPermission();
           }
+        case AppPermission.exactAlarm:
+          await _openPowerSettings('openExactAlarmSettings');
+        case AppPermission.battery:
+          await _openPowerSettings('openBatterySettings');
       }
     } on PlatformException catch (e) {
       throw PermissionException(
@@ -53,5 +61,14 @@ class PermissionDataSourceImpl implements PermissionDataSource {
         e.message,
       );
     }
+  }
+
+  Future<bool> _powerFlag(String method) async {
+    if (!Platform.isAndroid) return true;
+    return await _power.invokeMethod<bool>(method) ?? true;
+  }
+
+  Future<void> _openPowerSettings(String method) async {
+    if (Platform.isAndroid) await _power.invokeMethod<void>(method);
   }
 }

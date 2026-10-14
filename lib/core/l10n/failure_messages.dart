@@ -22,6 +22,7 @@ class FailureMessages {
       FailureReason.photoCropFailed => l10n.errorPhotoCrop,
       FailureReason.videoPickFailed => l10n.errorVideoPick,
       FailureReason.callStartFailed => l10n.errorCallStart,
+      FailureReason.callScheduleFailed => l10n.errorCallSchedule,
       FailureReason.callEndFailed => l10n.errorCallEnd,
       FailureReason.callEventsFailed => l10n.errorCallEvents,
       FailureReason.avatarPreparationFailed => l10n.errorAvatar,

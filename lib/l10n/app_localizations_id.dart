@@ -611,4 +611,52 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get settingsReplayTour => 'Lihat panduan lagi';
+
+  @override
+  String get errorCallSchedule => 'Jadwal panggilannya gagal dipasang.';
+
+  @override
+  String get ringAtPick => 'Pilih jam';
+
+  @override
+  String ringAtLabel(String time) {
+    return 'Jam $time';
+  }
+
+  @override
+  String get ringAtPickerTitle => 'Mau bunyi jam berapa?';
+
+  @override
+  String summaryRingsAt(String time) {
+    return 'bunyi jam $time';
+  }
+
+  @override
+  String summaryRingsTomorrowAt(String time) {
+    return 'bunyi besok jam $time';
+  }
+
+  @override
+  String get initialDurationLabel => 'Durasi awal panggilan';
+
+  @override
+  String get initialDurationDescription =>
+      'Timer di layar panggilan langsung mulai dari sini, biar kelihatan sudah lama ngobrol.';
+
+  @override
+  String get initialDurationZero => 'Dari 00:00';
+
+  @override
+  String get permissionExactAlarmTitle => 'Alarm tepat waktu';
+
+  @override
+  String get permissionExactAlarmBody =>
+      'Biar telepon bunyi pas waktunya, walau app sudah ditutup.';
+
+  @override
+  String get permissionBatteryTitle => 'Baterai tanpa batasan';
+
+  @override
+  String get permissionBatteryBody =>
+      'Buka Baterai, lalu pilih “Tanpa batasan” supaya HP nggak menahan jadwal telepon.';
 }

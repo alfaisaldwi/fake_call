@@ -8,4 +8,11 @@
     <string name="fwc_shortcut_1m">Call in 1 min</string>
     <string name="fwc_shortcut_1m_long">Fake call in 1 minute</string>
     <string name="fwc_tile_label">Fake call</string>
+    <string name="fwc_widget_description">Schedule a fake call straight from your home screen.</string>
+    <string name="fwc_widget_subtitle">Ring me in</string>
+    <string name="fwc_widget_10s">10 sec</string>
+    <string name="fwc_widget_1m">1 min</string>
+    <string name="fwc_widget_5m">5 min</string>
+    <string name="fwc_widget_scheduled">Got it, the call comes in %1$s</string>
+    <string name="fwc_widget_setup_first">Open Fake Call once to set up the caller first</string>
 </resources>

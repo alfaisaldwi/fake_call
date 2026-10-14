@@ -8,6 +8,7 @@ enum FailureReason {
   photoCropFailed,
   videoPickFailed,
   callStartFailed,
+  callScheduleFailed,
   callEndFailed,
   callEventsFailed,
   avatarPreparationFailed,

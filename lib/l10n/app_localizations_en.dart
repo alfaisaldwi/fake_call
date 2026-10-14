@@ -608,4 +608,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsReplayTour => 'Show the tour again';
+
+  @override
+  String get errorCallSchedule => 'Couldn\'t set the call timer.';
+
+  @override
+  String get ringAtPick => 'Pick a time';
+
+  @override
+  String ringAtLabel(String time) {
+    return 'At $time';
+  }
+
+  @override
+  String get ringAtPickerTitle => 'Ring at what time?';
+
+  @override
+  String summaryRingsAt(String time) {
+    return 'rings at $time';
+  }
+
+  @override
+  String summaryRingsTomorrowAt(String time) {
+    return 'rings tomorrow at $time';
+  }
+
+  @override
+  String get initialDurationLabel => 'Starting call timer';
+
+  @override
+  String get initialDurationDescription =>
+      'The call timer starts from here, so it looks like you\'ve been talking for a while.';
+
+  @override
+  String get initialDurationZero => 'From 00:00';
+
+  @override
+  String get permissionExactAlarmTitle => 'On-time alarms';
+
+  @override
+  String get permissionExactAlarmBody =>
+      'So the call rings right on time, even after the app is closed.';
+
+  @override
+  String get permissionBatteryTitle => 'Unrestricted battery';
+
+  @override
+  String get permissionBatteryBody =>
+      'Open Battery, then pick “Unrestricted” so your phone doesn\'t hold the call back.';
 }

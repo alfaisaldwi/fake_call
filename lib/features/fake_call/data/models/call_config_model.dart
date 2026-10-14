@@ -3,6 +3,7 @@ import 'package:flutter_callkit_incoming/entities/entities.dart';
 import '../../../../l10n/app_localizations.dart';
 
 import '../../domain/entities/call_config.dart';
+import '../../domain/entities/clock_time.dart';
 
 class CallConfigModel extends CallConfig {
   static const _appName = 'Fake Call';
@@ -18,6 +19,8 @@ class CallConfigModel extends CallConfig {
     super.autoHangupSeconds,
     super.autoRecallCount,
     super.autoRecallInterval,
+    super.ringAt,
+    super.initialDurationSeconds,
   });
 
   factory CallConfigModel.fromEntity(CallConfig entity) {
@@ -30,6 +33,8 @@ class CallConfigModel extends CallConfig {
       autoHangupSeconds: entity.autoHangupSeconds,
       autoRecallCount: entity.autoRecallCount,
       autoRecallInterval: entity.autoRecallInterval,
+      ringAt: entity.ringAt,
+      initialDurationSeconds: entity.initialDurationSeconds,
     );
   }
 
@@ -43,6 +48,8 @@ class CallConfigModel extends CallConfig {
       autoHangupSeconds: json['autoHangupSeconds'] as int? ?? 0,
       autoRecallCount: json['autoRecallCount'] as int? ?? 0,
       autoRecallInterval: json['autoRecallInterval'] as int? ?? 10,
+      ringAt: _clockTimeFromJson(json['ringAt']),
+      initialDurationSeconds: json['initialDurationSeconds'] as int? ?? 0,
     );
   }
 
@@ -56,7 +63,20 @@ class CallConfigModel extends CallConfig {
       'autoHangupSeconds': autoHangupSeconds,
       'autoRecallCount': autoRecallCount,
       'autoRecallInterval': autoRecallInterval,
+      'ringAt': ringAt == null
+          ? null
+          : {'hour': ringAt!.hour, 'minute': ringAt!.minute},
+      'initialDurationSeconds': initialDurationSeconds,
     };
+  }
+
+  static ClockTime? _clockTimeFromJson(Object? json) {
+    if (json is! Map) return null;
+    final hour = json['hour'];
+    final minute = json['minute'];
+    if (hour is! int || minute is! int) return null;
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+    return ClockTime(hour, minute);
   }
 
   CallKitParams toCallKitParams({

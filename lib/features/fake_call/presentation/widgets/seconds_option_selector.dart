@@ -8,6 +8,7 @@ class SecondsOptionSelector extends StatelessWidget {
   final int selected;
   final ValueChanged<int> onChanged;
   final String? zeroLabel;
+  final Widget? trailing;
 
   const SecondsOptionSelector({
     super.key,
@@ -15,6 +16,7 @@ class SecondsOptionSelector extends StatelessWidget {
     required this.selected,
     required this.onChanged,
     this.zeroLabel,
+    this.trailing,
   });
 
   static String label(AppLocalizations l10n, int seconds, {String? zeroLabel}) {
@@ -47,6 +49,7 @@ class SecondsOptionSelector extends StatelessWidget {
             showCheckmark: false,
             onSelected: (_) => onChanged(seconds),
           ),
+        ?trailing,
       ],
     );
   }

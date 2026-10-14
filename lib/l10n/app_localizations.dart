@@ -1183,6 +1183,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show the tour again'**
   String get settingsReplayTour;
+
+  /// No description provided for @errorCallSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t set the call timer.'**
+  String get errorCallSchedule;
+
+  /// No description provided for @ringAtPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time'**
+  String get ringAtPick;
+
+  /// No description provided for @ringAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'At {time}'**
+  String ringAtLabel(String time);
+
+  /// No description provided for @ringAtPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ring at what time?'**
+  String get ringAtPickerTitle;
+
+  /// No description provided for @summaryRingsAt.
+  ///
+  /// In en, this message translates to:
+  /// **'rings at {time}'**
+  String summaryRingsAt(String time);
+
+  /// No description provided for @summaryRingsTomorrowAt.
+  ///
+  /// In en, this message translates to:
+  /// **'rings tomorrow at {time}'**
+  String summaryRingsTomorrowAt(String time);
+
+  /// No description provided for @initialDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting call timer'**
+  String get initialDurationLabel;
+
+  /// No description provided for @initialDurationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The call timer starts from here, so it looks like you\'ve been talking for a while.'**
+  String get initialDurationDescription;
+
+  /// No description provided for @initialDurationZero.
+  ///
+  /// In en, this message translates to:
+  /// **'From 00:00'**
+  String get initialDurationZero;
+
+  /// No description provided for @permissionExactAlarmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'On-time alarms'**
+  String get permissionExactAlarmTitle;
+
+  /// No description provided for @permissionExactAlarmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'So the call rings right on time, even after the app is closed.'**
+  String get permissionExactAlarmBody;
+
+  /// No description provided for @permissionBatteryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unrestricted battery'**
+  String get permissionBatteryTitle;
+
+  /// No description provided for @permissionBatteryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Battery, then pick “Unrestricted” so your phone doesn\'t hold the call back.'**
+  String get permissionBatteryBody;
 }
 
 class _AppLocalizationsDelegate

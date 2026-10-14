@@ -3,9 +3,9 @@ package com.elumi.prankcall
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import com.elumi.prankcall.incoming.RingVibrator
-import com.elumi.prankcall.notification.MissedCallNotifier
+import com.elumi.prankcall.bridge.NativeChannels
 import com.elumi.prankcall.quick.QuickCall
+import com.elumi.prankcall.schedule.CallDispatcher
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -13,27 +13,12 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private var pendingQuickDelay: Int? = null
     private var quickCallChannel: MethodChannel? = null
+    private var alarmChannel: MethodChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        val notifier = MissedCallNotifier(applicationContext)
-        MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            MISSED_CALL_CHANNEL,
-        ).setMethodCallHandler { call, result ->
-            if (call.method != "showMissedCall") {
-                result.notImplemented()
-                return@setMethodCallHandler
-            }
-            notifier.show(
-                id = call.argument<Int>("id") ?: 0,
-                title = call.argument<String>("title").orEmpty(),
-                body = call.argument<String>("body").orEmpty(),
-                channelName = call.argument<String>("channelName").orEmpty(),
-                avatarPath = call.argument<String>("avatarPath"),
-                count = call.argument<Int>("count") ?: 1,
-            )
-            result.success(null)
+        alarmChannel = NativeChannels.attach(flutterEngine, applicationContext).also {
+            CallDispatcher.mainChannel = it
         }
         quickCallChannel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -48,21 +33,12 @@ class MainActivity : FlutterActivity() {
                 pendingQuickDelay = null
             }
         }
-        val ringVibrator = RingVibrator(applicationContext)
-        MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            RING_VIBRATION_CHANNEL,
-        ).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "start" -> ringVibrator.start()
-                "stop" -> ringVibrator.stop()
-                else -> {
-                    result.notImplemented()
-                    return@setMethodCallHandler
-                }
-            }
-            result.success(null)
-        }
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        if (CallDispatcher.mainChannel === alarmChannel) CallDispatcher.mainChannel = null
+        alarmChannel = null
+        super.cleanUpFlutterEngine(flutterEngine)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,8 +69,6 @@ class MainActivity : FlutterActivity() {
     }
 
     private companion object {
-        const val MISSED_CALL_CHANNEL = "com.elumi.prankcall/missed_call"
-        const val RING_VIBRATION_CHANNEL = "com.elumi.prankcall/ring_vibration"
         const val QUICK_CALL_CHANNEL = "com.elumi.prankcall/quick_call"
         const val ACTION_CALL_ACCEPT =
             "com.hiennv.flutter_callkit_incoming.ACTION_CALL_ACCEPT"

@@ -82,6 +82,23 @@ void main() {
   setUp(() => repository = _FakeMediaRepository());
 
   group('ActiveCallBloc', () {
+    test('timer panggilan mulai dari durasi awal', () async {
+      final bloc = buildBloc()
+        ..add(
+          const ActiveCallStarted(
+            CallType.voice,
+            initialElapsed: Duration(minutes: 5),
+          ),
+        );
+      await settle();
+
+      expect(
+        (bloc.state as ActiveCallInProgress).elapsed,
+        const Duration(minutes: 5),
+      );
+      await bloc.close();
+    });
+
     test('voice call tidak membuka kamera maupun video', () async {
       final bloc = buildBloc()
         ..add(const ActiveCallStarted(CallType.voice))

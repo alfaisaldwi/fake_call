@@ -35,6 +35,7 @@ dependencies:
   path_provider: ^2.1.6
   package_info_plus: ^10.2.2
   showcaseview: ^5.1.0
+  clock: ^1.1.3
 
 dev_dependencies:
   flutter_test:

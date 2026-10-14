@@ -23,7 +23,11 @@ class ActiveCallPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<ActiveCallBloc>()
         ..add(
-          ActiveCallStarted(config.callType, videoPath: config.callerVideoPath),
+          ActiveCallStarted(
+            config.callType,
+            videoPath: config.callerVideoPath,
+            initialElapsed: Duration(seconds: config.initialDurationSeconds),
+          ),
         ),
       child: AppForegroundListener(
         onChanged: (context, isForeground) => context

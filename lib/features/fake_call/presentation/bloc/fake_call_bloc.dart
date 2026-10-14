@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,11 +10,13 @@ import '../../../../core/usecases/usecase.dart';
 import '../../domain/entities/call_config.dart';
 import '../../domain/entities/call_config_issue.dart';
 import '../../domain/entities/call_event.dart';
+import '../../domain/entities/pending_call.dart';
 import '../../domain/usecases/end_fake_call.dart';
 import '../../domain/usecases/listen_to_call_events.dart';
 import '../../domain/usecases/pick_caller_avatar.dart';
 import '../../domain/usecases/pick_caller_video.dart';
 import '../../domain/usecases/remember_caller_name.dart';
+import '../../domain/usecases/restore_pending_call.dart';
 import '../../domain/usecases/get_last_call_config.dart';
 import '../../domain/usecases/listen_to_quick_triggers.dart';
 import '../../domain/usecases/save_last_call_config.dart';
@@ -36,6 +39,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
   final GetLastCallConfig getLastCallConfig;
   final SaveLastCallConfig saveLastCallConfig;
   final ListenToQuickTriggers listenToQuickTriggers;
+  final RestorePendingCall restorePendingCall;
   final FailureMessages failureMessages;
 
   StreamSubscription<int>? _ticker;
@@ -51,6 +55,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     required this.getLastCallConfig,
     required this.saveLastCallConfig,
     required this.listenToQuickTriggers,
+    required this.restorePendingCall,
     required this.failureMessages,
     CallConfig initialConfig = defaultConfig,
   }) : super(FakeCallIdle(initialConfig)) {
@@ -166,6 +171,37 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     result.fold((_) {}, (config) {
       if (config != null && state is FakeCallIdle) emit(FakeCallIdle(config));
     });
+    await _restorePending(emit);
+  }
+
+  Future<void> _restorePending(Emitter<FakeCallState> emit) async {
+    if (!state.isEditable && state is! FakeCallCountingDown) return;
+    final result = await restorePendingCall(const NoParams());
+    result.fold(
+      (failure) {
+        if (state.isEditable) {
+          emit(
+            FakeCallError(state.config, message: failureMessages.of(failure)),
+          );
+        }
+      },
+      (pending) {
+        if (pending == null) return;
+        if (!state.isEditable && state is! FakeCallCountingDown) return;
+        _emitCountdown(pending, emit);
+      },
+    );
+  }
+
+  void _emitCountdown(PendingCall pending, Emitter<FakeCallState> emit) {
+    emit(
+      FakeCallCountingDown(
+        pending.config,
+        remainingSeconds: pending.remainingSecondsAt(clock.now()),
+        totalSeconds: pending.totalSeconds,
+      ),
+    );
+    _startTicker(pending.ringsAt);
   }
 
   Future<void> _onQuickTriggersStarted(
@@ -190,7 +226,10 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     if (!state.isEditable) return;
     final saved = await getLastCallConfig(const NoParams());
     final base = saved.fold((_) => null, (config) => config) ?? state.config;
-    await _schedule(base.copyWith(delayInSeconds: event.delayInSeconds), emit);
+    await _schedule(
+      base.copyWith(delayInSeconds: event.delayInSeconds, clearRingAt: true),
+      emit,
+    );
   }
 
   Future<void> _onScheduleRequested(
@@ -213,12 +252,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
               : null,
         ),
       ),
-      (_) {
-        emit(
-          FakeCallCountingDown(config, remainingSeconds: config.delayInSeconds),
-        );
-        _startTicker(config.delayInSeconds);
-      },
+      (pending) => _emitCountdown(pending, emit),
     );
     if (result.isLeft()) return;
     await rememberCallerName(config.callerName);
@@ -250,6 +284,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
       ),
       (_) {},
     );
+    await _restorePending(emit);
   }
 
   void _onReset(FakeCallReset event, Emitter<FakeCallState> emit) {
@@ -262,7 +297,13 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     final remaining = event.remainingSeconds;
     switch (current) {
       case FakeCallCountingDown():
-        emit(FakeCallCountingDown(current.config, remainingSeconds: remaining));
+        emit(
+          FakeCallCountingDown(
+            current.config,
+            remainingSeconds: remaining,
+            totalSeconds: current.totalSeconds,
+          ),
+        );
       case FakeCallWaitingRecall():
         emit(
           FakeCallWaitingRecall(
@@ -277,16 +318,18 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
   }
 
   FakeCallState _mapCallEventToState(CallEvent event) {
-    final config = state.config;
+    final config = event.config ?? state.config;
     switch (event.type) {
       case CallEventType.incoming:
         _stopTicker();
         return FakeCallRinging(config, attempt: event.attempt);
       case CallEventType.accepted:
         _stopTicker();
-        return FakeCallAccepted(event.config ?? config, attempt: event.attempt);
+        return FakeCallAccepted(config, attempt: event.attempt);
       case CallEventType.recallScheduled:
-        _startTicker(config.autoRecallInterval);
+        _startTicker(
+          clock.now().add(Duration(seconds: config.autoRecallInterval)),
+        );
         return FakeCallWaitingRecall(
           config,
           nextAttempt: event.attempt,
@@ -301,12 +344,21 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     }
   }
 
-  void _startTicker(int seconds) {
+  void _startTicker(DateTime deadline) {
     _stopTicker();
-    _ticker = Stream<int>.periodic(
-      const Duration(seconds: 1),
-      (tick) => seconds - tick - 1,
-    ).take(seconds).listen((remaining) => add(_CountdownTicked(remaining)));
+    _ticker =
+        Stream<int>.periodic(
+          const Duration(seconds: 1),
+          (_) => _secondsUntil(deadline),
+        ).listen((remaining) {
+          add(_CountdownTicked(remaining));
+          if (remaining == 0) _stopTicker();
+        });
+  }
+
+  int _secondsUntil(DateTime deadline) {
+    final millis = deadline.difference(clock.now()).inMilliseconds;
+    return millis <= 0 ? 0 : (millis / 1000).ceil();
   }
 
   void _stopTicker() {

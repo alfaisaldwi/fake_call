@@ -10,11 +10,16 @@ sealed class ActiveCallEvent extends Equatable {
 final class ActiveCallStarted extends ActiveCallEvent {
   final CallType callType;
   final String? videoPath;
+  final Duration initialElapsed;
 
-  const ActiveCallStarted(this.callType, {this.videoPath});
+  const ActiveCallStarted(
+    this.callType, {
+    this.videoPath,
+    this.initialElapsed = Duration.zero,
+  });
 
   @override
-  List<Object> get props => [callType, videoPath ?? ''];
+  List<Object> get props => [callType, videoPath ?? '', initialElapsed];
 }
 
 final class ActiveCallForegroundChanged extends ActiveCallEvent {

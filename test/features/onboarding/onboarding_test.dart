@@ -131,7 +131,10 @@ void main() {
     await tester.tap(find.text(l10n.permissionAllow).first);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text(l10n.permissionAllow), findsNWidgets(2));
+    expect(
+      find.text(l10n.permissionAllow),
+      findsNWidgets(AppPermission.values.length - 1),
+    );
     expect(permissions.granted[AppPermission.notification], isTrue);
     await tester.runAsync(bloc.close);
   });

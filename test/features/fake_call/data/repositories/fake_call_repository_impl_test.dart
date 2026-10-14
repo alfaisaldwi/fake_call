@@ -1,16 +1,21 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:dartz/dartz.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:fake_call/core/error/exceptions.dart';
+import 'package:fake_call/features/fake_call/data/datasources/call_alarm_data_source.dart';
 import 'package:fake_call/features/fake_call/data/datasources/fake_call_native_data_source.dart';
 import 'package:fake_call/features/fake_call/data/datasources/missed_call_notification_data_source.dart';
 import 'package:fake_call/features/fake_call/data/datasources/ring_vibration_data_source.dart';
 import 'package:fake_call/features/fake_call/data/models/call_config_model.dart';
 import 'package:fake_call/features/fake_call/data/models/call_event_model.dart';
+import 'package:fake_call/features/fake_call/data/models/scheduled_call_model.dart';
 import 'package:fake_call/features/fake_call/data/repositories/fake_call_repository_impl.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_config.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_event.dart';
+import 'package:fake_call/features/fake_call/domain/entities/clock_time.dart';
+import 'package:fake_call/features/fake_call/domain/entities/pending_call.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
 
@@ -54,6 +59,41 @@ class _FakeNativeDataSource implements FakeCallNativeDataSource {
   Stream<CallEventModel> get callEvents => native.stream;
 }
 
+class _FakeAlarm implements CallAlarmDataSource {
+  final firedController = StreamController<ScheduledCallModel>.broadcast(
+    sync: true,
+  );
+  ScheduledCallModel? scheduled;
+  ScheduledCallModel? due;
+  final cancelled = <String>[];
+  bool released = false;
+
+  @override
+  Future<void> schedule(ScheduledCallModel call) async => scheduled = call;
+
+  @override
+  Future<void> cancel(String id) async {
+    cancelled.add(id);
+    if (scheduled?.id == id) scheduled = null;
+  }
+
+  @override
+  Future<ScheduledCallModel?> pending() async => scheduled;
+
+  @override
+  Future<ScheduledCallModel?> takeDue() async {
+    final taken = due;
+    due = null;
+    return taken;
+  }
+
+  @override
+  Future<void> release() async => released = true;
+
+  @override
+  Stream<ScheduledCallModel> get fired => firedController.stream;
+}
+
 class _FakeMissedCallNotifier implements MissedCallNotificationDataSource {
   final shown = <(String, int)>[];
 
@@ -80,6 +120,7 @@ class _FakeRingVibration implements RingVibrationDataSource {
 
 void main() {
   late _FakeNativeDataSource dataSource;
+  late _FakeAlarm alarm;
   late _FakeMissedCallNotifier notifier;
   late _FakeRingVibration vibration;
   late FakeCallRepositoryImpl repository;
@@ -99,10 +140,12 @@ void main() {
 
   setUp(() {
     dataSource = _FakeNativeDataSource();
+    alarm = _FakeAlarm();
     notifier = _FakeMissedCallNotifier();
     vibration = _FakeRingVibration();
     repository = FakeCallRepositoryImpl(
       dataSource: dataSource,
+      alarm: alarm,
       missedCallNotifier: notifier,
       ringVibration: vibration,
       uuid: const Uuid(),
@@ -358,6 +401,150 @@ void main() {
       async.flushMicrotasks();
 
       expect(vibration.isOn, isFalse);
+    });
+  });
+
+  ScheduledCallModel scheduledAt(DateTime now, {String id = 'alarm-1'}) {
+    return ScheduledCallModel(
+      id: id,
+      callConfig: CallConfigModel.fromEntity(config),
+      scheduledAt: now,
+      ringsAt: now.add(const Duration(seconds: 30)),
+    );
+  }
+
+  group('alarm native', () {
+    test('menjadwalkan alarm sesuai waktu dering', () {
+      fakeAsync((async) {
+        start(async, config);
+
+        final scheduled = alarm.scheduled!;
+        expect(
+          scheduled.ringsAt.difference(scheduled.scheduledAt),
+          const Duration(seconds: 5),
+        );
+        expect(scheduled.config.callerName, 'Mama');
+      });
+    });
+
+    test('jam tertentu dipakai sebagai waktu dering', () {
+      fakeAsync((async) {
+        withClock(Clock.fixed(DateTime(2026, 10, 14, 9, 0)), () {
+          start(async, config.copyWith(ringAt: const ClockTime(9, 30)));
+        });
+
+        expect(alarm.scheduled!.ringsAt, DateTime(2026, 10, 14, 9, 30));
+      });
+    });
+
+    test('timer dalam app membatalkan alarm agar tidak dobel', () {
+      fakeAsync((async) {
+        start(async, config);
+        final id = alarm.scheduled!.id;
+        async.elapse(const Duration(seconds: 5));
+
+        expect(dataSource.shown, hasLength(1));
+        expect(alarm.cancelled, [id]);
+
+        alarm.firedController.add(scheduledAt(clock.now(), id: id));
+        async.flushMicrotasks();
+        expect(dataSource.shown, hasLength(1));
+      });
+    });
+
+    test('alarm yang datang duluan langsung membunyikan panggilan', () {
+      fakeAsync((async) {
+        start(async, config);
+        final scheduled = alarm.scheduled!;
+        async.elapse(const Duration(seconds: 2));
+
+        alarm.firedController.add(scheduled);
+        async.flushMicrotasks();
+        expect(dataSource.shown, hasLength(1));
+
+        async.elapse(const Duration(seconds: 10));
+        expect(dataSource.shown, hasLength(1));
+      });
+    });
+
+    test('membatalkan sebelum berdering ikut membatalkan alarm', () {
+      fakeAsync((async) {
+        start(async, config);
+        final id = alarm.scheduled!.id;
+        repository.endCall();
+        async.flushMicrotasks();
+
+        expect(alarm.cancelled, [id]);
+      });
+    });
+
+    test('jadwal tertunda dipulihkan saat app dibuka lagi', () {
+      fakeAsync((async) {
+        alarm.scheduled = scheduledAt(clock.now());
+        late PendingCall? restored;
+        repository.restorePendingCall().then(
+          (result) => restored = result.fold((_) => null, (p) => p),
+        );
+        async.flushMicrotasks();
+
+        expect(restored?.ringsAt, alarm.scheduled!.ringsAt);
+        async.elapse(const Duration(seconds: 29));
+        expect(dataSource.shown, isEmpty);
+        async.elapse(const Duration(seconds: 1));
+        expect(dataSource.shown, hasLength(1));
+      });
+    });
+
+    test('jadwal yang sudah lewat tidak dipulihkan', () {
+      fakeAsync((async) {
+        alarm.scheduled = scheduledAt(
+          clock.now().subtract(const Duration(minutes: 1)),
+        );
+        late PendingCall? restored;
+        repository.restorePendingCall().then(
+          (result) => restored = result.fold((_) => null, (p) => p),
+        );
+        async.flushMicrotasks();
+
+        expect(restored, isNull);
+      });
+    });
+
+    test('alarm dari widget saat app terbuka tetap berdering', () {
+      fakeAsync((async) {
+        repository.listenToCallEvents().then(
+          (result) => result.fold((_) {}, (s) => s.listen(events.add)),
+        );
+        async.flushMicrotasks();
+
+        alarm.firedController.add(scheduledAt(clock.now(), id: 'widget'));
+        async.flushMicrotasks();
+
+        expect(dataSource.shown, hasLength(1));
+        expect(events.single.type, CallEventType.incoming);
+        expect(events.single.config?.callerName, 'Mama');
+      });
+    });
+
+    test('engine background membunyikan panggilan yang jatuh tempo', () {
+      fakeAsync((async) {
+        alarm.due = scheduledAt(clock.now());
+        bool? rang;
+        repository.ringDueCall().then(
+          (result) => rang = result.fold((_) => null, (r) => r),
+        );
+        async.flushMicrotasks();
+
+        expect(rang, isTrue);
+        expect(dataSource.shown, hasLength(1));
+      });
+    });
+
+    test('tanpa panggilan jatuh tempo tidak ada yang berdering', () async {
+      final result = await repository.ringDueCall();
+
+      expect(result, const Right<Object, bool>(false));
+      expect(dataSource.shown, isEmpty);
     });
   });
 

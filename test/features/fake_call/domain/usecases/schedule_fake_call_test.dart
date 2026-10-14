@@ -3,19 +3,39 @@ import 'package:fake_call/core/error/failures.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_config.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_config_issue.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_event.dart';
+import 'package:fake_call/features/fake_call/domain/entities/pending_call.dart';
 import 'package:fake_call/features/fake_call/domain/repositories/fake_call_repository.dart';
 import 'package:fake_call/features/fake_call/domain/usecases/schedule_fake_call.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeRepository implements FakeCallRepository {
   CallConfig? scheduled;
-  Either<Failure, Unit> result = const Right(unit);
+  PendingCall? pending;
+  Either<Failure, PendingCall>? result;
 
   @override
-  Future<Either<Failure, Unit>> scheduleCall(CallConfig config) async {
+  Future<Either<Failure, PendingCall>> scheduleCall(CallConfig config) async {
     scheduled = config;
-    return result;
+    final now = DateTime(2026);
+    return result ??
+        Right(
+          PendingCall(
+            config: config,
+            scheduledAt: now,
+            ringsAt: now.add(Duration(seconds: config.delayInSeconds)),
+          ),
+        );
   }
+
+  @override
+  Future<Either<Failure, PendingCall?>> restorePendingCall() async =>
+      Right(pending);
+
+  @override
+  Future<Either<Failure, bool>> ringDueCall() async => const Right(false);
+
+  @override
+  Future<Either<Failure, Unit>> finishDueCall() async => const Right(unit);
 
   @override
   Future<Either<Failure, Stream<CallEvent>>> listenToCallEvents() async =>
@@ -42,7 +62,7 @@ void main() {
   test('meneruskan config valid ke repository', () async {
     final result = await usecase(config);
 
-    expect(result, const Right(unit));
+    expect(result.isRight(), isTrue);
     expect(repository.scheduled, config);
   });
 

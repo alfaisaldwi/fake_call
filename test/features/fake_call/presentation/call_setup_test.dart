@@ -1,8 +1,12 @@
+import 'package:clock/clock.dart';
 import 'package:dartz/dartz.dart';
 import 'package:fake_call/core/error/failures.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_config.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_config_issue.dart';
 import 'package:fake_call/features/fake_call/domain/entities/call_event.dart';
+import 'package:fake_call/features/fake_call/domain/entities/clock_time.dart';
+import 'package:fake_call/features/fake_call/domain/entities/pending_call.dart';
+import 'package:fake_call/features/fake_call/domain/usecases/restore_pending_call.dart';
 import 'package:fake_call/features/fake_call/domain/repositories/caller_avatar_repository.dart';
 import 'package:fake_call/features/fake_call/domain/repositories/fake_call_repository.dart';
 import 'package:fake_call/features/fake_call/domain/usecases/end_fake_call.dart';
@@ -57,12 +61,30 @@ import 'package:flutter_test/flutter_test.dart';
 
 class _FakeCallRepository implements FakeCallRepository {
   CallConfig? scheduled;
+  PendingCall? pending;
 
   @override
-  Future<Either<Failure, Unit>> scheduleCall(CallConfig config) async {
+  Future<Either<Failure, PendingCall>> scheduleCall(CallConfig config) async {
     scheduled = config;
-    return const Right(unit);
+    final now = clock.now();
+    return Right(
+      PendingCall(
+        config: config,
+        scheduledAt: now,
+        ringsAt: config.ringsAtFrom(now),
+      ),
+    );
   }
+
+  @override
+  Future<Either<Failure, PendingCall?>> restorePendingCall() async =>
+      Right(pending);
+
+  @override
+  Future<Either<Failure, bool>> ringDueCall() async => const Right(false);
+
+  @override
+  Future<Either<Failure, Unit>> finishDueCall() async => const Right(unit);
 
   @override
   Future<Either<Failure, Stream<CallEvent>>> listenToCallEvents() async =>
@@ -271,6 +293,7 @@ void main() {
     getLastCallConfig: GetLastCallConfig(_lastConfig),
     saveLastCallConfig: SaveLastCallConfig(_lastConfig),
     listenToQuickTriggers: ListenToQuickTriggers(_quickTriggers),
+    restorePendingCall: RestorePendingCall(callRepository),
     failureMessages: _messages,
   );
 
@@ -301,6 +324,44 @@ void main() {
 
       expect(callRepository.scheduled, config);
       expect(bloc.state, isA<FakeCallCountingDown>());
+      await bloc.close();
+    });
+
+    test('jadwal tertunda dipulihkan jadi hitung mundur', () async {
+      final now = DateTime.now();
+      callRepository.pending = PendingCall(
+        config: const CallConfig(delayInSeconds: 600, callerName: 'Pak Bos'),
+        scheduledAt: now.subtract(const Duration(minutes: 4)),
+        ringsAt: now.add(const Duration(minutes: 6)),
+      );
+      final bloc = buildBloc()..add(const FakeCallRestoreRequested());
+      await settle();
+
+      final state = bloc.state as FakeCallCountingDown;
+      expect(state.config.callerName, 'Pak Bos');
+      expect(state.totalSeconds, 600);
+      expect(state.remainingSeconds, inInclusiveRange(359, 360));
+      await bloc.close();
+    });
+
+    test('memilih jeda menghapus jam dering', () async {
+      final bloc = buildBloc();
+      bloc.add(
+        FakeCallConfigChanged(
+          bloc.state.config.copyWith(ringAt: const ClockTime(7, 0)),
+        ),
+      );
+      await settle();
+      expect(bloc.state.config.ringsAtClockTime, isTrue);
+
+      bloc.add(
+        FakeCallConfigChanged(
+          bloc.state.config.copyWith(delayInSeconds: 60, clearRingAt: true),
+        ),
+      );
+      await settle();
+      expect(bloc.state.config.ringAt, isNull);
+      expect(bloc.state.config.delayInSeconds, 60);
       await bloc.close();
     });
 

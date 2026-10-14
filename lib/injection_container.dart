@@ -18,6 +18,7 @@ import 'features/active_call/domain/usecases/stop_call_media.dart';
 import 'features/active_call/domain/usecases/switch_camera.dart';
 import 'features/active_call/presentation/bloc/active_call_bloc.dart';
 import 'features/fake_call/data/datasources/avatar_host_data_source.dart';
+import 'features/fake_call/data/datasources/call_alarm_data_source.dart';
 import 'features/fake_call/data/datasources/caller_avatar_local_data_source.dart';
 import 'features/fake_call/data/datasources/caller_name_history_local_data_source.dart';
 import 'features/fake_call/data/datasources/caller_preset_local_data_source.dart';
@@ -43,6 +44,7 @@ import 'features/fake_call/domain/repositories/last_call_config_repository.dart'
 import 'features/fake_call/domain/repositories/quick_trigger_repository.dart';
 import 'features/fake_call/domain/usecases/delete_caller_preset.dart';
 import 'features/fake_call/domain/usecases/end_fake_call.dart';
+import 'features/fake_call/domain/usecases/finish_due_call.dart';
 import 'features/fake_call/domain/usecases/forget_caller_name.dart';
 import 'features/fake_call/domain/usecases/get_caller_name_history.dart';
 import 'features/fake_call/domain/usecases/get_caller_presets.dart';
@@ -52,10 +54,13 @@ import 'features/fake_call/domain/usecases/listen_to_quick_triggers.dart';
 import 'features/fake_call/domain/usecases/pick_caller_avatar.dart';
 import 'features/fake_call/domain/usecases/pick_caller_video.dart';
 import 'features/fake_call/domain/usecases/remember_caller_name.dart';
+import 'features/fake_call/domain/usecases/restore_pending_call.dart';
+import 'features/fake_call/domain/usecases/ring_due_call.dart';
 import 'features/fake_call/domain/usecases/save_caller_preset.dart';
 import 'features/fake_call/domain/usecases/save_last_call_config.dart';
 import 'features/fake_call/domain/usecases/schedule_fake_call.dart';
 import 'features/fake_call/domain/usecases/sync_active_call.dart';
+import 'features/fake_call/presentation/background/scheduled_call_runner.dart';
 import 'features/fake_call/presentation/bloc/caller_presets_bloc.dart';
 import 'features/fake_call/presentation/bloc/caller_suggestions_bloc.dart';
 import 'features/fake_call/presentation/bloc/fake_call_bloc.dart';
@@ -134,6 +139,7 @@ void _registerDataSources() {
       appearance: sl(),
     ),
   );
+  sl.registerLazySingleton<CallAlarmDataSource>(CallAlarmDataSourceImpl.new);
   sl.registerLazySingleton<RingVibrationDataSource>(
     RingVibrationDataSourceImpl.new,
   );
@@ -179,6 +185,7 @@ void _registerRepositories() {
   sl.registerLazySingleton<FakeCallRepository>(
     () => FakeCallRepositoryImpl(
       dataSource: sl(),
+      alarm: sl(),
       missedCallNotifier: sl(),
       ringVibration: sl(),
       uuid: sl(),
@@ -241,6 +248,9 @@ void _registerUseCases() {
   sl.registerLazySingleton(() => RememberCallerName(sl()));
   sl.registerLazySingleton(() => ForgetCallerName(sl()));
   sl.registerLazySingleton(() => SyncActiveCall(sl()));
+  sl.registerLazySingleton(() => RestorePendingCall(sl()));
+  sl.registerLazySingleton(() => RingDueCall(sl()));
+  sl.registerLazySingleton(() => FinishDueCall(sl()));
   sl.registerLazySingleton(() => StartCallMedia(sl()));
   sl.registerLazySingleton(() => StopCallMedia(sl()));
   sl.registerLazySingleton(() => SetCameraEnabled(sl()));
@@ -272,6 +282,7 @@ void _registerBlocs() {
       getLastCallConfig: sl(),
       saveLastCallConfig: sl(),
       listenToQuickTriggers: sl(),
+      restorePendingCall: sl(),
       failureMessages: sl(),
     ),
   );
@@ -336,6 +347,15 @@ void _registerBlocs() {
       checkCoachMarksSeen: sl(),
       setCoachMarksSeen: sl(),
       failureMessages: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => ScheduledCallRunner(
+      ringDueCall: sl(),
+      listenToCallEvents: sl(),
+      finishDueCall: sl(),
+      getAppLanguage: sl(),
+      localeHolder: sl(),
     ),
   );
 }

@@ -180,5 +180,18 @@
   "coachScheduleBody": "Ketuk di sini buat menjadwalkan. Habis itu kunci layar juga boleh.",
   "coachSettingsTitle": "Pengaturan",
   "coachSettingsBody": "Tema, bahasa, dan panduan ini ada di sini.",
-  "settingsReplayTour": "Lihat panduan lagi"
+  "settingsReplayTour": "Lihat panduan lagi",
+  "errorCallSchedule": "Jadwal panggilannya gagal dipasang.",
+  "ringAtPick": "Pilih jam",
+  "ringAtLabel": "Jam {time}",
+  "ringAtPickerTitle": "Mau bunyi jam berapa?",
+  "summaryRingsAt": "bunyi jam {time}",
+  "summaryRingsTomorrowAt": "bunyi besok jam {time}",
+  "initialDurationLabel": "Durasi awal panggilan",
+  "initialDurationDescription": "Timer di layar panggilan langsung mulai dari sini, biar kelihatan sudah lama ngobrol.",
+  "initialDurationZero": "Dari 00:00",
+  "permissionExactAlarmTitle": "Alarm tepat waktu",
+  "permissionExactAlarmBody": "Biar telepon bunyi pas waktunya, walau app sudah ditutup.",
+  "permissionBatteryTitle": "Baterai tanpa batasan",
+  "permissionBatteryBody": "Buka Baterai, lalu pilih “Tanpa batasan” supaya HP nggak menahan jadwal telepon."
 }

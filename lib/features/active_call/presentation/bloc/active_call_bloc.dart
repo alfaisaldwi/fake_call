@@ -56,8 +56,14 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
   ) async {
     final isVideo = event.callType == CallType.video;
     _videoPath = event.videoPath;
-    emit(ActiveCallInProgress(isVideoMode: isVideo, isSpeakerOn: isVideo));
-    _startTicker();
+    emit(
+      ActiveCallInProgress(
+        isVideoMode: isVideo,
+        isSpeakerOn: isVideo,
+        elapsed: event.initialElapsed,
+      ),
+    );
+    _startTicker(event.initialElapsed);
     if (isVideo) await _loadMediaWhenForeground(emit);
   }
 
@@ -210,12 +216,15 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
     emit(restore);
   }
 
-  void _startTicker() {
+  void _startTicker(Duration from) {
     _ticker?.cancel();
-    _ticker = Stream<int>.periodic(
-      const Duration(seconds: 1),
-      (tick) => tick + 1,
-    ).listen((seconds) => add(_ElapsedTicked(Duration(seconds: seconds))));
+    _ticker =
+        Stream<int>.periodic(
+          const Duration(seconds: 1),
+          (tick) => tick + 1,
+        ).listen(
+          (seconds) => add(_ElapsedTicked(from + Duration(seconds: seconds))),
+        );
   }
 
   Future<void> _release() async {

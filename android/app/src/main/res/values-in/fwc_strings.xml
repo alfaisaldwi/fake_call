@@ -8,4 +8,11 @@
     <string name="fwc_shortcut_1m">Telepon 1 mnt</string>
     <string name="fwc_shortcut_1m_long">Telepon palsu dalam 1 menit</string>
     <string name="fwc_tile_label">Telepon palsu</string>
+    <string name="fwc_widget_description">Jadwalkan telepon palsu langsung dari layar utama.</string>
+    <string name="fwc_widget_subtitle">Telepon masuk dalam</string>
+    <string name="fwc_widget_10s">10 dtk</string>
+    <string name="fwc_widget_1m">1 mnt</string>
+    <string name="fwc_widget_5m">5 mnt</string>
+    <string name="fwc_widget_scheduled">Siap, telepon masuk dalam %1$s</string>
+    <string name="fwc_widget_setup_first">Buka Fake Call dulu buat atur penelepon</string>
 </resources>

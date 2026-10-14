@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum AppPermission { notification, fullScreen, camera }
+enum AppPermission { notification, fullScreen, camera, exactAlarm, battery }
 
 class PermissionSnapshot extends Equatable {
   final Map<AppPermission, bool> granted;

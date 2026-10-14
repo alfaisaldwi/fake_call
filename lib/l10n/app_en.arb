@@ -302,5 +302,39 @@
   "coachScheduleBody": "Tap here to schedule the call. Feel free to lock your phone after.",
   "coachSettingsTitle": "Settings",
   "coachSettingsBody": "Theme, language, and this tour live here.",
-  "settingsReplayTour": "Show the tour again"
+  "settingsReplayTour": "Show the tour again",
+  "errorCallSchedule": "Couldn't set the call timer.",
+  "ringAtPick": "Pick a time",
+  "ringAtLabel": "At {time}",
+  "@ringAtLabel": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ringAtPickerTitle": "Ring at what time?",
+  "summaryRingsAt": "rings at {time}",
+  "@summaryRingsAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryRingsTomorrowAt": "rings tomorrow at {time}",
+  "@summaryRingsTomorrowAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "initialDurationLabel": "Starting call timer",
+  "initialDurationDescription": "The call timer starts from here, so it looks like you've been talking for a while.",
+  "initialDurationZero": "From 00:00",
+  "permissionExactAlarmTitle": "On-time alarms",
+  "permissionExactAlarmBody": "So the call rings right on time, even after the app is closed.",
+  "permissionBatteryTitle": "Unrestricted battery",
+  "permissionBatteryBody": "Open Battery, then pick “Unrestricted” so your phone doesn't hold the call back."
 }

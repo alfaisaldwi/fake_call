@@ -31,6 +31,18 @@ class PermissionChecklist extends StatelessWidget {
         l10n.permissionCameraTitle,
         l10n.permissionCameraBody,
       ),
+      (
+        AppPermission.exactAlarm,
+        Icons.alarm_on_outlined,
+        l10n.permissionExactAlarmTitle,
+        l10n.permissionExactAlarmBody,
+      ),
+      (
+        AppPermission.battery,
+        Icons.battery_charging_full_outlined,
+        l10n.permissionBatteryTitle,
+        l10n.permissionBatteryBody,
+      ),
     ];
     return BlocBuilder<PermissionsBloc, PermissionsState>(
       builder: (context, state) => SingleChildScrollView(

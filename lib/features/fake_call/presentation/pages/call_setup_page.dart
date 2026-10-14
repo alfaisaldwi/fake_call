@@ -136,14 +136,18 @@ class _CallSetupPageState extends State<CallSetupPage> {
           final config = state.config;
           final attemptLabel = config.autoRecallCount > 0;
           return switch (state) {
-            FakeCallCountingDown(:final remainingSeconds) => CallProgressView(
-              config: config,
-              remainingSeconds: remainingSeconds,
-              totalSeconds: config.delayInSeconds,
-              title: l10n.progressWillCall(config.callerName),
-              subtitle: l10n.progressLockScreenHint,
-              onCancel: cancel,
-            ),
+            FakeCallCountingDown(
+              :final remainingSeconds,
+              :final totalSeconds,
+            ) =>
+              CallProgressView(
+                config: config,
+                remainingSeconds: remainingSeconds,
+                totalSeconds: totalSeconds,
+                title: l10n.progressWillCall(config.callerName),
+                subtitle: l10n.progressLockScreenHint,
+                onCancel: cancel,
+              ),
             FakeCallWaitingRecall(
               :final nextAttempt,
               :final remainingSeconds,

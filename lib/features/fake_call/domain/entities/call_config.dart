@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../core/error/failure_reason.dart';
 import 'call_config_issue.dart';
+import 'clock_time.dart';
 
 enum CallType { voice, video }
 
@@ -18,6 +19,8 @@ class CallConfig extends Equatable {
   final int autoHangupSeconds;
   final int autoRecallCount;
   final int autoRecallInterval;
+  final ClockTime? ringAt;
+  final int initialDurationSeconds;
 
   const CallConfig({
     required this.delayInSeconds,
@@ -28,6 +31,8 @@ class CallConfig extends Equatable {
     this.autoHangupSeconds = 0,
     this.autoRecallCount = 0,
     this.autoRecallInterval = 10,
+    this.ringAt,
+    this.initialDurationSeconds = 0,
   });
 
   bool get isVideoCall => callType == CallType.video;
@@ -44,6 +49,11 @@ class CallConfig extends Equatable {
       hasAutoHangup ? autoHangupSeconds : defaultRingSeconds;
 
   bool canRecallAfter(int attempt) => attempt < totalAttempts;
+
+  bool get ringsAtClockTime => ringAt != null;
+
+  DateTime ringsAtFrom(DateTime now) =>
+      ringAt?.nextAfter(now) ?? now.add(Duration(seconds: delayInSeconds));
 
   CallConfigIssue? get validationIssue {
     if (callerName.trim().isEmpty) {
@@ -92,6 +102,9 @@ class CallConfig extends Equatable {
     int? autoHangupSeconds,
     int? autoRecallCount,
     int? autoRecallInterval,
+    ClockTime? ringAt,
+    bool clearRingAt = false,
+    int? initialDurationSeconds,
   }) {
     return CallConfig(
       delayInSeconds: delayInSeconds ?? this.delayInSeconds,
@@ -106,6 +119,9 @@ class CallConfig extends Equatable {
       autoHangupSeconds: autoHangupSeconds ?? this.autoHangupSeconds,
       autoRecallCount: autoRecallCount ?? this.autoRecallCount,
       autoRecallInterval: autoRecallInterval ?? this.autoRecallInterval,
+      ringAt: clearRingAt ? null : ringAt ?? this.ringAt,
+      initialDurationSeconds:
+          initialDurationSeconds ?? this.initialDurationSeconds,
     );
   }
 
@@ -119,5 +135,7 @@ class CallConfig extends Equatable {
     autoHangupSeconds,
     autoRecallCount,
     autoRecallInterval,
+    ringAt,
+    initialDurationSeconds,
   ];
 }

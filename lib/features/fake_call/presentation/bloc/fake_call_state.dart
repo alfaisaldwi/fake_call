@@ -18,11 +18,16 @@ final class FakeCallIdle extends FakeCallState {
 
 final class FakeCallCountingDown extends FakeCallState {
   final int remainingSeconds;
+  final int totalSeconds;
 
-  const FakeCallCountingDown(super.config, {required this.remainingSeconds});
+  const FakeCallCountingDown(
+    super.config, {
+    required this.remainingSeconds,
+    required this.totalSeconds,
+  });
 
   @override
-  List<Object?> get props => [config, remainingSeconds];
+  List<Object?> get props => [config, remainingSeconds, totalSeconds];
 }
 
 final class FakeCallWaitingRecall extends FakeCallState {

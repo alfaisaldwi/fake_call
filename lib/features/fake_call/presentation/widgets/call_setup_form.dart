@@ -17,6 +17,7 @@ import 'caller_video_picker.dart';
 import 'home_coach_keys.dart';
 import 'option_group.dart';
 import 'recall_count_stepper.dart';
+import 'ring_time_chip.dart';
 import 'schedule_bar.dart';
 import 'seconds_option_selector.dart';
 import 'section_card.dart';
@@ -41,6 +42,7 @@ class _CallSetupFormState extends State<CallSetupForm> {
   static const _delayOptions = [0, 10, 30, 60, 300, 600, 1200, 1800];
   static const _hangupOptions = [0, 10, 15, 30, 60, 120];
   static const _recallIntervalOptions = [5, 10, 30, 60];
+  static const _initialDurationOptions = [0, 60, 300, 900];
   static const _sectionGap = SizedBox(height: 12);
 
   late final _nameController = TextEditingController(
@@ -131,15 +133,27 @@ class _CallSetupFormState extends State<CallSetupForm> {
     final l10n = _l10n;
     final parts = [
       config.isVideoCall ? l10n.summaryVideoCall : l10n.summaryVoiceCall,
-      config.delayInSeconds == 0
-          ? l10n.summaryRingsNow
-          : l10n.summaryRingsIn(
-              SecondsOptionSelector.label(l10n, config.delayInSeconds),
-            ),
+      _ringSummary(config),
       if (config.autoRecallCount > 0)
         l10n.summaryRedial(config.autoRecallCount),
     ];
     return parts.join(' · ');
+  }
+
+  String _ringSummary(CallConfig config) {
+    final l10n = _l10n;
+    final ringAt = config.ringAt;
+    if (ringAt != null) {
+      final time = RingTimeChip.format(context, ringAt);
+      final now = DateTime.now();
+      return ringAt.nextAfter(now).day == now.day
+          ? l10n.summaryRingsAt(time)
+          : l10n.summaryRingsTomorrowAt(time);
+    }
+    if (config.delayInSeconds == 0) return l10n.summaryRingsNow;
+    return l10n.summaryRingsIn(
+      SecondsOptionSelector.label(l10n, config.delayInSeconds),
+    );
   }
 
   @override
@@ -316,8 +330,14 @@ class _CallSetupFormState extends State<CallSetupForm> {
             title: _l10n.ringAfterLabel,
             child: SecondsOptionSelector(
               options: _delayOptions,
-              selected: config.delayInSeconds,
-              onChanged: (s) => _update((c) => c.copyWith(delayInSeconds: s)),
+              selected: config.ringsAtClockTime ? -1 : config.delayInSeconds,
+              onChanged: (s) => _update(
+                (c) => c.copyWith(delayInSeconds: s, clearRingAt: true),
+              ),
+              trailing: RingTimeChip(
+                selected: config.ringAt,
+                onChanged: (time) => _update((c) => c.copyWith(ringAt: time)),
+              ),
             ),
           ),
           const Divider(),
@@ -330,6 +350,18 @@ class _CallSetupFormState extends State<CallSetupForm> {
               zeroLabel: _l10n.optionOff,
               onChanged: (s) =>
                   _update((c) => c.copyWith(autoHangupSeconds: s)),
+            ),
+          ),
+          const Divider(),
+          OptionGroup(
+            title: _l10n.initialDurationLabel,
+            description: _l10n.initialDurationDescription,
+            child: SecondsOptionSelector(
+              options: _initialDurationOptions,
+              selected: config.initialDurationSeconds,
+              zeroLabel: _l10n.initialDurationZero,
+              onChanged: (s) =>
+                  _update((c) => c.copyWith(initialDurationSeconds: s)),
             ),
           ),
         ],

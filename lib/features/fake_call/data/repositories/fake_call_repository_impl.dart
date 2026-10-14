@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:clock/clock.dart';
 import 'package:dartz/dartz.dart';
 import 'package:uuid/uuid.dart';
 
@@ -8,52 +9,114 @@ import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/call_config.dart';
 import '../../domain/entities/call_event.dart';
+import '../../domain/entities/pending_call.dart';
 import '../../domain/repositories/fake_call_repository.dart';
+import '../datasources/call_alarm_data_source.dart';
 import '../datasources/fake_call_native_data_source.dart';
 import '../datasources/missed_call_notification_data_source.dart';
 import '../datasources/ring_vibration_data_source.dart';
 import '../models/call_config_model.dart';
 import '../models/call_event_model.dart';
+import '../models/scheduled_call_model.dart';
 
 class FakeCallRepositoryImpl implements FakeCallRepository {
   final FakeCallNativeDataSource dataSource;
+  final CallAlarmDataSource alarm;
   final MissedCallNotificationDataSource missedCallNotifier;
   final RingVibrationDataSource ringVibration;
   final Uuid uuid;
 
   final _events = StreamController<CallEvent>.broadcast();
   StreamSubscription<CallEventModel>? _nativeSubscription;
+  StreamSubscription<ScheduledCallModel>? _alarmSubscription;
   _CallSession? _session;
 
   FakeCallRepositoryImpl({
     required this.dataSource,
+    required this.alarm,
     required this.missedCallNotifier,
     required this.ringVibration,
     required this.uuid,
   });
 
   @override
-  Future<Either<Failure, Unit>> scheduleCall(CallConfig config) async {
+  Future<Either<Failure, PendingCall>> scheduleCall(CallConfig config) async {
     try {
       await dataSource.ensurePermissions(needsCamera: config.isVideoCall);
     } on PermissionException catch (e) {
       return Left(PermissionFailure(e.reason, detail: e.detail));
     }
     _listenToNativeEvents();
+    _listenToAlarms();
     _closeSession();
 
-    final session = _CallSession(CallConfigModel.fromEntity(config));
-    _session = session;
-    session.timer = Timer(
-      Duration(seconds: config.delayInSeconds),
-      () => _ring(session),
+    final now = clock.now();
+    final scheduled = ScheduledCallModel(
+      id: uuid.v4(),
+      callConfig: CallConfigModel.fromEntity(config),
+      scheduledAt: now,
+      ringsAt: config.ringsAtFrom(now),
     );
-    return const Right(unit);
+    _arm(scheduled);
+    try {
+      await alarm.schedule(scheduled);
+    } on CallKitException catch (e) {
+      log('Alarm scheduling failed, using in-app timer', error: e);
+    }
+    return Right(scheduled);
+  }
+
+  @override
+  Future<Either<Failure, PendingCall?>> restorePendingCall() async {
+    _listenToNativeEvents();
+    _listenToAlarms();
+    final session = _session;
+    if (session != null) return Right(session.isWaiting ? session.due : null);
+    final ScheduledCallModel? pending;
+    try {
+      pending = await alarm.pending();
+    } on CallKitException catch (e) {
+      return Left(CallKitFailure(e.reason, detail: e.detail));
+    }
+    if (pending == null || !pending.ringsAt.isAfter(clock.now())) {
+      return const Right(null);
+    }
+    if (_session != null) return const Right(null);
+    _arm(pending);
+    return Right(pending);
+  }
+
+  @override
+  Future<Either<Failure, bool>> ringDueCall() async {
+    _listenToNativeEvents();
+    _listenToAlarms();
+    final ScheduledCallModel? due;
+    try {
+      due = await alarm.takeDue();
+    } on CallKitException catch (e) {
+      return Left(CallKitFailure(e.reason, detail: e.detail));
+    }
+    if (due == null || _session != null) return const Right(false);
+    final session = _CallSession(due.callConfig, due: due);
+    _session = session;
+    await _ring(session);
+    return const Right(true);
+  }
+
+  @override
+  Future<Either<Failure, Unit>> finishDueCall() async {
+    try {
+      await alarm.release();
+      return const Right(unit);
+    } on CallKitException catch (e) {
+      return Left(CallKitFailure(e.reason, detail: e.detail));
+    }
   }
 
   @override
   Future<Either<Failure, Stream<CallEvent>>> listenToCallEvents() async {
     _listenToNativeEvents();
+    _listenToAlarms();
     return Right(_events.stream);
   }
 
@@ -62,6 +125,7 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
     final session = _session;
     if (session == null) return const Right(unit);
     _closeSession();
+    if (session.isWaiting) _cancelAlarm(session);
 
     final callId = session.callId;
     _emit(
@@ -113,6 +177,49 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
             : CallKitFailure(FailureReason.callEventsFailed, detail: '$e'),
       ),
     );
+  }
+
+  void _listenToAlarms() {
+    _alarmSubscription ??= alarm.fired.listen(
+      _onAlarmFired,
+      onError: (Object e) => log('Alarm event failed', error: e),
+    );
+  }
+
+  void _arm(ScheduledCallModel scheduled) {
+    final session = _CallSession(scheduled.callConfig, due: scheduled);
+    _session = session;
+    final wait = scheduled.ringsAt.difference(clock.now());
+    session.timer = Timer(
+      wait.isNegative ? Duration.zero : wait,
+      () => _ringDue(session),
+    );
+  }
+
+  void _onAlarmFired(ScheduledCallModel fired) {
+    final session = _session;
+    if (session == null) {
+      final adopted = _CallSession(fired.callConfig, due: fired);
+      _session = adopted;
+      _ring(adopted);
+      return;
+    }
+    if (session.due?.id == fired.id) _ringDue(session);
+  }
+
+  void _ringDue(_CallSession session) {
+    if (!identical(_session, session) || !session.isWaiting) return;
+    session.timer?.cancel();
+    _cancelAlarm(session);
+    _ring(session);
+  }
+
+  void _cancelAlarm(_CallSession session) {
+    final id = session.due?.id;
+    if (id == null) return;
+    alarm
+        .cancel(id)
+        .catchError((Object e) => log('Alarm cancel failed', error: e));
   }
 
   Future<void> _ring(_CallSession session) async {
@@ -242,11 +349,14 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
 
 class _CallSession {
   final CallConfigModel config;
+  final ScheduledCallModel? due;
   int attempt = 0;
   int missedCount = 0;
   String? callId;
   bool isAccepted = false;
   Timer? timer;
 
-  _CallSession(this.config);
+  _CallSession(this.config, {this.due});
+
+  bool get isWaiting => attempt == 0;
 }
