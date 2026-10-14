@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 class PageDots extends StatelessWidget {
   final int count;
   final double page;
@@ -20,7 +22,11 @@ class PageDots extends StatelessWidget {
                 width: 8 + 20 * active,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.4 + 0.6 * active),
+                  color: Color.lerp(
+                    Colors.white.withValues(alpha: 0.7),
+                    AppColors.primary,
+                    active,
+                  ),
                   borderRadius: BorderRadius.circular(4),
                 ),
               );

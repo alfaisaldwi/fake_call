@@ -2,16 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/app_permission.dart';
 import '../bloc/permissions_bloc.dart';
 
 class PermissionChecklist extends StatelessWidget {
-  const PermissionChecklist({super.key});
+  final bool onBrand;
+
+  const PermissionChecklist({super.key, this.onBrand = true});
+
+  _TileColors _colors(BuildContext context) {
+    if (onBrand) {
+      return (
+        tile: Colors.white.withValues(alpha: 0.5),
+        tileGranted: Colors.white.withValues(alpha: 0.75),
+        border: Colors.white.withValues(alpha: 0.8),
+        iconBackground: Colors.white,
+        title: AppColors.brandInk,
+        body: AppColors.brandInk.withValues(alpha: 0.7),
+      );
+    }
+    final palette = context.palette;
+    return (
+      tile: palette.background,
+      tileGranted: palette.primaryTint,
+      border: palette.outline,
+      iconBackground: palette.surface,
+      title: palette.textPrimary,
+      body: palette.textSecondary,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colors = _colors(context);
     final items = [
       (
         AppPermission.notification,
@@ -62,6 +88,7 @@ class PermissionChecklist extends StatelessWidget {
                   ),
                 ),
                 child: _PermissionTile(
+                  colors: colors,
                   icon: item.$2,
                   title: item.$3,
                   body: item.$4,
@@ -78,7 +105,17 @@ class PermissionChecklist extends StatelessWidget {
   }
 }
 
+typedef _TileColors = ({
+  Color tile,
+  Color tileGranted,
+  Color border,
+  Color iconBackground,
+  Color title,
+  Color body,
+});
+
 class _PermissionTile extends StatelessWidget {
+  final _TileColors colors;
   final IconData icon;
   final String title;
   final String body;
@@ -86,6 +123,7 @@ class _PermissionTile extends StatelessWidget {
   final VoidCallback onRequest;
 
   const _PermissionTile({
+    required this.colors,
     required this.icon,
     required this.title,
     required this.body,
@@ -101,19 +139,19 @@ class _PermissionTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: granted ? 0.22 : 0.12),
+        color: granted ? colors.tileGranted : colors.tile,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+        border: Border.all(color: colors.border),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: colors.iconBackground,
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 22, color: AppColors.primary),
+            child: Icon(icon, size: 22, color: context.palette.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -122,17 +160,14 @@ class _PermissionTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: colors.title,
                     fontWeight: FontWeight.w500,
                     fontSize: 15,
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  body,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
-                ),
+                Text(body, style: TextStyle(color: colors.body, fontSize: 13)),
               ],
             ),
           ),
@@ -155,8 +190,8 @@ class _PermissionTile extends StatelessWidget {
                     key: const ValueKey('allow'),
                     onPressed: onRequest,
                     style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.primary,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                       minimumSize: const Size(0, 36),
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       textStyle: const TextStyle(

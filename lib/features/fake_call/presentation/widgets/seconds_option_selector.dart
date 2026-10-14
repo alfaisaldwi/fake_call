@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 
 class SecondsOptionSelector extends StatelessWidget {
   final List<int> options;
@@ -39,8 +39,8 @@ class SecondsOptionSelector extends StatelessWidget {
             label: Text(
               label(l10n, seconds, zeroLabel: zeroLabel),
               style: selected == seconds
-                  ? const TextStyle(
-                      color: AppColors.primaryDark,
+                  ? TextStyle(
+                      color: context.palette.selectedText,
                       fontWeight: FontWeight.w600,
                     )
                   : null,

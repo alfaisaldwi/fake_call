@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Fake Call: Prank & Escape'**
+  /// **'Fake Calling: Prank & Escape'**
   String get appTitle;
 
   /// No description provided for @languageSystem.
@@ -1067,7 +1067,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Fake Call'**
+  /// **'Fake Calling'**
   String get homeTitle;
 
   /// No description provided for @homeSubtitle.
@@ -1261,6 +1261,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Battery, then pick “Unrestricted” so your phone doesn\'t hold the call back.'**
   String get permissionBatteryBody;
+
+  /// No description provided for @errorExactAlarmPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow \"Alarms & reminders\" so the call rings right on time, then schedule again.'**
+  String get errorExactAlarmPermission;
+
+  /// No description provided for @permissionReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow everything'**
+  String get permissionReminderTitle;
+
+  /// No description provided for @permissionReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fake Calling needs these permissions to ring on time, show up on the lock screen, and keep working after the app is closed. Without them, the app can\'t work properly.'**
+  String get permissionReminderBody;
+
+  /// No description provided for @permissionReminderConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get permissionReminderConfirm;
+
+  /// No description provided for @settingsPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'App permissions'**
+  String get settingsPermissions;
+
+  /// No description provided for @settingsPermissionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep all of these on so your fake calls ring on time, even when the app is closed.'**
+  String get settingsPermissionsBody;
 }
 
 class _AppLocalizationsDelegate

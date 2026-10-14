@@ -118,6 +118,6 @@ class MissedCallNotifier(private val context: Context) {
     private companion object {
         const val CHANNEL_ID = "missed_calls"
         const val AVATAR_PX = 160
-        const val ACCENT_COLOR = 0xFF1B5AC8.toInt()
+        const val ACCENT_COLOR = 0xFF4A63E0.toInt()
     }
 }

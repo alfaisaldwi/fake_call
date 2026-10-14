@@ -1,8 +1,8 @@
-name: fake_call
-description: "Fake Call: Prank & Escape — schedule realistic fake incoming calls."
+name: fake_calling
+description: "Fake Calling: Prank & Escape — schedule realistic fake incoming calls."
 publish_to: 'none' 
 
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: ^3.13.0
@@ -103,17 +103,17 @@ flutter_launcher_icons:
   image_path: "assets/img/launcher/launcher_icon.png"
   android: "ic_launcher"
   min_sdk_android: 24
-  adaptive_icon_background: "#1447A9"
+  adaptive_icon_background: "#B3CBFC"
   adaptive_icon_foreground: "assets/img/launcher/launcher_foreground.png"
   adaptive_icon_foreground_inset: 0
   ios: true
   remove_alpha_ios: true
-  background_color_ios: "#1447A9"
+  background_color_ios: "#B3CBFC"
 
 flutter_native_splash:
-  color: "#1447A9"
+  color: "#B3CBFC"
   image: assets/img/launcher/splash_logo.png
   android_12:
-    color: "#1447A9"
+    color: "#B3CBFC"
     image: assets/img/launcher/splash_android12.png
   fullscreen: false

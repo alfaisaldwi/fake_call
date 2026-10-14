@@ -14,5 +14,6 @@
     <string name="fwc_widget_1m">1 min</string>
     <string name="fwc_widget_5m">5 min</string>
     <string name="fwc_widget_scheduled">Got it, the call comes in %1$s</string>
-    <string name="fwc_widget_setup_first">Open Fake Call once to set up the caller first</string>
+    <string name="fwc_widget_setup_first">Open Fake Calling once to set up the caller first</string>
+    <string name="fwc_app_name" translatable="false">Fake Calling</string>
 </resources>

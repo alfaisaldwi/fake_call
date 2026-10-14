@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'looping_animation.dart';
 
-const _glass = Color(0x29FFFFFF);
-const _glassBorder = Color(0x40FFFFFF);
+const _glass = Color(0x47FFFFFF);
+const _glassBorder = Color(0x8CFFFFFF);
 
 double _wave(double t, [double phase = 0]) =>
     math.sin((t + phase) * 2 * math.pi);

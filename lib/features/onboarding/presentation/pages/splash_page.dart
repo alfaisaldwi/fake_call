@@ -68,9 +68,9 @@ class _SplashPageState extends State<SplashPage>
         body: DecoratedBox(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [AppColors.primary, AppColors.primaryDark],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.brandSky, AppColors.brandPeriwinkle],
             ),
           ),
           child: Center(
@@ -93,8 +93,17 @@ class _SplashPageState extends State<SplashPage>
                       ),
                       ScaleTransition(
                         scale: _logoScale,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 28,
+                                offset: Offset(0, 12),
+                                color: Color(0x334A63E0),
+                              ),
+                            ],
+                          ),
                           child: Image.asset(
                             'assets/img/launcher/launcher_icon.png',
                             width: 128,
@@ -118,7 +127,7 @@ class _SplashPageState extends State<SplashPage>
                         Text(
                           l10n.appTitle,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.brandInk,
                             fontSize: 26,
                             fontWeight: FontWeight.w600,
                           ),
@@ -126,8 +135,8 @@ class _SplashPageState extends State<SplashPage>
                         const SizedBox(height: 6),
                         Text(
                           l10n.splashTagline,
-                          style: const TextStyle(
-                            color: Colors.white70,
+                          style: TextStyle(
+                            color: AppColors.brandInk.withValues(alpha: 0.65),
                             fontSize: 15,
                           ),
                         ),
@@ -150,7 +159,7 @@ class _SplashPageState extends State<SplashPage>
       height: size,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30 + 40 * progress),
-        color: Colors.white.withValues(alpha: 0.14 * (1 - progress)),
+        color: Colors.white.withValues(alpha: 0.35 * (1 - progress)),
       ),
     );
   }

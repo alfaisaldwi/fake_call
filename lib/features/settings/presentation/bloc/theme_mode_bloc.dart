@@ -20,7 +20,7 @@ class ThemeModeBloc extends Bloc<ThemeModeEvent, ThemeModeState> {
     required this.getThemeMode,
     required this.saveThemeMode,
     required this.failureMessages,
-  }) : super(const ThemeModeReady(AppThemeMode.system)) {
+  }) : super(const ThemeModeReady(AppThemeMode.light)) {
     on<ThemeModeStarted>(_onStarted);
     on<ThemeModeSelected>(_onSelected);
   }

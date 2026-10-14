@@ -10,7 +10,7 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get appTitle => 'Fake Call: Prank & Escape';
+  String get appTitle => 'Fake Calling: Prank & Escape';
 
   @override
   String get languageSystem => 'Ikuti bahasa HP';
@@ -547,7 +547,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get settingsPreferences => 'Preferensi';
 
   @override
-  String get homeTitle => 'Fake Call';
+  String get homeTitle => 'Fake Calling';
 
   @override
   String get homeSubtitle => 'Jalan keluar, tinggal sekali ketuk';
@@ -659,4 +659,25 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get permissionBatteryBody =>
       'Buka Baterai, lalu pilih “Tanpa batasan” supaya HP nggak menahan jadwal telepon.';
+
+  @override
+  String get errorExactAlarmPermission =>
+      'Izinkan \"Alarm & pengingat\" dulu biar telepon bunyi pas waktunya, lalu jadwalkan lagi.';
+
+  @override
+  String get permissionReminderTitle => 'Izinkan semuanya, ya';
+
+  @override
+  String get permissionReminderBody =>
+      'Fake Calling butuh izin-izin ini supaya telepon bisa bunyi tepat waktu, muncul di layar kunci, dan tetap jalan walau app ditutup. Tanpa izin ini, app nggak bisa berjalan sempurna.';
+
+  @override
+  String get permissionReminderConfirm => 'Oke, paham';
+
+  @override
+  String get settingsPermissions => 'Izin aplikasi';
+
+  @override
+  String get settingsPermissionsBody =>
+      'Nyalakan semua supaya telepon palsu bunyi tepat waktu, walau app sudah ditutup.';
 }

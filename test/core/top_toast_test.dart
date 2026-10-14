@@ -1,5 +1,5 @@
-import 'package:fake_call/core/theme/app_theme.dart';
-import 'package:fake_call/core/widgets/top_toast.dart';
+import 'package:fake_calling/core/theme/app_theme.dart';
+import 'package:fake_calling/core/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -15,6 +15,8 @@ class FailureMessages {
       FailureReason.unknown => l10n.errorUnknown,
       FailureReason.fullScreenPermissionRequired =>
         l10n.errorFullScreenPermission,
+      FailureReason.exactAlarmPermissionRequired =>
+        l10n.errorExactAlarmPermission,
       FailureReason.permissionRequestFailed => l10n.errorPermissionRequest,
       FailureReason.galleryPermissionDenied => l10n.errorGalleryPermission,
       FailureReason.cameraPermissionDenied => l10n.errorCameraPermission,

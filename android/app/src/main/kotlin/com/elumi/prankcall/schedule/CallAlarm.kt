@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.elumi.prankcall.MainActivity
 import org.json.JSONObject
 
 object CallAlarm {
@@ -20,7 +21,7 @@ object CallAlarm {
         val manager = context.getSystemService(AlarmManager::class.java) ?: return
         val operation = operation(context, id)
         if (canScheduleExact(context)) {
-            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, ringsAt, operation)
+            manager.setAlarmClock(AlarmManager.AlarmClockInfo(ringsAt, showApp(context)), operation)
         } else {
             manager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, ringsAt, operation)
         }
@@ -37,6 +38,15 @@ object CallAlarm {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
         return context.getSystemService(AlarmManager::class.java)?.canScheduleExactAlarms() ?: false
     }
+
+    private fun showApp(context: Context): PendingIntent =
+        PendingIntent.getActivity(
+            context,
+            REQUEST_CODE,
+            Intent(context, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
 
     private fun operation(context: Context, id: String): PendingIntent =
         PendingIntent.getBroadcast(

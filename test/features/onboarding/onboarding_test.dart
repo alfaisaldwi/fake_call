@@ -1,19 +1,19 @@
 import 'package:dartz/dartz.dart';
-import 'package:fake_call/core/error/failures.dart';
-import 'package:fake_call/core/l10n/app_locale_holder.dart';
-import 'package:fake_call/core/l10n/failure_messages.dart';
-import 'package:fake_call/features/onboarding/domain/repositories/onboarding_repository.dart';
-import 'package:fake_call/features/permissions/domain/entities/app_permission.dart';
-import 'package:fake_call/features/permissions/domain/repositories/permission_repository.dart';
-import 'package:fake_call/features/permissions/domain/usecases/check_permissions.dart';
-import 'package:fake_call/features/permissions/domain/usecases/request_permission.dart';
-import 'package:fake_call/features/permissions/presentation/bloc/permissions_bloc.dart';
-import 'package:fake_call/injection_container.dart';
-import 'package:fake_call/features/onboarding/domain/usecases/check_onboarding_completed.dart';
-import 'package:fake_call/features/onboarding/domain/usecases/complete_onboarding.dart';
-import 'package:fake_call/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:fake_call/features/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:fake_call/l10n/app_localizations.dart';
+import 'package:fake_calling/core/error/failures.dart';
+import 'package:fake_calling/core/l10n/app_locale_holder.dart';
+import 'package:fake_calling/core/l10n/failure_messages.dart';
+import 'package:fake_calling/features/onboarding/domain/repositories/onboarding_repository.dart';
+import 'package:fake_calling/features/permissions/domain/entities/app_permission.dart';
+import 'package:fake_calling/features/permissions/domain/repositories/permission_repository.dart';
+import 'package:fake_calling/features/permissions/domain/usecases/check_permissions.dart';
+import 'package:fake_calling/features/permissions/domain/usecases/request_permission.dart';
+import 'package:fake_calling/features/permissions/presentation/bloc/permissions_bloc.dart';
+import 'package:fake_calling/injection_container.dart';
+import 'package:fake_calling/features/onboarding/domain/usecases/check_onboarding_completed.dart';
+import 'package:fake_calling/features/onboarding/domain/usecases/complete_onboarding.dart';
+import 'package:fake_calling/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:fake_calling/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:fake_calling/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -127,6 +127,27 @@ void main() {
 
     expect(find.text(l10n.onboarding4Title), findsOneWidget);
     expect(find.text(l10n.onboardingStart), findsOneWidget);
+
+    expect(find.text(l10n.permissionReminderTitle), findsOneWidget);
+    final confirm = find.ancestor(
+      of: find.text(l10n.permissionReminderConfirm),
+      matching: find.byType(FilledButton),
+    );
+    expect(tester.widget<FilledButton>(confirm).onPressed, isNull);
+    expect(find.text('5'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.text('3'), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+    expect(find.text(l10n.permissionReminderTitle), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(tester.widget<FilledButton>(confirm).onPressed, isNotNull);
+    await tester.tap(confirm);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.permissionReminderTitle), findsNothing);
 
     await tester.tap(find.text(l10n.permissionAllow).first);
     await tester.pump();

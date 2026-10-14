@@ -1,4 +1,4 @@
-import 'package:fake_call/features/active_call/presentation/widgets/draggable_pip.dart';
+import 'package:fake_calling/features/active_call/presentation/widgets/draggable_pip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

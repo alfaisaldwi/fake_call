@@ -13,10 +13,11 @@ Future<bool?> showAppDialog({
   required String confirmLabel,
   String? cancelLabel,
   DialogTone tone = DialogTone.info,
+  Duration? confirmDelay,
 }) {
   return showGeneralDialog<bool>(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: confirmDelay == null,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: Colors.black.withValues(alpha: 0.32),
     transitionDuration: const Duration(milliseconds: 220),
@@ -27,6 +28,7 @@ Future<bool?> showAppDialog({
       confirmLabel: confirmLabel,
       cancelLabel: cancelLabel,
       tone: tone,
+      confirmDelay: confirmDelay,
     ),
     transitionBuilder: (_, animation, _, child) {
       final curved = CurvedAnimation(
@@ -44,13 +46,14 @@ Future<bool?> showAppDialog({
   );
 }
 
-class _AppDialog extends StatelessWidget {
+class _AppDialog extends StatefulWidget {
   final IconData icon;
   final String title;
   final String message;
   final String confirmLabel;
   final String? cancelLabel;
   final DialogTone tone;
+  final Duration? confirmDelay;
 
   const _AppDialog({
     required this.icon,
@@ -59,10 +62,29 @@ class _AppDialog extends StatelessWidget {
     required this.confirmLabel,
     required this.cancelLabel,
     required this.tone,
+    required this.confirmDelay,
   });
 
   @override
+  State<_AppDialog> createState() => _AppDialogState();
+}
+
+class _AppDialogState extends State<_AppDialog> {
+  late bool _ready = widget.confirmDelay == null;
+
+  IconData get icon => widget.icon;
+  String get title => widget.title;
+  String get message => widget.message;
+  String get confirmLabel => widget.confirmLabel;
+  String? get cancelLabel => widget.cancelLabel;
+  DialogTone get tone => widget.tone;
+
+  @override
   Widget build(BuildContext context) {
+    return PopScope(canPop: _ready, child: _buildDialog(context));
+  }
+
+  Widget _buildDialog(BuildContext context) {
     final palette = context.palette;
     final textTheme = Theme.of(context).textTheme;
     final accent = switch (tone) {
@@ -123,18 +145,7 @@ class _AppDialog extends StatelessWidget {
                         ),
                         const SizedBox(width: 10),
                       ],
-                      Expanded(
-                        child: _DialogButton(
-                          label: confirmLabel,
-                          background: tone == DialogTone.danger
-                              ? accent.withValues(alpha: 0.12)
-                              : palette.primary,
-                          foreground: tone == DialogTone.danger
-                              ? accent
-                              : Colors.white,
-                          onPressed: () => Navigator.of(context).pop(true),
-                        ),
-                      ),
+                      Expanded(child: _buildConfirm(context, accent)),
                     ],
                   ),
                 ],
@@ -142,6 +153,171 @@ class _AppDialog extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildConfirm(BuildContext context, Color accent) {
+    final palette = context.palette;
+    final delay = widget.confirmDelay;
+    if (delay != null) {
+      return _CountdownButton(
+        label: confirmLabel,
+        delay: delay,
+        background: palette.primary,
+        onReady: () => setState(() => _ready = true),
+        onPressed: () => Navigator.of(context).pop(true),
+      );
+    }
+    return _DialogButton(
+      label: confirmLabel,
+      background: tone == DialogTone.danger
+          ? accent.withValues(alpha: 0.12)
+          : palette.primary,
+      foreground: tone == DialogTone.danger ? accent : Colors.white,
+      onPressed: () => Navigator.of(context).pop(true),
+    );
+  }
+}
+
+class _CountdownButton extends StatefulWidget {
+  final String label;
+  final Duration delay;
+  final Color background;
+  final VoidCallback onReady;
+  final VoidCallback onPressed;
+
+  const _CountdownButton({
+    required this.label,
+    required this.delay,
+    required this.background,
+    required this.onReady,
+    required this.onPressed,
+  });
+
+  @override
+  State<_CountdownButton> createState() => _CountdownButtonState();
+}
+
+class _CountdownButtonState extends State<_CountdownButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: widget.delay,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward().whenComplete(() {
+      if (mounted) widget.onReady();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  int get _remaining =>
+      ((1 - _controller.value) * widget.delay.inMilliseconds / 1000).ceil();
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        final ready = _controller.isCompleted;
+        return AnimatedOpacity(
+          duration: const Duration(milliseconds: 250),
+          opacity: ready ? 1 : 0.85,
+          child: FilledButton(
+            onPressed: ready ? widget.onPressed : null,
+            style: FilledButton.styleFrom(
+              backgroundColor: widget.background,
+              disabledBackgroundColor: widget.background.withValues(
+                alpha: 0.45,
+              ),
+              foregroundColor: Colors.white,
+              disabledForegroundColor: Colors.white,
+              elevation: 0,
+              minimumSize: const Size.fromHeight(46),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
+                  child: ready
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: _CountdownRing(
+                            progress: 1 - _controller.value,
+                            seconds: _remaining,
+                          ),
+                        ),
+                ),
+                Text(widget.label),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CountdownRing extends StatelessWidget {
+  final double progress;
+  final int seconds;
+
+  const _CountdownRing({required this.progress, required this.seconds});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: 24,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CircularProgressIndicator(
+            value: progress,
+            strokeWidth: 2.2,
+            color: Colors.white,
+            backgroundColor: Colors.white.withValues(alpha: 0.25),
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween(begin: 1.6, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+                ),
+                child: child,
+              ),
+            ),
+            child: Text(
+              '$seconds',
+              key: ValueKey(seconds),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

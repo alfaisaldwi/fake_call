@@ -4,6 +4,22 @@ import 'app_colors.dart';
 import 'app_palette.dart';
 
 abstract final class AppTheme {
+  static ButtonStyle brandButton(ButtonStyle? base) {
+    return (base ?? const ButtonStyle()).copyWith(
+      backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
+      foregroundColor: const WidgetStatePropertyAll(Colors.white),
+      backgroundBuilder: (context, states, child) => DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: states.contains(WidgetState.disabled)
+              ? null
+              : AppColors.brandGradient,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: child,
+      ),
+    );
+  }
+
   static final ThemeData light = build();
   static final ThemeData dark = build(brightness: Brightness.dark);
 

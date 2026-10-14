@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
-                android:text="@string/fwc_tile_label"
+                android:text="@string/fwc_app_name"
                 android:textColor="#FFFFFF"
                 android:textSize="15sp" />
 

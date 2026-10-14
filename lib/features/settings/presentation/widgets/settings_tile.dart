@@ -39,12 +39,20 @@ class SettingsTile extends StatelessWidget {
               child: Icon(icon, size: 19, color: color),
             ),
             const SizedBox(width: 14),
-            Text(
-              title,
-              style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+            Flexible(
+              flex: 3,
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
+              flex: 2,
               child: current == null
                   ? const SizedBox.shrink()
                   : Text(

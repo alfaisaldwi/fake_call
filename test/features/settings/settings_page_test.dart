@@ -1,25 +1,30 @@
 import 'package:dartz/dartz.dart';
-import 'package:fake_call/core/error/failures.dart';
-import 'package:fake_call/core/l10n/app_locale_holder.dart';
-import 'package:fake_call/core/l10n/failure_messages.dart';
-import 'package:fake_call/core/theme/app_theme.dart';
-import 'package:fake_call/features/settings/domain/entities/app_info.dart';
-import 'package:fake_call/features/settings/domain/entities/app_language.dart';
-import 'package:fake_call/features/settings/domain/entities/app_theme_mode.dart';
-import 'package:fake_call/features/settings/domain/repositories/app_info_repository.dart';
-import 'package:fake_call/features/settings/domain/repositories/language_repository.dart';
-import 'package:fake_call/features/settings/domain/repositories/theme_mode_repository.dart';
-import 'package:fake_call/features/settings/domain/usecases/get_app_info.dart';
-import 'package:fake_call/features/settings/domain/usecases/get_app_language.dart';
-import 'package:fake_call/features/settings/domain/usecases/get_theme_mode.dart';
-import 'package:fake_call/features/settings/domain/usecases/save_app_language.dart';
-import 'package:fake_call/features/settings/domain/usecases/save_theme_mode.dart';
-import 'package:fake_call/features/settings/presentation/bloc/app_info_bloc.dart';
-import 'package:fake_call/features/settings/presentation/bloc/language_bloc.dart';
-import 'package:fake_call/features/settings/presentation/bloc/theme_mode_bloc.dart';
-import 'package:fake_call/features/settings/presentation/pages/settings_page.dart';
-import 'package:fake_call/injection_container.dart';
-import 'package:fake_call/l10n/app_localizations.dart';
+import 'package:fake_calling/core/error/failures.dart';
+import 'package:fake_calling/core/l10n/app_locale_holder.dart';
+import 'package:fake_calling/core/l10n/failure_messages.dart';
+import 'package:fake_calling/core/theme/app_theme.dart';
+import 'package:fake_calling/features/permissions/domain/entities/app_permission.dart';
+import 'package:fake_calling/features/permissions/domain/repositories/permission_repository.dart';
+import 'package:fake_calling/features/permissions/domain/usecases/check_permissions.dart';
+import 'package:fake_calling/features/permissions/domain/usecases/request_permission.dart';
+import 'package:fake_calling/features/permissions/presentation/bloc/permissions_bloc.dart';
+import 'package:fake_calling/features/settings/domain/entities/app_info.dart';
+import 'package:fake_calling/features/settings/domain/entities/app_language.dart';
+import 'package:fake_calling/features/settings/domain/entities/app_theme_mode.dart';
+import 'package:fake_calling/features/settings/domain/repositories/app_info_repository.dart';
+import 'package:fake_calling/features/settings/domain/repositories/language_repository.dart';
+import 'package:fake_calling/features/settings/domain/repositories/theme_mode_repository.dart';
+import 'package:fake_calling/features/settings/domain/usecases/get_app_info.dart';
+import 'package:fake_calling/features/settings/domain/usecases/get_app_language.dart';
+import 'package:fake_calling/features/settings/domain/usecases/get_theme_mode.dart';
+import 'package:fake_calling/features/settings/domain/usecases/save_app_language.dart';
+import 'package:fake_calling/features/settings/domain/usecases/save_theme_mode.dart';
+import 'package:fake_calling/features/settings/presentation/bloc/app_info_bloc.dart';
+import 'package:fake_calling/features/settings/presentation/bloc/language_bloc.dart';
+import 'package:fake_calling/features/settings/presentation/bloc/theme_mode_bloc.dart';
+import 'package:fake_calling/features/settings/presentation/pages/settings_page.dart';
+import 'package:fake_calling/injection_container.dart';
+import 'package:fake_calling/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,14 +57,39 @@ class _Settings
       const Right(AppInfo(version: '1.2.3', buildNumber: '7'));
 }
 
+class _Permissions implements PermissionRepository {
+  final granted = <AppPermission, bool>{AppPermission.notification: true};
+
+  PermissionSnapshot get _snapshot => PermissionSnapshot({...granted});
+
+  @override
+  Future<Either<Failure, PermissionSnapshot>> check() async => Right(_snapshot);
+
+  @override
+  Future<Either<Failure, PermissionSnapshot>> request(
+    AppPermission permission,
+  ) async {
+    granted[permission] = true;
+    return Right(_snapshot);
+  }
+}
+
 void main() {
   final repo = _Settings();
+  final permissions = _Permissions();
   final messages = FailureMessages(AppLocaleHolder(const Locale('id')));
 
   setUpAll(() {
     sl.registerFactory(
       () =>
           AppInfoBloc(getAppInfo: GetAppInfo(repo), failureMessages: messages),
+    );
+    sl.registerFactory(
+      () => PermissionsBloc(
+        checkPermissions: CheckPermissions(permissions),
+        requestPermission: RequestPermission(permissions),
+        failureMessages: messages,
+      ),
     );
   });
 
@@ -132,5 +162,35 @@ void main() {
 
     expect(repo.language, AppLanguage.english);
     expect(find.text(en.settingsTitle), findsOneWidget);
+  });
+
+  testWidgets('izin aplikasi tampil di bottom sheet dan bisa diizinkan', (
+    tester,
+  ) async {
+    repo.language = AppLanguage.indonesian;
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(host());
+    await tester.pumpAndSettle();
+
+    final l10n = lookupAppLocalizations(const Locale('id'));
+    await tester.tap(find.text(l10n.settingsPermissions));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.settingsPermissionsBody), findsOneWidget);
+    expect(find.text(l10n.permissionExactAlarmTitle), findsOneWidget);
+    expect(
+      find.text(l10n.permissionAllow),
+      findsNWidgets(AppPermission.values.length - 1),
+    );
+
+    await tester.tap(find.text(l10n.permissionAllow).first);
+    await tester.pumpAndSettle();
+    expect(permissions.granted[AppPermission.fullScreen], isTrue);
+    expect(
+      find.text(l10n.permissionAllow),
+      findsNWidgets(AppPermission.values.length - 2),
+    );
   });
 }

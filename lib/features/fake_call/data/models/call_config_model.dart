@@ -6,7 +6,7 @@ import '../../domain/entities/call_config.dart';
 import '../../domain/entities/clock_time.dart';
 
 class CallConfigModel extends CallConfig {
-  static const _appName = 'Fake Call';
+  static const _appName = 'Fake Calling';
   static const _androidRingtone = 'incoming_call';
   static const _iosRingtone = 'incoming_call.caf';
 

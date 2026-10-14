@@ -1,5 +1,5 @@
-import 'package:fake_call/features/active_call/data/models/call_media_model.dart';
-import 'package:fake_call/features/active_call/domain/entities/call_media.dart';
+import 'package:fake_calling/features/active_call/data/models/call_media_model.dart';
+import 'package:fake_calling/features/active_call/domain/entities/call_media.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 CallMedia _media(double aspectRatio) => CallMedia(

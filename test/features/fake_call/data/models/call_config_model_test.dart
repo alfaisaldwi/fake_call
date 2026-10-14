@@ -1,6 +1,6 @@
-import 'package:fake_call/features/fake_call/data/models/call_config_model.dart';
-import 'package:fake_call/features/fake_call/data/models/scheduled_call_model.dart';
-import 'package:fake_call/features/fake_call/domain/entities/clock_time.dart';
+import 'package:fake_calling/features/fake_call/data/models/call_config_model.dart';
+import 'package:fake_calling/features/fake_call/data/models/scheduled_call_model.dart';
+import 'package:fake_calling/features/fake_call/domain/entities/clock_time.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

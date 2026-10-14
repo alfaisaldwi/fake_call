@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/clock_time.dart';
 
@@ -45,15 +45,15 @@ class RingTimeChip extends StatelessWidget {
       avatar: Icon(
         Icons.schedule_rounded,
         size: 18,
-        color: isSelected ? AppColors.primaryDark : null,
+        color: isSelected ? context.palette.selectedText : null,
       ),
       label: Text(
         time == null
             ? l10n.ringAtPick
             : l10n.ringAtLabel(format(context, time)),
         style: isSelected
-            ? const TextStyle(
-                color: AppColors.primaryDark,
+            ? TextStyle(
+                color: context.palette.selectedText,
                 fontWeight: FontWeight.w600,
               )
             : null,

@@ -12,16 +12,18 @@ class AppPalette extends ThemeExtension<AppPalette> {
     textPrimary: AppColors.textPrimary,
     textSecondary: AppColors.textSecondary,
     primaryTint: AppColors.primaryTint,
+    selectedText: AppColors.primaryDark,
   );
 
   static const dark = AppPalette(
-    primary: Color(0xFF6EA4FF),
+    primary: Color(0xFF93A6FF),
     background: Color(0xFF0B1220),
     surface: Color(0xFF151E2E),
     outline: Color(0xFF26324A),
     textPrimary: Color(0xFFE6EBF5),
     textSecondary: Color(0xFF94A3B8),
-    primaryTint: Color(0xFF1A2B4D),
+    primaryTint: Color(0xFF1F2650),
+    selectedText: Color(0xFFD3DBFF),
   );
 
   final Color primary;
@@ -31,6 +33,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color textPrimary;
   final Color textSecondary;
   final Color primaryTint;
+  final Color selectedText;
 
   const AppPalette({
     required this.primary,
@@ -40,6 +43,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.textPrimary,
     required this.textSecondary,
     required this.primaryTint,
+    required this.selectedText,
   });
 
   @override
@@ -51,6 +55,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? textPrimary,
     Color? textSecondary,
     Color? primaryTint,
+    Color? selectedText,
   }) {
     return AppPalette(
       primary: primary ?? this.primary,
@@ -60,6 +65,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       textPrimary: textPrimary ?? this.textPrimary,
       textSecondary: textSecondary ?? this.textSecondary,
       primaryTint: primaryTint ?? this.primaryTint,
+      selectedText: selectedText ?? this.selectedText,
     );
   }
 
@@ -74,6 +80,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
       textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
       primaryTint: Color.lerp(primaryTint, other.primaryTint, t)!,
+      selectedText: Color.lerp(selectedText, other.selectedText, t)!,
     );
   }
 }

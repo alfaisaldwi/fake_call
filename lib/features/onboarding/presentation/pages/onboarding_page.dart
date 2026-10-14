@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/widgets/app_dialog.dart';
 import '../../../../core/widgets/app_foreground_listener.dart';
 import '../../../../injection_container.dart';
 import '../../../permissions/presentation/bloc/permissions_bloc.dart';
@@ -47,7 +49,10 @@ class _OnboardingViewState extends State<_OnboardingView> {
     PermissionChecklist(),
   ];
 
+  static const _reminderDelay = Duration(seconds: 5);
+
   final _controller = PageController();
+  bool _reminded = false;
 
   double get _page => _controller.hasClients ? _controller.page ?? 0 : 0;
 
@@ -62,6 +67,22 @@ class _OnboardingViewState extends State<_OnboardingView> {
   void _finish() {
     context.read<OnboardingBloc>().add(const OnboardingFinished());
     AppRouter.finishOnboarding();
+  }
+
+  void _onPageChanged(int index) {
+    if (index != _illustrations.length - 1 || _reminded) return;
+    final snapshot = context.read<PermissionsBloc>().state.snapshot;
+    if (snapshot.allGranted) return;
+    _reminded = true;
+    final l10n = AppLocalizations.of(context);
+    showAppDialog(
+      context: context,
+      icon: Icons.verified_user_outlined,
+      title: l10n.permissionReminderTitle,
+      message: l10n.permissionReminderBody,
+      confirmLabel: l10n.permissionReminderConfirm,
+      confirmDelay: _reminderDelay,
+    );
   }
 
   void _next() {
@@ -85,9 +106,9 @@ class _OnboardingViewState extends State<_OnboardingView> {
       body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.primary, AppColors.primaryDark],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.brandSky, AppColors.brandPeriwinkle],
           ),
         ),
         child: SafeArea(
@@ -103,7 +124,7 @@ class _OnboardingViewState extends State<_OnboardingView> {
                     child: TextButton(
                       onPressed: _isLast ? null : _finish,
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
+                        foregroundColor: AppColors.brandInk,
                       ),
                       child: Text(l10n.onboardingSkip),
                     ),
@@ -113,6 +134,7 @@ class _OnboardingViewState extends State<_OnboardingView> {
                   child: PageView.builder(
                     controller: _controller,
                     itemCount: texts.length,
+                    onPageChanged: _onPageChanged,
                     itemBuilder: (context, index) => OnboardingSlide(
                       offset: _page - index,
                       illustration: _illustrations[index],
@@ -126,10 +148,10 @@ class _OnboardingViewState extends State<_OnboardingView> {
                   padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
                   child: FilledButton(
                     onPressed: _next,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.primary,
-                      minimumSize: const Size.fromHeight(56),
+                    style: AppTheme.brandButton(
+                      FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(56),
+                      ),
                     ),
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),

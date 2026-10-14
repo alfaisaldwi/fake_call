@@ -29,6 +29,8 @@ abstract class FakeCallNativeDataSource {
 }
 
 class FakeCallNativeDataSourceImpl implements FakeCallNativeDataSource {
+  static const _power = MethodChannel('com.elumi.prankcall/power');
+
   final AvatarHostDataSource avatarHost;
   final AppLocaleHolder localeHolder;
 
@@ -52,6 +54,13 @@ class FakeCallNativeDataSourceImpl implements FakeCallNativeDataSource {
         await FlutterCallkitIncoming.requestFullIntentPermission();
         throw const PermissionException(
           FailureReason.fullScreenPermissionRequired,
+        );
+      }
+      if (Platform.isAndroid &&
+          await _power.invokeMethod<bool>('canScheduleExact') == false) {
+        await _power.invokeMethod<void>('openExactAlarmSettings');
+        throw const PermissionException(
+          FailureReason.exactAlarmPermissionRequired,
         );
       }
       if (needsCamera && Platform.isAndroid) {

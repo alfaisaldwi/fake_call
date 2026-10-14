@@ -41,11 +41,11 @@ jobs:
         run: flutter build apk --release --target-platform android-arm64
 
       - name: Rename APK
-        run: mv build/app/outputs/flutter-apk/app-release.apk fake_call.apk
+        run: mv build/app/outputs/flutter-apk/app-release.apk fake_calling.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: fake_call
-          path: fake_call.apk
+          name: fake_calling
+          path: fake_calling.apk
           if-no-files-found: error
           retention-days: 14

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Fake Call: Prank & Escape",
+  "appTitle": "Fake Calling: Prank & Escape",
   "languageSystem": "Use phone language",
   "languageIndonesian": "Bahasa Indonesia",
   "languageEnglish": "English",
@@ -283,7 +283,7 @@
   "aboutLicenses": "Open-source licenses",
   "aboutMadeBy": "Made by",
   "settingsPreferences": "Preferences",
-  "homeTitle": "Fake Call",
+  "homeTitle": "Fake Calling",
   "homeSubtitle": "Your way out, one tap away",
   "coachSkip": "Skip",
   "coachNext": "Next",
@@ -336,5 +336,11 @@
   "permissionExactAlarmTitle": "On-time alarms",
   "permissionExactAlarmBody": "So the call rings right on time, even after the app is closed.",
   "permissionBatteryTitle": "Unrestricted battery",
-  "permissionBatteryBody": "Open Battery, then pick “Unrestricted” so your phone doesn't hold the call back."
+  "permissionBatteryBody": "Open Battery, then pick “Unrestricted” so your phone doesn't hold the call back.",
+  "errorExactAlarmPermission": "Allow \"Alarms & reminders\" so the call rings right on time, then schedule again.",
+  "permissionReminderTitle": "Please allow everything",
+  "permissionReminderBody": "Fake Calling needs these permissions to ring on time, show up on the lock screen, and keep working after the app is closed. Without them, the app can't work properly.",
+  "permissionReminderConfirm": "Got it",
+  "settingsPermissions": "App permissions",
+  "settingsPermissionsBody": "Keep all of these on so your fake calls ring on time, even when the app is closed."
 }

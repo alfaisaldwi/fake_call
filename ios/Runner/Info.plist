@@ -12,7 +12,7 @@
 			<string>id</string>
 		</array>
 		<key>CFBundleDisplayName</key>
-		<string>Fake Call</string>
+		<string>Fake Calling</string>
 		<key>NSCameraUsageDescription</key>
 		<string>Kamera depan dipakai untuk tampilan video call.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
@@ -26,7 +26,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>Fake Call</string>
+		<string>Fake Calling</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>

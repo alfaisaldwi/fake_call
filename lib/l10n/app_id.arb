@@ -1,6 +1,6 @@
 {
   "@@locale": "id",
-  "appTitle": "Fake Call: Prank & Escape",
+  "appTitle": "Fake Calling: Prank & Escape",
   "languageSystem": "Ikuti bahasa HP",
   "languageIndonesian": "Bahasa Indonesia",
   "languageEnglish": "English",
@@ -161,7 +161,7 @@
   "aboutLicenses": "Lisensi open source",
   "aboutMadeBy": "Dibuat oleh",
   "settingsPreferences": "Preferensi",
-  "homeTitle": "Fake Call",
+  "homeTitle": "Fake Calling",
   "homeSubtitle": "Jalan keluar, tinggal sekali ketuk",
   "coachSkip": "Lewati",
   "coachNext": "Lanjut",
@@ -193,5 +193,11 @@
   "permissionExactAlarmTitle": "Alarm tepat waktu",
   "permissionExactAlarmBody": "Biar telepon bunyi pas waktunya, walau app sudah ditutup.",
   "permissionBatteryTitle": "Baterai tanpa batasan",
-  "permissionBatteryBody": "Buka Baterai, lalu pilih “Tanpa batasan” supaya HP nggak menahan jadwal telepon."
+  "permissionBatteryBody": "Buka Baterai, lalu pilih “Tanpa batasan” supaya HP nggak menahan jadwal telepon.",
+  "errorExactAlarmPermission": "Izinkan \"Alarm & pengingat\" dulu biar telepon bunyi pas waktunya, lalu jadwalkan lagi.",
+  "permissionReminderTitle": "Izinkan semuanya, ya",
+  "permissionReminderBody": "Fake Calling butuh izin-izin ini supaya telepon bisa bunyi tepat waktu, muncul di layar kunci, dan tetap jalan walau app ditutup. Tanpa izin ini, app nggak bisa berjalan sempurna.",
+  "permissionReminderConfirm": "Oke, paham",
+  "settingsPermissions": "Izin aplikasi",
+  "settingsPermissionsBody": "Nyalakan semua supaya telepon palsu bunyi tepat waktu, walau app sudah ditutup."
 }

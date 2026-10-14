@@ -6,6 +6,7 @@ import '../../../../core/widgets/app_top_bar.dart';
 import '../../../../injection_container.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../onboarding/presentation/bloc/coach_marks_bloc.dart';
+import '../../../permissions/presentation/widgets/permission_sheet.dart';
 import '../../domain/entities/app_language.dart';
 import '../../domain/entities/app_theme_mode.dart';
 import '../bloc/app_info_bloc.dart';
@@ -36,6 +37,7 @@ class _SettingsView extends StatelessWidget {
   static const _kindColor = Color(0xFFEC4899);
   static const _licenseColor = Color(0xFFF59E0B);
   static const _tourColor = Color(0xFF14B8A6);
+  static const _permissionColor = Color(0xFF8B5CF6);
 
   const _SettingsView();
 
@@ -172,6 +174,12 @@ class _SettingsView extends StatelessWidget {
                 title: l10n.settingsLanguage,
                 value: _language(l10n, language).$2,
                 onTap: () => _pickLanguage(context, language),
+              ),
+              SettingsTile(
+                icon: Icons.verified_user_outlined,
+                color: _permissionColor,
+                title: l10n.settingsPermissions,
+                onTap: () => showPermissionSheet(context),
               ),
             ],
           ),

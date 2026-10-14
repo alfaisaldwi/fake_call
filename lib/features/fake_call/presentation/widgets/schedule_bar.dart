@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_palette.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class ScheduleBar extends StatelessWidget {
   final String summary;
@@ -56,6 +57,7 @@ class ScheduleBar extends StatelessWidget {
               const SizedBox(height: 10),
               FilledButton.icon(
                 onPressed: onSchedule,
+                style: AppTheme.brandButton(null),
                 icon: const Icon(Icons.phone_callback),
                 label: Text(AppLocalizations.of(context).scheduleCall),
               ),

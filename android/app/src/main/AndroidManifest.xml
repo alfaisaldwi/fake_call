@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" tools:node="remove" />
 
     <application
-        android:label="Fake Call"
+        android:label="Fake Calling"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:networkSecurityConfig="@xml/network_security_config">
@@ -45,7 +45,7 @@
         <service
             android:name=".quick.QuickCallTileService"
             android:exported="true"
-            android:icon="@drawable/ic_quick_call"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/fwc_tile_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -65,7 +65,7 @@
         <receiver
             android:name=".widget.QuickCallWidget"
             android:exported="true"
-            android:label="@string/fwc_tile_label">
+            android:label="@string/fwc_app_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

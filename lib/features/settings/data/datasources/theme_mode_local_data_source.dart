@@ -19,7 +19,7 @@ class ThemeModeLocalDataSourceImpl implements ThemeModeLocalDataSource {
   @override
   Future<AppThemeMode> getThemeMode() async {
     final stored = preferences.getString(_key);
-    return AppThemeMode.values.asNameMap()[stored] ?? AppThemeMode.system;
+    return AppThemeMode.values.asNameMap()[stored] ?? AppThemeMode.light;
   }
 
   @override

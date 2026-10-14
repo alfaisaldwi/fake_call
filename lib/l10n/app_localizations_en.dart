@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Fake Call: Prank & Escape';
+  String get appTitle => 'Fake Calling: Prank & Escape';
 
   @override
   String get languageSystem => 'Use phone language';
@@ -544,7 +544,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsPreferences => 'Preferences';
 
   @override
-  String get homeTitle => 'Fake Call';
+  String get homeTitle => 'Fake Calling';
 
   @override
   String get homeSubtitle => 'Your way out, one tap away';
@@ -656,4 +656,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get permissionBatteryBody =>
       'Open Battery, then pick “Unrestricted” so your phone doesn\'t hold the call back.';
+
+  @override
+  String get errorExactAlarmPermission =>
+      'Allow \"Alarms & reminders\" so the call rings right on time, then schedule again.';
+
+  @override
+  String get permissionReminderTitle => 'Please allow everything';
+
+  @override
+  String get permissionReminderBody =>
+      'Fake Calling needs these permissions to ring on time, show up on the lock screen, and keep working after the app is closed. Without them, the app can\'t work properly.';
+
+  @override
+  String get permissionReminderConfirm => 'Got it';
+
+  @override
+  String get settingsPermissions => 'App permissions';
+
+  @override
+  String get settingsPermissionsBody =>
+      'Keep all of these on so your fake calls ring on time, even when the app is closed.';
 }

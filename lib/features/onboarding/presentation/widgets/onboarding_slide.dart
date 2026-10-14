@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 class OnboardingSlide extends StatelessWidget {
   final double offset;
   final Widget illustration;
@@ -44,7 +46,7 @@ class OnboardingSlide extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.brandInk,
                       fontSize: 26,
                       fontWeight: FontWeight.w600,
                     ),
@@ -53,8 +55,8 @@ class OnboardingSlide extends StatelessWidget {
                   Text(
                     body,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white70,
+                    style: TextStyle(
+                      color: AppColors.brandInk.withValues(alpha: 0.7),
                       fontSize: 16,
                       height: 1.45,
                     ),

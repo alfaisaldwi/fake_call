@@ -1,6 +1,7 @@
 enum FailureReason {
   unknown,
   fullScreenPermissionRequired,
+  exactAlarmPermissionRequired,
   permissionRequestFailed,
   galleryPermissionDenied,
   cameraPermissionDenied,

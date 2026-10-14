@@ -14,5 +14,6 @@
     <string name="fwc_widget_1m">1 mnt</string>
     <string name="fwc_widget_5m">5 mnt</string>
     <string name="fwc_widget_scheduled">Siap, telepon masuk dalam %1$s</string>
-    <string name="fwc_widget_setup_first">Buka Fake Call dulu buat atur penelepon</string>
+    <string name="fwc_widget_setup_first">Buka Fake Calling dulu buat atur penelepon</string>
+    <string name="fwc_app_name" translatable="false">Fake Calling</string>
 </resources>

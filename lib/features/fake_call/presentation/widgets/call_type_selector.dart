@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../domain/entities/call_config.dart';
 
@@ -101,7 +100,7 @@ class _CallTypeTile extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: isSelected
-                        ? AppColors.primaryDark
+                        ? context.palette.selectedText
                         : context.palette.textSecondary,
                   ),
                 ),
