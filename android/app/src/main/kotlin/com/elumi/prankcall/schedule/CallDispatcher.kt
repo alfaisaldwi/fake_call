@@ -9,7 +9,7 @@ object CallDispatcher {
     var mainChannel: MethodChannel? = null
     var backgroundChannel: MethodChannel? = null
 
-    fun dispatch(context: Context, payload: String) {
+    fun dispatch(context: Context, payload: String, onDelivered: () -> Unit) {
         val channel = mainChannel ?: backgroundChannel
         if (channel == null) {
             BackgroundCallEngine.start(context)
@@ -21,6 +21,7 @@ object CallDispatcher {
             object : MethodChannel.Result {
                 override fun success(result: Any?) {
                     ScheduledCallStore(context).takeDue()
+                    onDelivered()
                 }
 
                 override fun error(code: String, message: String?, details: Any?) {

@@ -655,7 +655,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionBatteryBody =>
-      'Open Battery, then pick “Unrestricted” so your phone doesn\'t hold the call back.';
+      'Open Battery and pick “Unrestricted”. On Xiaomi, also turn on “Autostart” on the same page.';
 
   @override
   String get errorExactAlarmPermission =>

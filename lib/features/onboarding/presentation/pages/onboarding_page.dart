@@ -69,10 +69,17 @@ class _OnboardingViewState extends State<_OnboardingView> {
     AppRouter.finishOnboarding();
   }
 
-  void _onPageChanged(int index) {
-    if (index != _illustrations.length - 1 || _reminded) return;
+  void _skip() {
+    _controller.animateToPage(
+      _illustrations.length - 1,
+      duration: const Duration(milliseconds: 550),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  void _start() {
     final snapshot = context.read<PermissionsBloc>().state.snapshot;
-    if (snapshot.allGranted) return;
+    if (snapshot.allGranted || _reminded) return _finish();
     _reminded = true;
     final l10n = AppLocalizations.of(context);
     showAppDialog(
@@ -86,7 +93,7 @@ class _OnboardingViewState extends State<_OnboardingView> {
   }
 
   void _next() {
-    if (_isLast) return _finish();
+    if (_isLast) return _start();
     _controller.nextPage(
       duration: const Duration(milliseconds: 450),
       curve: Curves.easeOutCubic,
@@ -122,7 +129,7 @@ class _OnboardingViewState extends State<_OnboardingView> {
                     opacity: _isLast ? 0 : 1,
                     duration: const Duration(milliseconds: 200),
                     child: TextButton(
-                      onPressed: _isLast ? null : _finish,
+                      onPressed: _isLast ? null : _skip,
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.brandInk,
                       ),
@@ -134,7 +141,6 @@ class _OnboardingViewState extends State<_OnboardingView> {
                   child: PageView.builder(
                     controller: _controller,
                     itemCount: texts.length,
-                    onPageChanged: _onPageChanged,
                     itemBuilder: (context, index) => OnboardingSlide(
                       offset: _page - index,
                       illustration: _illustrations[index],

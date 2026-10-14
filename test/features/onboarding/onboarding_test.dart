@@ -96,13 +96,24 @@ void main() {
     await next.close();
   });
 
-  testWidgets('halaman izin di akhir onboarding bisa diizinkan satu per satu', (
-    tester,
-  ) async {
+  Future<void> settleFrames(WidgetTester tester) async {
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+  }
+
+  Future<OnboardingBloc> pumpOnboarding(
+    WidgetTester tester, {
+    bool grantAll = false,
+  }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
-    final l10n = lookupAppLocalizations(const Locale('id'));
+    permissions.granted.clear();
+    if (grantAll) {
+      for (final permission in AppPermission.values) {
+        permissions.granted[permission] = true;
+      }
+    }
     final bloc = buildBloc();
     await tester.pumpWidget(
       BlocProvider.value(
@@ -116,6 +127,15 @@ void main() {
       ),
     );
     await tester.pump();
+    return bloc;
+  }
+
+  final l10n = lookupAppLocalizations(const Locale('id'));
+
+  testWidgets('halaman izin di akhir onboarding bisa diizinkan satu per satu', (
+    tester,
+  ) async {
+    final bloc = await pumpOnboarding(tester);
     expect(find.text(l10n.onboarding1Title), findsOneWidget);
     expect(find.text(l10n.onboardingNext), findsOneWidget);
 
@@ -127,6 +147,41 @@ void main() {
 
     expect(find.text(l10n.onboarding4Title), findsOneWidget);
     expect(find.text(l10n.onboardingStart), findsOneWidget);
+    expect(find.text(l10n.permissionReminderTitle), findsNothing);
+
+    await tester.tap(find.text(l10n.permissionAllow).first);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(
+      find.text(l10n.permissionAllow),
+      findsNWidgets(AppPermission.values.length - 1),
+    );
+    expect(permissions.granted[AppPermission.notification], isTrue);
+    await tester.runAsync(bloc.close);
+  });
+
+  testWidgets('lewati langsung ke halaman izin', (tester) async {
+    final bloc = await pumpOnboarding(tester);
+
+    await tester.tap(find.text(l10n.onboardingSkip));
+    await settleFrames(tester);
+
+    expect(find.text(l10n.onboarding4Title), findsOneWidget);
+    expect(find.text(l10n.onboardingStart), findsOneWidget);
+    expect(repository.completed, isFalse);
+    await tester.runAsync(bloc.close);
+  });
+
+  testWidgets('mulai dengan izin belum lengkap memunculkan pengingat 5 detik', (
+    tester,
+  ) async {
+    final bloc = await pumpOnboarding(tester);
+    await tester.tap(find.text(l10n.onboardingSkip));
+    await settleFrames(tester);
+
+    await tester.tap(find.text(l10n.onboardingStart));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text(l10n.permissionReminderTitle), findsOneWidget);
     final confirm = find.ancestor(
@@ -134,7 +189,6 @@ void main() {
       matching: find.byType(FilledButton),
     );
     expect(tester.widget<FilledButton>(confirm).onPressed, isNull);
-    expect(find.text('5'), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 2));
     expect(find.text('3'), findsOneWidget);
@@ -146,17 +200,27 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.widget<FilledButton>(confirm).onPressed, isNotNull);
     await tester.tap(confirm);
-    await tester.pumpAndSettle();
-    expect(find.text(l10n.permissionReminderTitle), findsNothing);
+    await settleFrames(tester);
 
-    await tester.tap(find.text(l10n.permissionAllow).first);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(
-      find.text(l10n.permissionAllow),
-      findsNWidgets(AppPermission.values.length - 1),
-    );
-    expect(permissions.granted[AppPermission.notification], isTrue);
+    expect(find.text(l10n.permissionReminderTitle), findsNothing);
+    expect(find.text(l10n.onboarding4Title), findsOneWidget);
+    expect(repository.completed, isFalse);
+    await tester.runAsync(bloc.close);
+  });
+
+  testWidgets('mulai dengan semua izin aktif tidak memunculkan pengingat', (
+    tester,
+  ) async {
+    final bloc = await pumpOnboarding(tester, grantAll: true);
+    await tester.tap(find.text(l10n.onboardingSkip));
+    await settleFrames(tester);
+    expect(find.text(l10n.permissionAllow), findsNothing);
+
+    await tester.tap(find.text(l10n.onboardingStart));
+    await settleFrames(tester);
+
+    expect(find.text(l10n.permissionReminderTitle), findsNothing);
+    expect(repository.completed, isTrue);
     await tester.runAsync(bloc.close);
   });
 }

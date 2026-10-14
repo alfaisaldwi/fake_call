@@ -658,7 +658,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get permissionBatteryBody =>
-      'Buka Baterai, lalu pilih “Tanpa batasan” supaya HP nggak menahan jadwal telepon.';
+      'Buka Baterai lalu pilih “Tanpa batasan”. Di Xiaomi, nyalakan juga “Mulai otomatis” di halaman yang sama.';
 
   @override
   String get errorExactAlarmPermission =>

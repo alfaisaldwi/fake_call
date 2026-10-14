@@ -39,31 +39,36 @@ class SettingsTile extends StatelessWidget {
               child: Icon(icon, size: 19, color: color),
             ),
             const SizedBox(width: 14),
-            Flexible(
-              flex: 3,
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
             Expanded(
-              flex: 2,
-              child: current == null
-                  ? const SizedBox.shrink()
-                  : Text(
-                      current,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: palette.textSecondary,
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
+                  ),
+                  if (current != null) ...[
+                    const SizedBox(width: 12),
+                    Flexible(
+                      child: Text(
+                        current,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: palette.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
             if (onTap != null) ...[
               const SizedBox(width: 4),

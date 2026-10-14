@@ -3,6 +3,8 @@ package com.elumi.prankcall.schedule
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 
 class CallAlarmReceiver : BroadcastReceiver() {
@@ -13,7 +15,20 @@ class CallAlarmReceiver : BroadcastReceiver() {
         val appContext = context.applicationContext
         val payload = ScheduledCallStore(appContext).markDue(id) ?: return
         keepAwake(appContext)
-        CallDispatcher.dispatch(appContext, payload)
+        val pending = goAsync()
+        val handler = Handler(Looper.getMainLooper())
+        var finished = false
+        val finish = Runnable {
+            if (!finished) {
+                finished = true
+                pending.finish()
+            }
+        }
+        handler.postDelayed(finish, MAX_HOLD_MS)
+        CallDispatcher.dispatch(appContext, payload) {
+            handler.removeCallbacks(finish)
+            handler.postDelayed(finish, RING_GRACE_MS)
+        }
     }
 
     private fun keepAwake(context: Context) {
@@ -26,5 +41,7 @@ class CallAlarmReceiver : BroadcastReceiver() {
     private companion object {
         const val WAKE_LOCK_TAG = "FakeCall:ring"
         const val WAKE_LOCK_MS = 20_000L
+        const val MAX_HOLD_MS = 9_000L
+        const val RING_GRACE_MS = 4_000L
     }
 }

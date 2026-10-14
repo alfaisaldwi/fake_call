@@ -193,7 +193,7 @@
   "permissionExactAlarmTitle": "Alarm tepat waktu",
   "permissionExactAlarmBody": "Biar telepon bunyi pas waktunya, walau app sudah ditutup.",
   "permissionBatteryTitle": "Baterai tanpa batasan",
-  "permissionBatteryBody": "Buka Baterai, lalu pilih “Tanpa batasan” supaya HP nggak menahan jadwal telepon.",
+  "permissionBatteryBody": "Buka Baterai lalu pilih “Tanpa batasan”. Di Xiaomi, nyalakan juga “Mulai otomatis” di halaman yang sama.",
   "errorExactAlarmPermission": "Izinkan \"Alarm & pengingat\" dulu biar telepon bunyi pas waktunya, lalu jadwalkan lagi.",
   "permissionReminderTitle": "Izinkan semuanya, ya",
   "permissionReminderBody": "Fake Calling butuh izin-izin ini supaya telepon bisa bunyi tepat waktu, muncul di layar kunci, dan tetap jalan walau app ditutup. Tanpa izin ini, app nggak bisa berjalan sempurna.",

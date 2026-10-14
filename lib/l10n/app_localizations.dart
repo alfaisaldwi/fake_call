@@ -1259,7 +1259,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionBatteryBody.
   ///
   /// In en, this message translates to:
-  /// **'Open Battery, then pick “Unrestricted” so your phone doesn\'t hold the call back.'**
+  /// **'Open Battery and pick “Unrestricted”. On Xiaomi, also turn on “Autostart” on the same page.'**
   String get permissionBatteryBody;
 
   /// No description provided for @errorExactAlarmPermission.
