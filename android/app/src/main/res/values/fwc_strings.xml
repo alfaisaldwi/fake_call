@@ -3,6 +3,13 @@
     <string name="fwc_incoming_message">Message</string>
     <string name="fwc_incoming_swipe_accept">Swipe up to accept</string>
     <string name="fwc_incoming_turn_off_video">Turn off your video</string>
+    <string name="fwc_incoming_turn_on_video">Turn on your video</string>
+    <string-array name="fwc_quick_replies">
+        <item>Can\'t talk now. What\'s up?</item>
+        <item>I\'ll call you right back.</item>
+        <item>I\'ll call you later.</item>
+        <item>Can\'t talk now. Call me later?</item>
+    </string-array>
     <string name="fwc_shortcut_10s">Call in 10 sec</string>
     <string name="fwc_shortcut_10s_long">Fake call in 10 seconds</string>
     <string name="fwc_shortcut_1m">Call in 1 min</string>

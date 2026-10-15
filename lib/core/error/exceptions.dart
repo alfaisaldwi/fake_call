@@ -27,3 +27,7 @@ class MediaException extends AppException {
 class CacheException extends AppException {
   const CacheException(super.reason, [super.detail]);
 }
+
+class UpdateException extends AppException {
+  const UpdateException(super.reason, [super.detail]);
+}

@@ -9,10 +9,12 @@ import 'core/l10n/app_locale_holder.dart';
 import 'core/l10n/failure_messages.dart';
 import 'core/theme/app_appearance_holder.dart';
 import 'features/active_call/data/datasources/call_media_local_data_source.dart';
+import 'features/active_call/data/datasources/call_screen_native_data_source.dart';
 import 'features/active_call/data/repositories/call_media_repository_impl.dart';
 import 'features/active_call/domain/repositories/call_media_repository.dart';
 import 'features/active_call/domain/usecases/set_camera_enabled.dart';
 import 'features/active_call/domain/usecases/set_playback_paused.dart';
+import 'features/active_call/domain/usecases/set_proximity_lock.dart';
 import 'features/active_call/domain/usecases/start_call_media.dart';
 import 'features/active_call/domain/usecases/stop_call_media.dart';
 import 'features/active_call/domain/usecases/switch_camera.dart';
@@ -28,6 +30,12 @@ import 'features/fake_call/data/datasources/last_call_config_local_data_source.d
 import 'features/fake_call/data/datasources/quick_trigger_data_source.dart';
 import 'features/fake_call/data/datasources/missed_call_notification_data_source.dart';
 import 'features/fake_call/data/datasources/ring_vibration_data_source.dart';
+import 'features/fake_call/data/datasources/call_preferences_local_data_source.dart';
+import 'features/fake_call/data/repositories/call_preferences_repository_impl.dart';
+import 'features/fake_call/domain/repositories/call_preferences_repository.dart';
+import 'features/fake_call/domain/usecases/get_call_preferences.dart';
+import 'features/fake_call/domain/usecases/save_call_preferences.dart';
+import 'features/fake_call/presentation/bloc/call_preferences_bloc.dart';
 import 'features/fake_call/data/repositories/caller_avatar_repository_impl.dart';
 import 'features/fake_call/data/repositories/caller_name_history_repository_impl.dart';
 import 'features/fake_call/data/repositories/caller_preset_repository_impl.dart';
@@ -98,6 +106,15 @@ import 'features/settings/domain/usecases/save_app_language.dart';
 import 'features/settings/domain/usecases/save_theme_mode.dart';
 import 'features/settings/presentation/bloc/theme_mode_bloc.dart';
 import 'features/settings/presentation/bloc/app_info_bloc.dart';
+import 'features/settings/presentation/bloc/app_update_bloc.dart';
+import 'features/settings/data/datasources/app_update_data_source.dart';
+import 'features/settings/data/repositories/app_update_repository_impl.dart';
+import 'features/settings/domain/repositories/app_update_repository.dart';
+import 'features/settings/domain/usecases/check_app_update.dart';
+import 'features/settings/domain/usecases/start_app_update.dart';
+
+import 'package:in_app_update_flutter/in_app_update_flutter.dart';
+
 import 'features/settings/presentation/bloc/language_bloc.dart';
 
 final sl = GetIt.instance;
@@ -122,6 +139,7 @@ Future<void> _registerExternal() async {
   sl.registerLazySingleton(FlutterLocalNotificationsPlugin.new);
   sl.registerLazySingleton<ImagePicker>(ImagePicker.new);
   sl.registerLazySingleton<ImageCropper>(ImageCropper.new);
+  sl.registerLazySingleton<InAppUpdateFlutter>(InAppUpdateFlutter.new);
 }
 
 void _registerDataSources() {
@@ -142,6 +160,9 @@ void _registerDataSources() {
   sl.registerLazySingleton<CallAlarmDataSource>(CallAlarmDataSourceImpl.new);
   sl.registerLazySingleton<RingVibrationDataSource>(
     RingVibrationDataSourceImpl.new,
+  );
+  sl.registerLazySingleton<CallPreferencesLocalDataSource>(
+    () => CallPreferencesLocalDataSourceImpl(preferences: sl()),
   );
   sl.registerLazySingleton<MissedCallNotificationDataSource>(
     () =>
@@ -170,6 +191,9 @@ void _registerDataSources() {
     () => OnboardingLocalDataSourceImpl(preferences: sl()),
   );
   sl.registerLazySingleton<AppInfoDataSource>(AppInfoDataSourceImpl.new);
+  sl.registerLazySingleton<AppUpdateDataSource>(
+    () => AppUpdateDataSourceImpl(plugin: sl()),
+  );
   sl.registerLazySingleton<ThemeModeLocalDataSource>(
     () => ThemeModeLocalDataSourceImpl(preferences: sl()),
   );
@@ -178,6 +202,9 @@ void _registerDataSources() {
   );
   sl.registerLazySingleton<CallMediaLocalDataSource>(
     () => CallMediaLocalDataSourceImpl(videoAssetPath: _callerVideoAsset),
+  );
+  sl.registerLazySingleton<CallScreenNativeDataSource>(
+    CallScreenNativeDataSourceImpl.new,
   );
 }
 
@@ -188,8 +215,12 @@ void _registerRepositories() {
       alarm: sl(),
       missedCallNotifier: sl(),
       ringVibration: sl(),
+      callPreferences: sl(),
       uuid: sl(),
     ),
+  );
+  sl.registerLazySingleton<CallPreferencesRepository>(
+    () => CallPreferencesRepositoryImpl(dataSource: sl()),
   );
   sl.registerLazySingleton<CallerAvatarRepository>(
     () => CallerAvatarRepositoryImpl(dataSource: sl()),
@@ -221,6 +252,9 @@ void _registerRepositories() {
   sl.registerLazySingleton<AppInfoRepository>(
     () => AppInfoRepositoryImpl(dataSource: sl()),
   );
+  sl.registerLazySingleton<AppUpdateRepository>(
+    () => AppUpdateRepositoryImpl(dataSource: sl()),
+  );
   sl.registerLazySingleton<ThemeModeRepository>(
     () => ThemeModeRepositoryImpl(dataSource: sl()),
   );
@@ -228,7 +262,7 @@ void _registerRepositories() {
     () => LanguageRepositoryImpl(dataSource: sl()),
   );
   sl.registerLazySingleton<CallMediaRepository>(
-    () => CallMediaRepositoryImpl(dataSource: sl()),
+    () => CallMediaRepositoryImpl(dataSource: sl(), callScreen: sl()),
   );
 }
 
@@ -262,11 +296,16 @@ void _registerUseCases() {
   sl.registerLazySingleton(() => CheckOnboardingCompleted(sl()));
   sl.registerLazySingleton(() => CompleteOnboarding(sl()));
   sl.registerLazySingleton(() => GetAppInfo(sl()));
+  sl.registerLazySingleton(() => CheckAppUpdate(sl()));
+  sl.registerLazySingleton(() => StartAppUpdate(sl()));
   sl.registerLazySingleton(() => GetThemeMode(sl()));
   sl.registerLazySingleton(() => SaveThemeMode(sl()));
   sl.registerLazySingleton(() => GetAppLanguage(sl()));
   sl.registerLazySingleton(() => SaveAppLanguage(sl()));
   sl.registerLazySingleton(() => SetPlaybackPaused(sl()));
+  sl.registerLazySingleton(() => GetCallPreferences(sl()));
+  sl.registerLazySingleton(() => SaveCallPreferences(sl()));
+  sl.registerLazySingleton(() => SetProximityLock(sl()));
 }
 
 void _registerBlocs() {
@@ -293,6 +332,8 @@ void _registerBlocs() {
       setCameraEnabled: sl(),
       switchCamera: sl(),
       setPlaybackPaused: sl(),
+      setProximityLock: sl(),
+      getCallPreferences: sl(),
       failureMessages: sl(),
     ),
   );
@@ -340,7 +381,21 @@ void _registerBlocs() {
     ),
   );
   sl.registerFactory(
+    () => CallPreferencesBloc(
+      getCallPreferences: sl(),
+      saveCallPreferences: sl(),
+      failureMessages: sl(),
+    ),
+  );
+  sl.registerFactory(
     () => AppInfoBloc(getAppInfo: sl(), failureMessages: sl()),
+  );
+  sl.registerFactory(
+    () => AppUpdateBloc(
+      checkAppUpdate: sl(),
+      startAppUpdate: sl(),
+      failureMessages: sl(),
+    ),
   );
   sl.registerFactory(
     () => CoachMarksBloc(

@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class LocalCameraPreview extends StatelessWidget {
-  static const width = 112.0;
-  static const height = 168.0;
-
   final int? viewId;
   final double aspectRatio;
   final bool isCameraOn;
@@ -23,15 +20,8 @@ class LocalCameraPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final id = viewId;
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: AppColors.callSurface,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [BoxShadow(blurRadius: 12, color: Color(0x66000000))],
-      ),
-      clipBehavior: Clip.antiAlias,
+    return ColoredBox(
+      color: AppColors.callSurface,
       child: switch ((id, isCameraOn, isLoading)) {
         (_, _, true) || (null, _, _) => const Center(
           child: SizedBox.square(
@@ -42,18 +32,18 @@ class LocalCameraPreview extends StatelessWidget {
             ),
           ),
         ),
-        (_, false, _) => const Icon(
-          Icons.videocam_off,
-          color: Colors.white54,
-          size: 32,
+        (_, false, _) => const Center(
+          child: Icon(Icons.videocam_off, color: Colors.white54, size: 32),
         ),
-        (final int cameraId, true, false) => FittedBox(
-          fit: BoxFit.cover,
-          clipBehavior: Clip.hardEdge,
-          child: SizedBox(
-            width: width,
-            height: width * aspectRatio,
-            child: CameraPlatform.instance.buildPreview(cameraId),
+        (final int cameraId, true, false) => SizedBox.expand(
+          child: FittedBox(
+            fit: BoxFit.cover,
+            clipBehavior: Clip.hardEdge,
+            child: SizedBox(
+              width: 1000,
+              height: 1000 * aspectRatio,
+              child: CameraPlatform.instance.buildPreview(cameraId),
+            ),
           ),
         ),
       },

@@ -7,9 +7,11 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../fake_call/domain/entities/call_config.dart';
+import '../../../fake_call/domain/usecases/get_call_preferences.dart';
 import '../../domain/entities/call_media.dart';
 import '../../domain/usecases/set_camera_enabled.dart';
 import '../../domain/usecases/set_playback_paused.dart';
+import '../../domain/usecases/set_proximity_lock.dart';
 import '../../domain/usecases/start_call_media.dart';
 import '../../domain/usecases/stop_call_media.dart';
 import '../../domain/usecases/switch_camera.dart';
@@ -23,6 +25,8 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
   final SetCameraEnabled setCameraEnabled;
   final SwitchCamera switchCamera;
   final SetPlaybackPaused setPlaybackPaused;
+  final SetProximityLock setProximityLock;
+  final GetCallPreferences getCallPreferences;
   final FailureMessages failureMessages;
 
   StreamSubscription<int>? _ticker;
@@ -30,6 +34,7 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
   String? _videoPath;
   bool _isForeground = false;
   bool _mediaPending = false;
+  bool _proximityLocked = false;
 
   ActiveCallBloc({
     required this.startCallMedia,
@@ -37,6 +42,8 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
     required this.setCameraEnabled,
     required this.switchCamera,
     required this.setPlaybackPaused,
+    required this.setProximityLock,
+    required this.getCallPreferences,
     required this.failureMessages,
   }) : super(const ActiveCallInitial()) {
     on<ActiveCallStarted>(_onStarted);
@@ -56,14 +63,20 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
   ) async {
     final isVideo = event.callType == CallType.video;
     _videoPath = event.videoPath;
+    final preferences = await getCallPreferences(const NoParams());
+    if (state is ActiveCallStoppedState) return;
+    final initialElapsed = preferences.fold(
+      (_) => Duration.zero,
+      (preferences) => preferences.initialDuration,
+    );
     emit(
       ActiveCallInProgress(
         isVideoMode: isVideo,
         isSpeakerOn: isVideo,
-        elapsed: event.initialElapsed,
+        elapsed: initialElapsed,
       ),
     );
-    _startTicker(event.initialElapsed);
+    _startTicker(initialElapsed);
     if (isVideo) await _loadMediaWhenForeground(emit);
   }
 
@@ -73,6 +86,7 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
   ) async {
     if (_isForeground == event.isForeground) return;
     _isForeground = event.isForeground;
+    _syncProximityLock(state);
     if (_isForeground && _mediaPending) {
       await _loadMediaWhenForeground(emit);
     } else if (_mediaStarted) {
@@ -197,9 +211,27 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
       ),
       (media) {
         _mediaStarted = true;
-        emit(current.copyWith(media: media, isMediaLoading: false));
+        emit(
+          current.copyWith(
+            media: media,
+            isMediaLoading: false,
+            isCameraOn: media.isCameraOn,
+          ),
+        );
       },
     );
+  }
+
+  void _syncProximityLock(ActiveCallState state) {
+    if (state is ActiveCallError) return;
+    final locked =
+        _isForeground &&
+        state is ActiveCallInProgress &&
+        !state.isVideoMode &&
+        !state.isSpeakerOn;
+    if (locked == _proximityLocked) return;
+    _proximityLocked = locked;
+    unawaited(setProximityLock(locked));
   }
 
   ActiveCallInProgress _latest(ActiveCallInProgress fallback) {
@@ -230,10 +262,20 @@ class ActiveCallBloc extends Bloc<ActiveCallEvent, ActiveCallState> {
   Future<void> _release() async {
     await _ticker?.cancel();
     _ticker = null;
+    if (_proximityLocked) {
+      _proximityLocked = false;
+      await setProximityLock(false);
+    }
     if (_mediaStarted) {
       _mediaStarted = false;
       await stopCallMedia(const NoParams());
     }
+  }
+
+  @override
+  void onChange(Change<ActiveCallState> change) {
+    super.onChange(change);
+    _syncProximityLock(change.nextState);
   }
 
   @override

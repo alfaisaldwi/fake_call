@@ -6,6 +6,7 @@ import 'package:fake_calling/features/active_call/domain/entities/call_media.dar
 import 'package:fake_calling/features/active_call/domain/repositories/call_media_repository.dart';
 import 'package:fake_calling/features/active_call/domain/usecases/set_camera_enabled.dart';
 import 'package:fake_calling/features/active_call/domain/usecases/set_playback_paused.dart';
+import 'package:fake_calling/features/active_call/domain/usecases/set_proximity_lock.dart';
 import 'package:fake_calling/features/active_call/domain/usecases/start_call_media.dart';
 import 'package:fake_calling/features/active_call/domain/usecases/stop_call_media.dart';
 import 'package:fake_calling/features/active_call/domain/usecases/switch_camera.dart';
@@ -13,6 +14,9 @@ import 'package:fake_calling/features/active_call/presentation/bloc/active_call_
 import 'package:fake_calling/features/active_call/presentation/widgets/video_call_view.dart';
 import 'package:fake_calling/features/active_call/presentation/widgets/voice_call_view.dart';
 import 'package:fake_calling/features/fake_call/domain/entities/call_config.dart';
+import 'package:fake_calling/features/fake_call/domain/entities/call_preferences.dart';
+import 'package:fake_calling/features/fake_call/domain/repositories/call_preferences_repository.dart';
+import 'package:fake_calling/features/fake_call/domain/usecases/get_call_preferences.dart';
 import 'package:fake_calling/core/l10n/app_locale_holder.dart';
 import 'package:fake_calling/core/l10n/failure_messages.dart';
 import 'package:fake_calling/l10n/app_localizations.dart';
@@ -63,10 +67,35 @@ class _FakeMediaRepository implements CallMediaRepository {
     pausedCalls.add(paused);
     return const Right(unit);
   }
+
+  final proximityCalls = <bool>[];
+
+  @override
+  Future<Either<Failure, Unit>> setProximityLock(bool enabled) async {
+    proximityCalls.add(enabled);
+    return const Right(unit);
+  }
+}
+
+class _FakeCallPreferences implements CallPreferencesRepository {
+  CallPreferences stored = const CallPreferences();
+
+  @override
+  Future<Either<Failure, CallPreferences>> getPreferences() async =>
+      Right(stored);
+
+  @override
+  Future<Either<Failure, Unit>> savePreferences(
+    CallPreferences preferences,
+  ) async {
+    stored = preferences;
+    return const Right(unit);
+  }
 }
 
 void main() {
   late _FakeMediaRepository repository;
+  late _FakeCallPreferences callPreferences;
 
   ActiveCallBloc buildBloc() => ActiveCallBloc(
     startCallMedia: StartCallMedia(repository),
@@ -74,22 +103,24 @@ void main() {
     setCameraEnabled: SetCameraEnabled(repository),
     switchCamera: SwitchCamera(repository),
     setPlaybackPaused: SetPlaybackPaused(repository),
+    setProximityLock: SetProximityLock(repository),
+    getCallPreferences: GetCallPreferences(callPreferences),
     failureMessages: FailureMessages(AppLocaleHolder(const Locale('en'))),
   );
 
   Future<void> settle() => Future<void>.delayed(Duration.zero);
 
-  setUp(() => repository = _FakeMediaRepository());
+  setUp(() {
+    repository = _FakeMediaRepository();
+    callPreferences = _FakeCallPreferences();
+  });
 
   group('ActiveCallBloc', () {
-    test('timer panggilan mulai dari durasi awal', () async {
-      final bloc = buildBloc()
-        ..add(
-          const ActiveCallStarted(
-            CallType.voice,
-            initialElapsed: Duration(minutes: 5),
-          ),
-        );
+    test('timer panggilan mulai dari durasi awal di pengaturan', () async {
+      callPreferences.stored = const CallPreferences(
+        initialDurationSeconds: 300,
+      );
+      final bloc = buildBloc()..add(const ActiveCallStarted(CallType.voice));
       await settle();
 
       expect(
@@ -217,6 +248,65 @@ void main() {
         await bloc.close();
       },
     );
+
+    test('kamera yang dimatikan di layar masuk tetap mati', () async {
+      repository.startResult = const Right(
+        CallMedia(
+          cameraViewId: 1,
+          cameraAspectRatio: 4 / 3,
+          remoteVideoViewId: 2,
+          remoteVideoAspectRatio: 9 / 16,
+          isCameraOn: false,
+        ),
+      );
+      final bloc = buildBloc()
+        ..add(const ActiveCallStarted(CallType.video))
+        ..add(const ActiveCallForegroundChanged(true));
+      await settle();
+
+      expect((bloc.state as ActiveCallInProgress).isCameraOn, isFalse);
+      await bloc.close();
+    });
+
+    test('sensor proximity aktif hanya di voice call tanpa speaker', () async {
+      final bloc = buildBloc()
+        ..add(const ActiveCallStarted(CallType.voice))
+        ..add(const ActiveCallForegroundChanged(true));
+      await settle();
+      expect(repository.proximityCalls, [true]);
+
+      bloc.add(const ActiveCallSpeakerToggled());
+      await settle();
+      expect(repository.proximityCalls, [true, false]);
+
+      bloc.add(const ActiveCallSpeakerToggled());
+      await settle();
+      bloc.add(const ActiveCallForegroundChanged(false));
+      await settle();
+      expect(repository.proximityCalls, [true, false, true, false]);
+
+      bloc.add(const ActiveCallForegroundChanged(true));
+      await settle();
+      await bloc.close();
+      expect(repository.proximityCalls, [
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+      ]);
+    });
+
+    test('sensor proximity tidak aktif di video call', () async {
+      final bloc = buildBloc()
+        ..add(const ActiveCallStarted(CallType.video))
+        ..add(const ActiveCallForegroundChanged(true));
+      await settle();
+      await bloc.close();
+
+      expect(repository.proximityCalls, isEmpty);
+    });
   });
 
   group('render', () {

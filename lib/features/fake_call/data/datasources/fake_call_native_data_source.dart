@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/l10n/app_locale_holder.dart';
 import '../../domain/entities/call_event.dart';
+import '../../domain/entities/call_preferences.dart';
 import '../models/call_config_model.dart';
 import '../models/call_event_model.dart';
 import 'avatar_host_data_source.dart';
@@ -19,6 +20,7 @@ abstract class FakeCallNativeDataSource {
     CallConfigModel config, {
     required String callId,
     required int attempt,
+    required CallRingtone ringtone,
   });
 
   Future<void> endCall(String callId);
@@ -29,7 +31,7 @@ abstract class FakeCallNativeDataSource {
 }
 
 class FakeCallNativeDataSourceImpl implements FakeCallNativeDataSource {
-  static const _power = MethodChannel('com.elumi.prankcall/power');
+  static const _power = MethodChannel('com.elumi.fakecalling/power');
 
   final AvatarHostDataSource avatarHost;
   final AppLocaleHolder localeHolder;
@@ -79,6 +81,7 @@ class FakeCallNativeDataSourceImpl implements FakeCallNativeDataSource {
     CallConfigModel config, {
     required String callId,
     required int attempt,
+    required CallRingtone ringtone,
   }) async {
     try {
       final avatarUrl = await avatarHost.resolveNativeAvatarUrl(
@@ -88,6 +91,7 @@ class FakeCallNativeDataSourceImpl implements FakeCallNativeDataSource {
         config.toCallKitParams(
           callId: callId,
           attempt: attempt,
+          ringtone: ringtone,
           nativeAvatarUrl: avatarUrl,
           strings: localeHolder.strings,
         ),

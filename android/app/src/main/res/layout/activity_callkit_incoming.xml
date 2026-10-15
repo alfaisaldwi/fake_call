@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.elumi.prankcall.incoming.IncomingCallLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.elumi.fakecalling.incoming.IncomingCallLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +13,8 @@
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription" />
 
-    <com.elumi.prankcall.incoming.FrontCameraPreviewView
+    <com.elumi.fakecalling.incoming.FrontCameraPreviewView
+        android:id="@+id/vFrontCamera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:tag="video_only" />
@@ -43,7 +44,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="96dp">
+        android:paddingTop="116dp">
 
         <TextView
             android:id="@+id/tvNameCaller"
@@ -75,31 +76,34 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:tag="voice_only" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivAvatar"
             android:layout_width="164dp"
             android:layout_height="164dp"
+            android:layout_marginTop="32dp"
             android:src="@drawable/ic_default_avatar"
             app:civ_border_width="0dp" />
 
         <TextView
+            android:id="@+id/tvToggleVideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/fwc_pill"
             android:drawableStart="@drawable/fwc_ic_videocam_off"
             android:drawablePadding="12dp"
             android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:paddingTop="12dp"
-            android:paddingEnd="24dp"
-            android:paddingBottom="12dp"
+            android:paddingStart="16dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp"
             android:tag="video_only"
             android:text="@string/fwc_incoming_turn_off_video"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <Space
             android:layout_width="match_parent"
@@ -115,7 +119,7 @@
         android:layout_gravity="bottom"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:paddingBottom="28dp">
+        android:paddingBottom="20dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -126,8 +130,8 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="64dp"
-                android:layout_height="64dp">
+                android:layout_width="52dp"
+                android:layout_height="52dp">
 
                 <View
                     android:layout_width="match_parent"
@@ -140,7 +144,7 @@
                     android:layout_height="match_parent"
                     android:backgroundTint="#00000000"
                     android:backgroundTintMode="src_in"
-                    android:padding="16dp"
+                    android:padding="13dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_decline"
                     tools:ignore="ContentDescription" />
@@ -151,7 +155,7 @@
                 android:id="@+id/tvDecline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 tools:text="Decline" />
@@ -162,7 +166,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_weight="1.4"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -170,20 +174,20 @@
                 android:layout_width="96dp"
                 android:layout_height="200dp">
 
-                <com.elumi.prankcall.incoming.SwipeHintChevrons
+                <com.elumi.fakecalling.incoming.SwipeHintChevrons
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="88dp" />
+                    android:layout_marginBottom="76dp" />
 
-                <com.elumi.prankcall.incoming.AcceptCallButton
+                <com.elumi.fakecalling.incoming.AcceptCallButton
                     android:id="@+id/ivAcceptCall"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingStart="32dp"
-                    android:paddingTop="152dp"
-                    android:paddingEnd="32dp"
-                    android:paddingBottom="16dp"
+                    android:paddingStart="36dp"
+                    android:paddingTop="148dp"
+                    android:paddingEnd="36dp"
+                    android:paddingBottom="0dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_accept"
                     tools:ignore="ContentDescription" />
@@ -199,7 +203,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/fwc_incoming_swipe_accept"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
@@ -215,13 +219,17 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:background="@drawable/fwc_circle_message">
+                android:id="@+id/flMessage"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/fwc_circle_message"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless">
 
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/fwc_ic_message"
                     tools:ignore="ContentDescription" />
@@ -231,7 +239,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/fwc_incoming_message"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
@@ -240,4 +248,4 @@
 
     </LinearLayout>
 
-</com.elumi.prankcall.incoming.IncomingCallLayout>
+</com.elumi.fakecalling.incoming.IncomingCallLayout>

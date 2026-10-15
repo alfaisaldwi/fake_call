@@ -10,7 +10,7 @@ abstract class QuickTriggerDataSource {
 }
 
 class QuickTriggerDataSourceImpl implements QuickTriggerDataSource {
-  static const _channel = MethodChannel('com.elumi.prankcall/quick_call');
+  static const _channel = MethodChannel('com.elumi.fakecalling/quick_call');
 
   StreamController<int>? _controller;
 

@@ -10,10 +10,12 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entities/call_config.dart';
 import '../../domain/entities/call_event.dart';
 import '../../domain/entities/pending_call.dart';
+import '../../domain/entities/call_preferences.dart';
 import '../../domain/repositories/fake_call_repository.dart';
 import '../datasources/call_alarm_data_source.dart';
 import '../datasources/fake_call_native_data_source.dart';
 import '../datasources/missed_call_notification_data_source.dart';
+import '../datasources/call_preferences_local_data_source.dart';
 import '../datasources/ring_vibration_data_source.dart';
 import '../models/call_config_model.dart';
 import '../models/call_event_model.dart';
@@ -24,6 +26,7 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
   final CallAlarmDataSource alarm;
   final MissedCallNotificationDataSource missedCallNotifier;
   final RingVibrationDataSource ringVibration;
+  final CallPreferencesLocalDataSource callPreferences;
   final Uuid uuid;
 
   final _events = StreamController<CallEvent>.broadcast();
@@ -36,6 +39,7 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
     required this.alarm,
     required this.missedCallNotifier,
     required this.ringVibration,
+    required this.callPreferences,
     required this.uuid,
   });
 
@@ -230,13 +234,15 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
       ..isAccepted = false
       ..callId = callId;
     try {
+      final ring = await _callPreferences();
       await dataSource.showIncomingCall(
         session.config,
         callId: callId,
         attempt: session.attempt,
+        ringtone: ring.ringtone,
       );
       if (identical(_session, session) && !session.isAccepted) {
-        _setVibration(true);
+        _setVibration(ring.vibrate);
       }
     } on CallKitException catch (e) {
       if (!identical(_session, session)) return;
@@ -333,6 +339,15 @@ class FakeCallRepositoryImpl implements FakeCallRepository {
         config: session.config,
       ),
     );
+  }
+
+  Future<CallPreferences> _callPreferences() async {
+    try {
+      return await callPreferences.getPreferences();
+    } on CacheException catch (e) {
+      log('Ring preferences unavailable, using defaults', error: e);
+      return const CallPreferences();
+    }
   }
 
   void _setVibration(bool on) {

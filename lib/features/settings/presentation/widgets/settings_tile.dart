@@ -7,6 +7,7 @@ class SettingsTile extends StatelessWidget {
   final Color color;
   final String title;
   final String? value;
+  final Widget? trailing;
   final VoidCallback? onTap;
 
   const SettingsTile({
@@ -15,6 +16,7 @@ class SettingsTile extends StatelessWidget {
     required this.color,
     required this.title,
     this.value,
+    this.trailing,
     this.onTap,
   });
 
@@ -70,7 +72,10 @@ class SettingsTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (onTap != null) ...[
+            if (trailing case final Widget trailing) ...[
+              const SizedBox(width: 8),
+              trailing,
+            ] else if (onTap != null) ...[
               const SizedBox(width: 4),
               Icon(Icons.chevron_right, color: palette.textSecondary),
             ],

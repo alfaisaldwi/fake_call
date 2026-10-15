@@ -4,10 +4,16 @@ import '../../../../l10n/app_localizations.dart';
 
 import '../../domain/entities/call_config.dart';
 import '../../domain/entities/clock_time.dart';
+import '../../domain/entities/call_preferences.dart';
 
 class CallConfigModel extends CallConfig {
   static const _appName = 'Fake Calling';
-  static const _androidRingtone = 'incoming_call';
+  static const _androidRingtones = {
+    CallRingtone.app: 'incoming_call',
+    CallRingtone.system: 'system_ringtone_default',
+    CallRingtone.silent: 'silence',
+  };
+  static const _systemRingtone = 'system_ringtone_default';
   static const _iosRingtone = 'incoming_call.caf';
 
   const CallConfigModel({
@@ -20,7 +26,6 @@ class CallConfigModel extends CallConfig {
     super.autoRecallCount,
     super.autoRecallInterval,
     super.ringAt,
-    super.initialDurationSeconds,
   });
 
   factory CallConfigModel.fromEntity(CallConfig entity) {
@@ -34,7 +39,6 @@ class CallConfigModel extends CallConfig {
       autoRecallCount: entity.autoRecallCount,
       autoRecallInterval: entity.autoRecallInterval,
       ringAt: entity.ringAt,
-      initialDurationSeconds: entity.initialDurationSeconds,
     );
   }
 
@@ -49,7 +53,6 @@ class CallConfigModel extends CallConfig {
       autoRecallCount: json['autoRecallCount'] as int? ?? 0,
       autoRecallInterval: json['autoRecallInterval'] as int? ?? 10,
       ringAt: _clockTimeFromJson(json['ringAt']),
-      initialDurationSeconds: json['initialDurationSeconds'] as int? ?? 0,
     );
   }
 
@@ -66,7 +69,6 @@ class CallConfigModel extends CallConfig {
       'ringAt': ringAt == null
           ? null
           : {'hour': ringAt!.hour, 'minute': ringAt!.minute},
-      'initialDurationSeconds': initialDurationSeconds,
     };
   }
 
@@ -83,6 +85,7 @@ class CallConfigModel extends CallConfig {
     required String callId,
     required int attempt,
     required AppLocalizations strings,
+    CallRingtone ringtone = CallRingtone.app,
     String? nativeAvatarUrl,
   }) {
     return CallKitParams(
@@ -106,7 +109,7 @@ class CallConfigModel extends CallConfig {
         isShowLogo: false,
         isShowCallID: true,
         backgroundUrl: isVideoCall ? nativeAvatarUrl : null,
-        ringtonePath: _androidRingtone,
+        ringtonePath: _androidRingtones[ringtone],
         backgroundColor: '#0B141A',
         actionColor: '#25D366',
         textColor: '#FFFFFF',
@@ -127,7 +130,9 @@ class CallConfigModel extends CallConfig {
         supportsHolding: false,
         supportsGrouping: false,
         supportsUngrouping: false,
-        ringtonePath: _iosRingtone,
+        ringtonePath: ringtone == CallRingtone.system
+            ? _systemRingtone
+            : _iosRingtone,
       ),
     );
   }

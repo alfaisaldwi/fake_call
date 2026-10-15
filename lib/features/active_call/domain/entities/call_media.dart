@@ -6,6 +6,7 @@ class CallMedia extends Equatable {
   final int remoteVideoViewId;
   final double remoteVideoAspectRatio;
   final int remoteVideoQuarterTurns;
+  final bool isCameraOn;
 
   const CallMedia({
     required this.cameraViewId,
@@ -13,6 +14,7 @@ class CallMedia extends Equatable {
     required this.remoteVideoViewId,
     required this.remoteVideoAspectRatio,
     this.remoteVideoQuarterTurns = 0,
+    this.isCameraOn = true,
   });
 
   bool get isRemoteVideoPortrait => remoteVideoAspectRatio < 0.9;
@@ -24,5 +26,6 @@ class CallMedia extends Equatable {
     remoteVideoViewId,
     remoteVideoAspectRatio,
     remoteVideoQuarterTurns,
+    isCameraOn,
   ];
 }

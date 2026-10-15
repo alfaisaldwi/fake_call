@@ -7,12 +7,14 @@ class DraggablePip extends StatefulWidget {
 
   final Size size;
   final EdgeInsets margin;
+  final VoidCallback? onTap;
   final Widget child;
 
   const DraggablePip({
     super.key,
     required this.size,
     required this.margin,
+    this.onTap,
     required this.child,
   });
 
@@ -93,6 +95,13 @@ class _DraggablePipState extends State<DraggablePip> {
               child: RawGestureDetector(
                 behavior: HitTestBehavior.opaque,
                 gestures: {
+                  TapGestureRecognizer:
+                      GestureRecognizerFactoryWithHandlers<
+                        TapGestureRecognizer
+                      >(
+                        TapGestureRecognizer.new,
+                        (recognizer) => recognizer.onTap = widget.onTap,
+                      ),
                   LongPressGestureRecognizer:
                       GestureRecognizerFactoryWithHandlers<
                         LongPressGestureRecognizer

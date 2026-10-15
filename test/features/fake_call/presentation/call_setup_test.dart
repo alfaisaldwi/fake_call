@@ -55,6 +55,12 @@ import 'package:fake_calling/features/onboarding/domain/repositories/coach_marks
 import 'package:fake_calling/features/onboarding/domain/usecases/check_coach_marks_seen.dart';
 import 'package:fake_calling/features/onboarding/domain/usecases/set_coach_marks_seen.dart';
 import 'package:fake_calling/features/onboarding/presentation/bloc/coach_marks_bloc.dart';
+import 'package:fake_calling/features/settings/domain/usecases/check_app_update.dart';
+import 'package:fake_calling/features/settings/domain/usecases/start_app_update.dart';
+import 'package:fake_calling/features/settings/presentation/bloc/app_update_bloc.dart';
+
+import '../../settings/app_update_test.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -261,6 +267,16 @@ Widget _host(FakeCallBloc bloc) {
       BlocProvider(create: (_) => _coachBloc()),
       BlocProvider(create: (_) => _themeBloc()),
       BlocProvider(
+        create: (_) {
+          final updates = FakeAppUpdateRepository();
+          return AppUpdateBloc(
+            checkAppUpdate: CheckAppUpdate(updates),
+            startAppUpdate: StartAppUpdate(updates),
+            failureMessages: _messages,
+          );
+        },
+      ),
+      BlocProvider(
         create: (_) => LanguageBloc(
           getAppLanguage: GetAppLanguage(languageRepository),
           saveAppLanguage: SaveAppLanguage(languageRepository),
@@ -431,6 +447,34 @@ void main() {
       await bloc.close();
     });
 
+    test('preview berdering sebentar lagi tanpa menyimpan apa pun', () async {
+      final bloc = buildBloc();
+      final config = bloc.state.config.copyWith(
+        callerName: 'Pak Bos',
+        delayInSeconds: 600,
+        autoRecallCount: 3,
+        ringAt: const ClockTime(14, 30),
+      );
+      bloc
+        ..add(FakeCallConfigChanged(config))
+        ..add(const FakeCallPreviewRequested());
+      await settle();
+
+      final scheduled = callRepository.scheduled!;
+      expect(scheduled.delayInSeconds, FakeCallBloc.previewDelaySeconds);
+      expect(scheduled.ringAt, isNull);
+      expect(scheduled.autoRecallCount, 0);
+      expect(scheduled.callerName, 'Pak Bos');
+      expect(bloc.state, isA<FakeCallCountingDown>());
+      expect(_history.stored.names, isEmpty);
+      expect(_lastConfig.stored, isNull);
+
+      bloc.add(const FakeCallReset());
+      await settle();
+      expect(bloc.state, FakeCallIdle(config));
+      await bloc.close();
+    });
+
     test('video dari galeri disimpan lalu bisa kembali ke bawaan', () async {
       final bloc = buildBloc()..add(const FakeCallVideoPickRequested());
       await settle();
@@ -490,7 +534,7 @@ void main() {
   testWidgets('nama kosong memunculkan dialog dan menyorot field', (
     tester,
   ) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 2520);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final bloc = buildBloc();
@@ -507,7 +551,7 @@ void main() {
 
     await tester.tap(find.text(_l10n.ok));
     await tester.pump(const Duration(milliseconds: 300));
-    await tester.ensureVisible(find.text(_l10n.callerNameRequiredShort));
+    await _reveal(tester, find.text(_l10n.callerNameRequiredShort));
     expect(find.text(_l10n.callerNameRequiredShort), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), 'Pak Bos');
@@ -521,7 +565,7 @@ void main() {
     tester,
   ) async {
     _history.stored = const CallerNameHistory(['Mama', 'Pak Bos']);
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 2520);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final bloc = buildBloc();
@@ -529,7 +573,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(_l10n.recentNamesLabel), findsNothing);
 
-    await tester.ensureVisible(find.byType(TextField));
+    await _reveal(tester, find.byType(TextField));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(TextField));
     await tester.pumpAndSettle();
@@ -544,7 +588,7 @@ void main() {
   });
 
   testWidgets('tombol back diblokir selama hitung mundur', (tester) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 2520);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final bloc = buildBloc();
@@ -568,7 +612,7 @@ void main() {
   });
 
   testWidgets('pemilih video hanya muncul untuk video call', (tester) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 2520);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final bloc = buildBloc();
@@ -576,7 +620,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(_l10n.callerVideoLabel), findsOneWidget);
 
-    await tester.ensureVisible(find.text(_l10n.callTypeVoice));
+    await _reveal(tester, find.text(_l10n.callTypeVoice));
     await tester.pumpAndSettle();
     await tester.tap(find.text(_l10n.callTypeVoice));
     await tester.pumpAndSettle();
@@ -585,7 +629,7 @@ void main() {
   });
 
   testWidgets('menyimpan lalu memakai preset penelepon', (tester) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 2520);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     _presets.presets = const [
@@ -605,7 +649,7 @@ void main() {
     await tester.pump();
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.byIcon(Icons.bookmark_add_outlined));
+    await _reveal(tester, find.byIcon(Icons.bookmark_add_outlined));
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.bookmark_add_outlined));
     await tester.pumpAndSettle();
@@ -617,7 +661,7 @@ void main() {
   testWidgets('tur panduan muncul sekali lalu ditandai selesai', (
     tester,
   ) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 2520);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     _coach.seen = false;
@@ -639,7 +683,7 @@ void main() {
   testWidgets('form menampilkan jeda hanya saat panggil ulang aktif', (
     tester,
   ) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 2520);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final bloc = buildBloc();
@@ -664,4 +708,9 @@ void main() {
     expect(bloc.state.config.autoRecallCount, 1);
     await tester.runAsync(bloc.close);
   });
+}
+
+Future<void> _reveal(WidgetTester tester, Finder finder) async {
+  await Scrollable.ensureVisible(tester.element(finder), alignment: 0.5);
+  await tester.pumpAndSettle();
 }

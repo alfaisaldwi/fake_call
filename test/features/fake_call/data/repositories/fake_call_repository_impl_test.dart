@@ -7,6 +7,8 @@ import 'package:fake_calling/core/error/exceptions.dart';
 import 'package:fake_calling/features/fake_call/data/datasources/call_alarm_data_source.dart';
 import 'package:fake_calling/features/fake_call/data/datasources/fake_call_native_data_source.dart';
 import 'package:fake_calling/features/fake_call/data/datasources/missed_call_notification_data_source.dart';
+import 'package:fake_calling/features/fake_call/data/datasources/call_preferences_local_data_source.dart';
+import 'package:fake_calling/features/fake_call/domain/entities/call_preferences.dart';
 import 'package:fake_calling/features/fake_call/data/datasources/ring_vibration_data_source.dart';
 import 'package:fake_calling/features/fake_call/data/models/call_config_model.dart';
 import 'package:fake_calling/features/fake_call/data/models/call_event_model.dart';
@@ -22,6 +24,7 @@ import 'package:uuid/uuid.dart';
 class _FakeNativeDataSource implements FakeCallNativeDataSource {
   final native = StreamController<CallEventModel>.broadcast(sync: true);
   final shown = <String>[];
+  final ringtones = <CallRingtone>[];
   final ended = <String>[];
   bool denyPermission = false;
   CallEventModel? acceptedCall;
@@ -44,8 +47,10 @@ class _FakeNativeDataSource implements FakeCallNativeDataSource {
     CallConfigModel config, {
     required String callId,
     required int attempt,
+    required CallRingtone ringtone,
   }) async {
     shown.add(callId);
+    ringtones.add(ringtone);
     native.add(CallEventModel(callId: callId, type: CallEventType.incoming));
   }
 
@@ -118,8 +123,20 @@ class _FakeRingVibration implements RingVibrationDataSource {
   Future<void> stop() async => log.add('stop');
 }
 
+class _FakeCallPreferences implements CallPreferencesLocalDataSource {
+  CallPreferences stored = const CallPreferences();
+
+  @override
+  Future<CallPreferences> getPreferences() async => stored;
+
+  @override
+  Future<void> savePreferences(CallPreferences preferences) async =>
+      stored = preferences;
+}
+
 void main() {
   late _FakeNativeDataSource dataSource;
+  late _FakeCallPreferences ring;
   late _FakeAlarm alarm;
   late _FakeMissedCallNotifier notifier;
   late _FakeRingVibration vibration;
@@ -143,11 +160,13 @@ void main() {
     alarm = _FakeAlarm();
     notifier = _FakeMissedCallNotifier();
     vibration = _FakeRingVibration();
+    ring = _FakeCallPreferences();
     repository = FakeCallRepositoryImpl(
       dataSource: dataSource,
       alarm: alarm,
       missedCallNotifier: notifier,
       ringVibration: vibration,
+      callPreferences: ring,
       uuid: const Uuid(),
     );
     events = [];
@@ -377,6 +396,20 @@ void main() {
       dataSource.send(CallEventType.accepted);
       async.flushMicrotasks();
       expect(vibration.isOn, isFalse);
+    });
+  });
+
+  test('nada dering dan getar mengikuti pengaturan saat berdering', () {
+    fakeAsync((async) {
+      ring.stored = const CallPreferences(
+        ringtone: CallRingtone.silent,
+        vibrate: false,
+      );
+      start(async, config);
+      async.elapse(const Duration(seconds: 5));
+
+      expect(dataSource.ringtones, [CallRingtone.silent]);
+      expect(vibration.log, ['stop']);
     });
   });
 

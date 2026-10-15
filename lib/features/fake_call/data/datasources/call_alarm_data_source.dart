@@ -22,7 +22,7 @@ abstract class CallAlarmDataSource {
 }
 
 class CallAlarmDataSourceImpl implements CallAlarmDataSource {
-  static const _channel = MethodChannel('com.elumi.prankcall/call_alarm');
+  static const _channel = MethodChannel('com.elumi.fakecalling/call_alarm');
 
   StreamController<ScheduledCallModel>? _fired;
 

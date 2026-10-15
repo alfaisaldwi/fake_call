@@ -40,6 +40,10 @@ final class FakeCallScheduleRequested extends FakeCallEvent {
   const FakeCallScheduleRequested();
 }
 
+final class FakeCallPreviewRequested extends FakeCallEvent {
+  const FakeCallPreviewRequested();
+}
+
 final class FakeCallEndRequested extends FakeCallEvent {
   const FakeCallEndRequested();
 }

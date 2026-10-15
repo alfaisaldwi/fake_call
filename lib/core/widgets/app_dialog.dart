@@ -87,11 +87,7 @@ class _AppDialogState extends State<_AppDialog> {
   Widget _buildDialog(BuildContext context) {
     final palette = context.palette;
     final textTheme = Theme.of(context).textTheme;
-    final accent = switch (tone) {
-      DialogTone.info => palette.primary,
-      DialogTone.warning => const Color(0xFFF59E0B),
-      DialogTone.danger => AppColors.error,
-    };
+    final accent = _accent(palette);
     final cancel = cancelLabel;
     return Center(
       child: Padding(
@@ -138,8 +134,8 @@ class _AppDialogState extends State<_AppDialog> {
                         Expanded(
                           child: _DialogButton(
                             label: cancel,
-                            background: palette.background,
-                            foreground: palette.textPrimary,
+                            background: Colors.transparent,
+                            foreground: palette.textSecondary,
                             onPressed: () => Navigator.of(context).pop(false),
                           ),
                         ),
@@ -157,24 +153,37 @@ class _AppDialogState extends State<_AppDialog> {
     );
   }
 
+  Color _accent(AppPalette palette) => switch (tone) {
+    DialogTone.info => palette.primary,
+    DialogTone.warning => const Color(0xFFF59E0B),
+    DialogTone.danger => AppColors.error,
+  };
+
+  Color _onAccent(AppPalette palette) => switch (tone) {
+    DialogTone.info => palette.selectedText,
+    DialogTone.warning => const Color(0xFFB45309),
+    DialogTone.danger => AppColors.error,
+  };
+
   Widget _buildConfirm(BuildContext context, Color accent) {
     final palette = context.palette;
+    final background = accent.withValues(alpha: 0.14);
+    final foreground = _onAccent(palette);
     final delay = widget.confirmDelay;
     if (delay != null) {
       return _CountdownButton(
         label: confirmLabel,
         delay: delay,
-        background: palette.primary,
+        background: background,
+        foreground: foreground,
         onReady: () => setState(() => _ready = true),
         onPressed: () => Navigator.of(context).pop(true),
       );
     }
     return _DialogButton(
       label: confirmLabel,
-      background: tone == DialogTone.danger
-          ? accent.withValues(alpha: 0.12)
-          : palette.primary,
-      foreground: tone == DialogTone.danger ? accent : Colors.white,
+      background: background,
+      foreground: foreground,
       onPressed: () => Navigator.of(context).pop(true),
     );
   }
@@ -184,6 +193,7 @@ class _CountdownButton extends StatefulWidget {
   final String label;
   final Duration delay;
   final Color background;
+  final Color foreground;
   final VoidCallback onReady;
   final VoidCallback onPressed;
 
@@ -191,6 +201,7 @@ class _CountdownButton extends StatefulWidget {
     required this.label,
     required this.delay,
     required this.background,
+    required this.foreground,
     required this.onReady,
     required this.onPressed,
   });
@@ -236,11 +247,9 @@ class _CountdownButtonState extends State<_CountdownButton>
             onPressed: ready ? widget.onPressed : null,
             style: FilledButton.styleFrom(
               backgroundColor: widget.background,
-              disabledBackgroundColor: widget.background.withValues(
-                alpha: 0.45,
-              ),
-              foregroundColor: Colors.white,
-              disabledForegroundColor: Colors.white,
+              disabledBackgroundColor: widget.background,
+              foregroundColor: widget.foreground,
+              disabledForegroundColor: widget.foreground.withValues(alpha: 0.6),
               elevation: 0,
               minimumSize: const Size.fromHeight(46),
               shape: RoundedRectangleBorder(
@@ -264,6 +273,7 @@ class _CountdownButtonState extends State<_CountdownButton>
                           child: _CountdownRing(
                             progress: 1 - _controller.value,
                             seconds: _remaining,
+                            color: widget.foreground,
                           ),
                         ),
                 ),
@@ -280,8 +290,13 @@ class _CountdownButtonState extends State<_CountdownButton>
 class _CountdownRing extends StatelessWidget {
   final double progress;
   final int seconds;
+  final Color color;
 
-  const _CountdownRing({required this.progress, required this.seconds});
+  const _CountdownRing({
+    required this.progress,
+    required this.seconds,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -293,8 +308,8 @@ class _CountdownRing extends StatelessWidget {
           CircularProgressIndicator(
             value: progress,
             strokeWidth: 2.2,
-            color: Colors.white,
-            backgroundColor: Colors.white.withValues(alpha: 0.25),
+            color: color,
+            backgroundColor: color.withValues(alpha: 0.2),
           ),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
@@ -310,8 +325,8 @@ class _CountdownRing extends StatelessWidget {
             child: Text(
               '$seconds',
               key: ValueKey(seconds),
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: color,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),

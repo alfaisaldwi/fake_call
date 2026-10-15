@@ -110,7 +110,7 @@ class _ToastViewState extends State<_ToastView>
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+          padding: const EdgeInsets.fromLTRB(20, 48, 20, 0),
           child: SlideTransition(
             position: _slide,
             child: FadeTransition(

@@ -547,9 +547,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeTitle => 'Fake Calling';
 
   @override
-  String get homeSubtitle => 'Your way out, one tap away';
-
-  @override
   String get coachSkip => 'Skip';
 
   @override
@@ -637,10 +634,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get initialDurationLabel => 'Starting call timer';
 
   @override
-  String get initialDurationDescription =>
-      'The call timer starts from here, so it looks like you\'ve been talking for a while.';
-
-  @override
   String get initialDurationZero => 'From 00:00';
 
   @override
@@ -677,4 +670,47 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsPermissionsBody =>
       'Keep all of these on so your fake calls ring on time, even when the app is closed.';
+
+  @override
+  String get ringtoneLabel => 'Ringtone';
+
+  @override
+  String get ringtoneApp => 'Default';
+
+  @override
+  String get ringtoneSystem => 'My phone\'s ringtone';
+
+  @override
+  String get ringtoneSilent => 'Silent';
+
+  @override
+  String get vibrateLabel => 'Vibrate';
+
+  @override
+  String get previewCall => 'Preview';
+
+  @override
+  String get settingsCalls => 'Calls';
+
+  @override
+  String get homeSubtitle => 'Your way out, one tap away';
+
+  @override
+  String get updateCheck => 'Check for updates';
+
+  @override
+  String get updateAvailable => 'Update available';
+
+  @override
+  String get updateLatest => 'Up to date';
+
+  @override
+  String get updateUpToDate => 'You\'re on the latest version.';
+
+  @override
+  String get errorUpdateCheck =>
+      'Couldn\'t check for updates. Make sure the app was installed from Google Play.';
+
+  @override
+  String get errorUpdate => 'The update couldn\'t start. Please try again.';
 }

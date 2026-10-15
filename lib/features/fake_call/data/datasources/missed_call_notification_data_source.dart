@@ -12,7 +12,7 @@ abstract class MissedCallNotificationDataSource {
 
 class MissedCallNotificationDataSourceImpl
     implements MissedCallNotificationDataSource {
-  static const _channel = MethodChannel('com.elumi.prankcall/missed_call');
+  static const _channel = MethodChannel('com.elumi.fakecalling/missed_call');
   static const _iosThread = 'missed_calls';
 
   final FlutterLocalNotificationsPlugin plugin;

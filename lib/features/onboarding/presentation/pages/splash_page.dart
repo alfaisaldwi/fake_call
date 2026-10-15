@@ -5,12 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../bloc/onboarding_bloc.dart';
-import '../widgets/looping_animation.dart';
 
 class SplashPage extends StatefulWidget {
   static const minimumDuration = Duration(milliseconds: 1800);
+  static const _logoSize = 88.0;
+  static const _ringsSize = 420.0;
 
   const SplashPage({super.key});
 
@@ -62,105 +64,160 @@ class _SplashPageState extends State<SplashPage>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final palette = context.palette;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return BlocListener<OnboardingBloc, OnboardingState>(
       listener: (_, _) => _tryLeave(),
       child: Scaffold(
-        body: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.brandSky, AppColors.brandPeriwinkle],
-            ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox.square(
-                  dimension: 220,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      LoopingAnimation(
-                        duration: const Duration(milliseconds: 2000),
-                        builder: (context, t) => Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            for (var i = 0; i < 2; i++) _pulse((t + i / 2) % 1),
-                          ],
-                        ),
-                      ),
-                      ScaleTransition(
-                        scale: _logoScale,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(28),
-                            boxShadow: const [
-                              BoxShadow(
-                                blurRadius: 28,
-                                offset: Offset(0, 12),
-                                color: Color(0x334A63E0),
-                              ),
-                            ],
-                          ),
-                          child: Image.asset(
-                            'assets/img/launcher/launcher_icon.png',
-                            width: 128,
-                            height: 128,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                FadeTransition(
-                  opacity: _textFade,
-                  child: SlideTransition(
-                    position: Tween(
-                      begin: const Offset(0, 0.4),
-                      end: Offset.zero,
-                    ).animate(_textFade),
-                    child: Column(
+        backgroundColor: palette.background,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            FadeTransition(opacity: _textFade, child: const _SplashBackdrop()),
+            SafeArea(
+              child: Column(
+                children: [
+                  const Spacer(),
+                  SizedBox.square(
+                    dimension: SplashPage._logoSize,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
                       children: [
-                        Text(
-                          l10n.appTitle,
-                          style: const TextStyle(
-                            color: AppColors.brandInk,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w600,
+                        OverflowBox(
+                          maxWidth: SplashPage._ringsSize,
+                          maxHeight: SplashPage._ringsSize,
+                          child: FadeTransition(
+                            opacity: _textFade,
+                            child: CustomPaint(
+                              size: const Size.square(SplashPage._ringsSize),
+                              painter: _RingsPainter(
+                                color: AppColors.brandPeriwinkle.withValues(
+                                  alpha: isDark ? 0.14 : 0.28,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          l10n.splashTagline,
-                          style: TextStyle(
-                            color: AppColors.brandInk.withValues(alpha: 0.65),
-                            fontSize: 15,
+                        ScaleTransition(
+                          scale: _logoScale,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              'assets/img/launcher/launcher_icon.png',
+                              width: SplashPage._logoSize,
+                              height: SplashPage._logoSize,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  FadeTransition(
+                    opacity: _textFade,
+                    child: Text(
+                      l10n.homeTitle,
+                      style: TextStyle(
+                        color: palette.textPrimary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  FadeTransition(
+                    opacity: _textFade,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(
+                        'assets/img/elumi.png',
+                        width: 28,
+                        height: 28,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _pulse(double progress) {
-    final size = 128 + 92 * progress;
+class _SplashBackdrop extends StatelessWidget {
+  const _SplashBackdrop();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final strength = isDark ? 0.18 : 0.45;
+    return IgnorePointer(
+      child: Stack(
+        children: [
+          Positioned(
+            top: -140,
+            right: -120,
+            child: _Glow(
+              size: 360,
+              color: AppColors.brandSky.withValues(alpha: strength),
+            ),
+          ),
+          Positioned(
+            bottom: -160,
+            left: -140,
+            child: _Glow(
+              size: 400,
+              color: AppColors.brandPeriwinkle.withValues(alpha: strength),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Glow extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const _Glow({required this.size, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30 + 40 * progress),
-        color: Colors.white.withValues(alpha: 0.35 * (1 - progress)),
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0)]),
       ),
     );
   }
+}
+
+class _RingsPainter extends CustomPainter {
+  static const _radii = [90.0, 140.0, 200.0];
+
+  final Color color;
+
+  const _RingsPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    for (final (index, radius) in _radii.indexed) {
+      final paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2
+        ..color = color.withValues(alpha: color.a * (1 - index * 0.3));
+      canvas.drawCircle(center, radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_RingsPainter oldDelegate) => oldDelegate.color != color;
 }

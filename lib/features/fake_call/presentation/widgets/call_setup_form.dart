@@ -42,7 +42,6 @@ class _CallSetupFormState extends State<CallSetupForm> {
   static const _delayOptions = [0, 10, 30, 60, 300, 600, 1200, 1800];
   static const _hangupOptions = [0, 10, 15, 30, 60, 120];
   static const _recallIntervalOptions = [5, 10, 30, 60];
-  static const _initialDurationOptions = [0, 60, 300, 900];
   static const _sectionGap = SizedBox(height: 12);
 
   late final _nameController = TextEditingController(
@@ -216,6 +215,7 @@ class _CallSetupFormState extends State<CallSetupForm> {
             child: ScheduleBar(
               summary: _summary(config),
               onSchedule: () => _bloc.add(const FakeCallScheduleRequested()),
+              onPreview: () => _bloc.add(const FakeCallPreviewRequested()),
             ),
           ),
         ],
@@ -350,18 +350,6 @@ class _CallSetupFormState extends State<CallSetupForm> {
               zeroLabel: _l10n.optionOff,
               onChanged: (s) =>
                   _update((c) => c.copyWith(autoHangupSeconds: s)),
-            ),
-          ),
-          const Divider(),
-          OptionGroup(
-            title: _l10n.initialDurationLabel,
-            description: _l10n.initialDurationDescription,
-            child: SecondsOptionSelector(
-              options: _initialDurationOptions,
-              selected: config.initialDurationSeconds,
-              zeroLabel: _l10n.initialDurationZero,
-              onChanged: (s) =>
-                  _update((c) => c.copyWith(initialDurationSeconds: s)),
             ),
           ),
         ],

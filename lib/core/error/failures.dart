@@ -31,6 +31,10 @@ class CacheFailure extends Failure {
   const CacheFailure(super.reason, {super.detail, super.limit});
 }
 
+class UpdateFailure extends Failure {
+  const UpdateFailure(super.reason, {super.detail, super.limit});
+}
+
 class ValidationFailure extends Failure {
   const ValidationFailure(super.reason, {super.detail, super.limit});
 }

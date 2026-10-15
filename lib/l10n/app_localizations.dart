@@ -1070,12 +1070,6 @@ abstract class AppLocalizations {
   /// **'Fake Calling'**
   String get homeTitle;
 
-  /// No description provided for @homeSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Your way out, one tap away'**
-  String get homeSubtitle;
-
   /// No description provided for @coachSkip.
   ///
   /// In en, this message translates to:
@@ -1226,12 +1220,6 @@ abstract class AppLocalizations {
   /// **'Starting call timer'**
   String get initialDurationLabel;
 
-  /// No description provided for @initialDurationDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'The call timer starts from here, so it looks like you\'ve been talking for a while.'**
-  String get initialDurationDescription;
-
   /// No description provided for @initialDurationZero.
   ///
   /// In en, this message translates to:
@@ -1297,6 +1285,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Keep all of these on so your fake calls ring on time, even when the app is closed.'**
   String get settingsPermissionsBody;
+
+  /// No description provided for @ringtoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ringtone'**
+  String get ringtoneLabel;
+
+  /// No description provided for @ringtoneApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get ringtoneApp;
+
+  /// No description provided for @ringtoneSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'My phone\'s ringtone'**
+  String get ringtoneSystem;
+
+  /// No description provided for @ringtoneSilent.
+  ///
+  /// In en, this message translates to:
+  /// **'Silent'**
+  String get ringtoneSilent;
+
+  /// No description provided for @vibrateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibrate'**
+  String get vibrateLabel;
+
+  /// No description provided for @previewCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get previewCall;
+
+  /// No description provided for @settingsCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls'**
+  String get settingsCalls;
+
+  /// No description provided for @homeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your way out, one tap away'**
+  String get homeSubtitle;
+
+  /// No description provided for @updateCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates'**
+  String get updateCheck;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get updateAvailable;
+
+  /// No description provided for @updateLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get updateLatest;
+
+  /// No description provided for @updateUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re on the latest version.'**
+  String get updateUpToDate;
+
+  /// No description provided for @errorUpdateCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t check for updates. Make sure the app was installed from Google Play.'**
+  String get errorUpdateCheck;
+
+  /// No description provided for @errorUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'The update couldn\'t start. Please try again.'**
+  String get errorUpdate;
 }
 
 class _AppLocalizationsDelegate

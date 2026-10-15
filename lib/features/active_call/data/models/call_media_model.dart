@@ -7,6 +7,7 @@ class CallMediaModel extends CallMedia {
     required super.remoteVideoViewId,
     required super.remoteVideoAspectRatio,
     super.remoteVideoQuarterTurns,
+    super.isCameraOn,
   });
 
   factory CallMediaModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +18,7 @@ class CallMediaModel extends CallMedia {
       remoteVideoQuarterTurns: json['remoteVideoQuarterTurns'] as int? ?? 0,
       remoteVideoAspectRatio: (json['remoteVideoAspectRatio'] as num)
           .toDouble(),
+      isCameraOn: json['isCameraOn'] as bool? ?? true,
     );
   }
 
@@ -27,6 +29,7 @@ class CallMediaModel extends CallMedia {
       'remoteVideoViewId': remoteVideoViewId,
       'remoteVideoAspectRatio': remoteVideoAspectRatio,
       'remoteVideoQuarterTurns': remoteVideoQuarterTurns,
+      'isCameraOn': isCameraOn,
     };
   }
 }

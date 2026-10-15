@@ -284,7 +284,6 @@
   "aboutMadeBy": "Made by",
   "settingsPreferences": "Preferences",
   "homeTitle": "Fake Calling",
-  "homeSubtitle": "Your way out, one tap away",
   "coachSkip": "Skip",
   "coachNext": "Next",
   "coachDone": "Got it",
@@ -331,7 +330,6 @@
     }
   },
   "initialDurationLabel": "Starting call timer",
-  "initialDurationDescription": "The call timer starts from here, so it looks like you've been talking for a while.",
   "initialDurationZero": "From 00:00",
   "permissionExactAlarmTitle": "On-time alarms",
   "permissionExactAlarmBody": "So the call rings right on time, even after the app is closed.",
@@ -342,5 +340,19 @@
   "permissionReminderBody": "Fake Calling needs these permissions to ring on time, show up on the lock screen, and keep working after the app is closed. Without them, the app can't work properly.",
   "permissionReminderConfirm": "Got it",
   "settingsPermissions": "App permissions",
-  "settingsPermissionsBody": "Keep all of these on so your fake calls ring on time, even when the app is closed."
+  "settingsPermissionsBody": "Keep all of these on so your fake calls ring on time, even when the app is closed.",
+  "ringtoneLabel": "Ringtone",
+  "ringtoneApp": "Default",
+  "ringtoneSystem": "My phone's ringtone",
+  "ringtoneSilent": "Silent",
+  "vibrateLabel": "Vibrate",
+  "previewCall": "Preview",
+  "settingsCalls": "Calls",
+  "homeSubtitle": "Your way out, one tap away",
+  "updateCheck": "Check for updates",
+  "updateAvailable": "Update available",
+  "updateLatest": "Up to date",
+  "updateUpToDate": "You're on the latest version.",
+  "errorUpdateCheck": "Couldn't check for updates. Make sure the app was installed from Google Play.",
+  "errorUpdate": "The update couldn't start. Please try again."
 }

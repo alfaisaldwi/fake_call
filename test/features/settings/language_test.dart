@@ -73,7 +73,7 @@ void main() {
 
     final state = bloc.state as LanguageError;
     expect(state.language, AppLanguage.system);
-    expect(state.message, 'Pengaturan gagal disimpan.');
+    expect(state.message, 'Pengaturannya gagal disimpan.');
     await bloc.close();
   });
 

@@ -40,6 +40,8 @@ class FailureMessages {
       FailureReason.recallIntervalTooShort => l10n.errorRecallIntervalTooShort(
         limit,
       ),
+      FailureReason.updateCheckFailed => l10n.errorUpdateCheck,
+      FailureReason.updateFailed => l10n.errorUpdate,
     };
   }
 }

@@ -23,4 +23,6 @@ enum FailureReason {
   invalidAutoHangup,
   invalidRecallCount,
   recallIntervalTooShort,
+  updateCheckFailed,
+  updateFailed,
 }

@@ -8,14 +8,12 @@ void main() {
     delayInSeconds: 60,
     callerName: 'Pak Bos',
     ringAt: ClockTime(14, 30),
-    initialDurationSeconds: 300,
   );
 
-  test('jam dering dan durasi awal ikut tersimpan', () {
+  test('jam dering ikut tersimpan', () {
     final restored = CallConfigModel.fromJson(config.toJson());
 
     expect(restored.ringAt, const ClockTime(14, 30));
-    expect(restored.initialDurationSeconds, 300);
     expect(restored.props, config.props);
   });
 
@@ -26,7 +24,6 @@ void main() {
     });
 
     expect(restored.ringAt, isNull);
-    expect(restored.initialDurationSeconds, 0);
   });
 
   test('jam dering yang tidak valid diabaikan', () {

@@ -7,9 +7,9 @@
         android:shortcutLongLabel="@string/fwc_shortcut_10s_long"
         android:shortcutShortLabel="@string/fwc_shortcut_10s">
         <intent
-            android:action="com.elumi.prankcall.QUICK_CALL"
-            android:targetClass="com.elumi.prankcall.MainActivity"
-            android:targetPackage="com.elumi.prankcall">
+            android:action="com.elumi.fakecalling.QUICK_CALL"
+            android:targetClass="com.elumi.fakecalling.MainActivity"
+            android:targetPackage="com.elumi.fakecalling">
             <extra android:name="delay_seconds" android:value="10" />
         </intent>
     </shortcut>
@@ -20,9 +20,9 @@
         android:shortcutLongLabel="@string/fwc_shortcut_1m_long"
         android:shortcutShortLabel="@string/fwc_shortcut_1m">
         <intent
-            android:action="com.elumi.prankcall.QUICK_CALL"
-            android:targetClass="com.elumi.prankcall.MainActivity"
-            android:targetPackage="com.elumi.prankcall">
+            android:action="com.elumi.fakecalling.QUICK_CALL"
+            android:targetClass="com.elumi.fakecalling.MainActivity"
+            android:targetPackage="com.elumi.fakecalling">
             <extra android:name="delay_seconds" android:value="60" />
         </intent>
     </shortcut>

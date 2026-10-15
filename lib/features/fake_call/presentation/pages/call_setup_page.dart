@@ -10,6 +10,7 @@ import '../../../../core/widgets/coach_mark.dart';
 import '../../../../core/widgets/top_toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../onboarding/presentation/bloc/coach_marks_bloc.dart';
+import '../../../settings/presentation/bloc/app_update_bloc.dart';
 import '../bloc/fake_call_bloc.dart';
 import '../widgets/call_progress_view.dart';
 import '../widgets/call_setup_form.dart';
@@ -93,98 +94,107 @@ class _CallSetupPageState extends State<CallSetupPage> {
 
   Widget _buildScaffold(BuildContext context, AppLocalizations l10n) {
     return Scaffold(
-      appBar: AppTopBar(
-        title: l10n.homeTitle,
-        subtitle: l10n.homeSubtitle,
-        leading: const TopBarLogo(
-          asset: 'assets/img/launcher/launcher_icon.png',
-        ),
-        actions: [
-          CoachMark(
-            showcaseKey: _coachKeys.settings,
-            title: l10n.coachSettingsTitle,
-            description: l10n.coachSettingsBody,
-            radius: 24,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          LargeTopBar(
+            title: l10n.homeTitle,
+            subtitle: l10n.homeSubtitle,
             actions: [
-              TooltipActionButton(
-                type: TooltipDefaultActionType.next,
-                name: l10n.coachDone,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 7,
-                ),
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500,
+              CoachMark(
+                showcaseKey: _coachKeys.settings,
+                title: l10n.coachSettingsTitle,
+                description: l10n.coachSettingsBody,
+                radius: 24,
+                actions: [
+                  TooltipActionButton(
+                    type: TooltipDefaultActionType.next,
+                    name: l10n.coachDone,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 7,
+                    ),
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+                child: BlocSelector<AppUpdateBloc, AppUpdateState, bool>(
+                  selector: (state) => state.isAvailable,
+                  builder: (context, hasUpdate) => Badge(
+                    isLabelVisible: hasUpdate,
+                    smallSize: 10,
+                    offset: const Offset(-4, 4),
+                    child: TopBarButton(
+                      icon: Icons.settings_outlined,
+                      tooltip: l10n.settingsTooltip,
+                      onPressed: AppRouter.openSettings,
+                    ),
+                  ),
                 ),
               ),
             ],
-            child: TopBarButton(
-              icon: Icons.settings_outlined,
-              tooltip: l10n.settingsTooltip,
-              onPressed: AppRouter.openSettings,
-            ),
           ),
         ],
-      ),
-      body: BlocBuilder<FakeCallBloc, FakeCallState>(
-        builder: (context, state) {
-          void cancel() =>
-              context.read<FakeCallBloc>().add(const FakeCallEndRequested());
-          final config = state.config;
-          final attemptLabel = config.autoRecallCount > 0;
-          return switch (state) {
-            FakeCallCountingDown(
-              :final remainingSeconds,
-              :final totalSeconds,
-            ) =>
-              CallProgressView(
-                config: config,
-                remainingSeconds: remainingSeconds,
-                totalSeconds: totalSeconds,
-                title: l10n.progressWillCall(config.callerName),
-                subtitle: l10n.progressLockScreenHint,
-                onCancel: cancel,
-              ),
-            FakeCallWaitingRecall(
-              :final nextAttempt,
-              :final remainingSeconds,
-            ) =>
-              CallProgressView(
-                config: config,
-                remainingSeconds: remainingSeconds,
-                totalSeconds: config.autoRecallInterval,
-                title: l10n.progressRedialIn(remainingSeconds),
-                subtitle: l10n.progressAttempt(
-                  nextAttempt,
-                  config.totalAttempts,
+        body: BlocBuilder<FakeCallBloc, FakeCallState>(
+          builder: (context, state) {
+            void cancel() =>
+                context.read<FakeCallBloc>().add(const FakeCallEndRequested());
+            final config = state.config;
+            final attemptLabel = config.autoRecallCount > 0;
+            return switch (state) {
+              FakeCallCountingDown(
+                :final remainingSeconds,
+                :final totalSeconds,
+              ) =>
+                CallProgressView(
+                  config: config,
+                  remainingSeconds: remainingSeconds,
+                  totalSeconds: totalSeconds,
+                  title: l10n.progressWillCall(config.callerName),
+                  subtitle: l10n.progressLockScreenHint,
+                  onCancel: cancel,
                 ),
+              FakeCallWaitingRecall(
+                :final nextAttempt,
+                :final remainingSeconds,
+              ) =>
+                CallProgressView(
+                  config: config,
+                  remainingSeconds: remainingSeconds,
+                  totalSeconds: config.autoRecallInterval,
+                  title: l10n.progressRedialIn(remainingSeconds),
+                  subtitle: l10n.progressAttempt(
+                    nextAttempt,
+                    config.totalAttempts,
+                  ),
+                  onCancel: cancel,
+                ),
+              FakeCallRinging(:final attempt) => CallProgressView(
+                config: config,
+                title: l10n.progressRinging,
+                subtitle: attemptLabel
+                    ? l10n.progressAttempt(attempt, config.totalAttempts)
+                    : l10n.progressAnswerHint,
                 onCancel: cancel,
               ),
-            FakeCallRinging(:final attempt) => CallProgressView(
-              config: config,
-              title: l10n.progressRinging,
-              subtitle: attemptLabel
-                  ? l10n.progressAttempt(attempt, config.totalAttempts)
-                  : l10n.progressAnswerHint,
-              onCancel: cancel,
-            ),
-            FakeCallAccepted() => CallProgressView(
-              config: config,
-              title: l10n.progressInCall,
-              subtitle: l10n.progressOpeningCall,
-              onCancel: cancel,
-            ),
-            FakeCallError(:final invalidField) => CallSetupForm(
-              config: config,
-              coachKeys: _coachKeys,
-              invalidField: invalidField,
-            ),
-            _ => CallSetupForm(config: config, coachKeys: _coachKeys),
-          };
-        },
+              FakeCallAccepted() => CallProgressView(
+                config: config,
+                title: l10n.progressInCall,
+                subtitle: l10n.progressOpeningCall,
+                onCancel: cancel,
+              ),
+              FakeCallError(:final invalidField) => CallSetupForm(
+                config: config,
+                coachKeys: _coachKeys,
+                invalidField: invalidField,
+              ),
+              _ => CallSetupForm(config: config, coachKeys: _coachKeys),
+            };
+          },
+        ),
       ),
     );
   }

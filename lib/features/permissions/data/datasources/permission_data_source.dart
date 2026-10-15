@@ -14,7 +14,7 @@ abstract class PermissionDataSource {
 }
 
 class PermissionDataSourceImpl implements PermissionDataSource {
-  static const _power = MethodChannel('com.elumi.prankcall/power');
+  static const _power = MethodChannel('com.elumi.fakecalling/power');
 
   @override
   Future<bool> isGranted(AppPermission permission) async {

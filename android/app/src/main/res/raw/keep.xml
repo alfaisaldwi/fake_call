@@ -1,3 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:keep="@raw/incoming_call,@drawable/ic_stat_missed_call,@layout/fwc_missed_call_notification" />
+    tools:keep="@drawable/ic_stat_incoming_call,@raw/incoming_call,@raw/silence,@drawable/ic_stat_missed_call,@layout/fwc_missed_call_notification" />

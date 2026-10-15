@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/duration_format.dart';
@@ -9,6 +10,7 @@ import 'call_top_bar.dart';
 import 'draggable_pip.dart';
 import '../../../../core/widgets/caller_avatar.dart';
 import 'local_camera_preview.dart';
+import 'pip_frame.dart';
 import 'remote_video_view.dart';
 import 'video_call_actions.dart';
 
@@ -32,8 +34,10 @@ class VideoCallView extends StatefulWidget {
 
 class _VideoCallViewState extends State<VideoCallView> {
   static const _fade = Duration(milliseconds: 200);
+  static const _swap = Duration(milliseconds: 280);
 
   bool _controlsVisible = true;
+  bool _isSwapped = false;
 
   static const _topBarHeight = 96.0;
   static const _actionsHeight = 104.0;
@@ -51,26 +55,64 @@ class _VideoCallViewState extends State<VideoCallView> {
   void _toggleControls() =>
       setState(() => _controlsVisible = !_controlsVisible);
 
+  void _toggleSwap() {
+    HapticFeedback.selectionClick();
+    setState(() => _isSwapped = !_isSwapped);
+  }
+
+  Widget _swapSwitcher({
+    required bool swapped,
+    required Widget child,
+    double fromScale = 1,
+  }) {
+    return AnimatedSwitcher(
+      duration: _swap,
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      layoutBuilder: (current, previous) =>
+          Stack(fit: StackFit.expand, children: [...previous, ?current]),
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: fromScale, end: 1).animate(animation),
+          child: child,
+        ),
+      ),
+      child: KeyedSubtree(key: ValueKey(swapped), child: child),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = widget.state;
     final media = state.media;
     final bloc = context.read<ActiveCallBloc>();
+    final remote = media != null
+        ? RemoteVideoView(
+            viewId: media.remoteVideoViewId,
+            aspectRatio: media.remoteVideoAspectRatio,
+            quarterTurns: media.remoteVideoQuarterTurns,
+            isPortrait: media.isRemoteVideoPortrait,
+          )
+        : null;
+    final camera = LocalCameraPreview(
+      viewId: media?.cameraViewId,
+      aspectRatio: media?.cameraAspectRatio ?? 4 / 3,
+      isCameraOn: state.isCameraOn,
+      isLoading: state.isMediaLoading,
+    );
+    final swapped = _isSwapped && remote != null;
+    final pip = swapped ? remote : camera;
+    final background = swapped
+        ? camera
+        : remote ?? _ConnectingVideo(config: widget.config);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: _toggleControls,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (media != null)
-            RemoteVideoView(
-              viewId: media.remoteVideoViewId,
-              aspectRatio: media.remoteVideoAspectRatio,
-              quarterTurns: media.remoteVideoQuarterTurns,
-              isPortrait: media.isRemoteVideoPortrait,
-            )
-          else
-            _ConnectingVideo(config: widget.config),
+          _swapSwitcher(swapped: swapped, child: background),
           const _ScrimGradient(),
           SafeArea(
             child: Column(
@@ -105,16 +147,15 @@ class _VideoCallViewState extends State<VideoCallView> {
           ),
           Positioned.fill(
             child: DraggablePip(
-              size: const Size(
-                LocalCameraPreview.width,
-                LocalCameraPreview.height,
-              ),
+              size: PipFrame.size,
               margin: _pipMargin(context),
-              child: LocalCameraPreview(
-                viewId: media?.cameraViewId,
-                aspectRatio: media?.cameraAspectRatio ?? 4 / 3,
-                isCameraOn: state.isCameraOn,
-                isLoading: state.isMediaLoading,
+              onTap: remote != null ? _toggleSwap : null,
+              child: PipFrame(
+                child: _swapSwitcher(
+                  swapped: swapped,
+                  fromScale: 1.25,
+                  child: pip,
+                ),
               ),
             ),
           ),

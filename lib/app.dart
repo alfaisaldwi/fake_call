@@ -14,6 +14,7 @@ import 'features/fake_call/presentation/bloc/fake_call_bloc.dart';
 import 'features/fake_call/presentation/widgets/fake_call_listener.dart';
 import 'features/onboarding/presentation/bloc/coach_marks_bloc.dart';
 import 'features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'features/settings/presentation/bloc/app_update_bloc.dart';
 import 'features/settings/presentation/bloc/language_bloc.dart';
 import 'features/settings/presentation/bloc/theme_mode_bloc.dart';
 import 'injection_container.dart';
@@ -47,6 +48,11 @@ class FakeWaCallApp extends StatelessWidget {
           create: (_) =>
               sl<CallerSuggestionsBloc>()
                 ..add(const CallerSuggestionsRequested()),
+        ),
+        BlocProvider<AppUpdateBloc>(
+          create: (_) =>
+              sl<AppUpdateBloc>()
+                ..add(const AppUpdateCheckRequested(silent: true)),
         ),
         BlocProvider<FakeCallBloc>(
           create: (_) => sl<FakeCallBloc>()

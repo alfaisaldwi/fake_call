@@ -3,6 +3,13 @@
     <string name="fwc_incoming_message">Pesan</string>
     <string name="fwc_incoming_swipe_accept">Geser ke atas untuk menerima</string>
     <string name="fwc_incoming_turn_off_video">Matikan video kamu</string>
+    <string name="fwc_incoming_turn_on_video">Nyalakan video kamu</string>
+    <string-array name="fwc_quick_replies">
+        <item>Lagi tidak bisa ngobrol. Ada apa?</item>
+        <item>Nanti aku telepon balik.</item>
+        <item>Nanti aku telepon lagi.</item>
+        <item>Lagi tidak bisa ngobrol. Telepon nanti ya?</item>
+    </string-array>
     <string name="fwc_shortcut_10s">Telepon 10 dtk</string>
     <string name="fwc_shortcut_10s_long">Telepon palsu dalam 10 detik</string>
     <string name="fwc_shortcut_1m">Telepon 1 mnt</string>

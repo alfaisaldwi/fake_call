@@ -52,7 +52,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get callerSectionTitle => 'Penelepon';
 
   @override
-  String get callerSectionSubtitle => 'Muncul di layar panggilan masuk';
+  String get callerSectionSubtitle =>
+      'Yang bakal muncul di layar telepon masuk';
 
   @override
   String get callerNameLabel => 'Nama penelepon';
@@ -77,21 +78,21 @@ class AppLocalizationsId extends AppLocalizations {
       'Atur kapan HP bunyi dan kapan panggilan ditutup';
 
   @override
-  String get ringAfterLabel => 'Berdering setelah';
+  String get ringAfterLabel => 'Bunyi dalam';
 
   @override
   String get autoHangupLabel => 'Tutup otomatis';
 
   @override
   String get autoHangupDescription =>
-      'Panggilan ditutup sendiri, baik waktu masih bunyi atau sudah diangkat.';
+      'Telepon ditutup sendiri, entah masih bunyi atau sudah diangkat.';
 
   @override
   String get recallSectionTitle => 'Telepon ulang otomatis';
 
   @override
   String get recallSectionSubtitle =>
-      'Kalau panggilan ditolak atau tidak diangkat';
+      'Kalau teleponnya kamu tolak atau tidak diangkat';
 
   @override
   String get recallIntervalLabel => 'Jeda sebelum telepon ulang';
@@ -103,7 +104,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get recallIncrease => 'Tambah';
 
   @override
-  String get recallNone => 'Tidak ada telepon ulang';
+  String get recallNone => 'Tanpa telepon ulang';
 
   @override
   String get recallTimes => 'kali telepon ulang';
@@ -128,7 +129,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get summaryVideoCall => 'Video call';
 
   @override
-  String get summaryVoiceCall => 'Panggilan suara';
+  String get summaryVoiceCall => 'Telepon suara';
 
   @override
   String get summaryRingsNow => 'langsung bunyi';
@@ -190,16 +191,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get progressOpeningCall => 'Lagi buka layar panggilan...';
 
   @override
-  String get callDeclined => 'Panggilannya kamu tolak.';
+  String get callDeclined => 'Teleponnya kamu tolak.';
 
   @override
-  String get callMissed => 'Panggilannya tidak diangkat.';
+  String get callMissed => 'Teleponnya tidak diangkat.';
 
   @override
-  String get callCancelled => 'Panggilan dibatalkan.';
+  String get callCancelled => 'Teleponnya dibatalkan.';
 
   @override
-  String get callEnded => 'Panggilan selesai.';
+  String get callEnded => 'Teleponnya sudah selesai.';
 
   @override
   String get back => 'Kembali';
@@ -289,25 +290,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get errorPhotoCrop => 'Fotonya gagal dipotong. Coba lagi, ya.';
 
   @override
-  String get errorCallStart => 'Panggilannya gagal dimunculkan.';
+  String get errorCallStart => 'Teleponnya gagal muncul. Coba lagi, ya.';
 
   @override
-  String get errorCallEnd => 'Panggilannya gagal ditutup.';
+  String get errorCallEnd => 'Teleponnya gagal ditutup.';
 
   @override
-  String get errorCallEvents => 'Status panggilan gagal dibaca.';
+  String get errorCallEvents => 'Status teleponnya tidak terbaca.';
 
   @override
   String get errorAvatar => 'Foto penelepon gagal disiapkan.';
 
   @override
-  String get errorCamera => 'Kamera gagal dibuka.';
+  String get errorCamera => 'Kameranya gagal dibuka.';
 
   @override
-  String get errorVideo => 'Video penelepon tidak bisa diputar.';
+  String get errorVideo => 'Video peneleponnya tidak bisa diputar.';
 
   @override
-  String get errorSettings => 'Pengaturan gagal disimpan.';
+  String get errorSettings => 'Pengaturannya gagal disimpan.';
 
   @override
   String get errorCallerNameRequired => 'Isi dulu nama peneleponnya, ya.';
@@ -317,7 +318,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get errorInvalidAutoHangup =>
-      'Durasi tutup otomatis tidak boleh minus.';
+      'Waktu tutup otomatisnya tidak boleh minus.';
 
   @override
   String errorInvalidRecallCount(int max) {
@@ -333,7 +334,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get backBlockedHint => 'Mau berhenti? Ketuk Batalkan, ya.';
 
   @override
-  String get errorHistory => 'Riwayat nama gagal diperbarui.';
+  String get errorHistory => 'Riwayat namanya gagal diperbarui.';
 
   @override
   String get recentNamesLabel => 'Pernah dipakai';
@@ -347,7 +348,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get callerVideoLabel => 'Video penelepon';
 
   @override
-  String get callerVideoDescription => 'Diputar setelah video call diangkat.';
+  String get callerVideoDescription => 'Diputar begitu video call diangkat.';
 
   @override
   String get callerVideoDefault => 'Video bawaan';
@@ -407,7 +408,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get onboarding1Body =>
-      'Panggilan masuk layar penuh lengkap dengan nada dering dan getar, bahkan saat HP terkunci.';
+      'Telepon masuk layar penuh, lengkap sama nada dering dan getar, bahkan pas HP terkunci.';
 
   @override
   String get onboarding2Title => 'Atur sesukamu';
@@ -421,7 +422,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get onboarding3Body =>
-      'Tutup otomatis, telepon ulang otomatis, dan notifikasi tak terjawab. Nggak ada yang bakal curiga.';
+      'Tutup otomatis, telepon ulang otomatis, dan notifikasi tak terjawab. Tidak ada yang bakal curiga.';
 
   @override
   String get splashTagline => 'Jalan keluar dari situasi canggung';
@@ -445,14 +446,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get permissionFullScreenBody =>
-      'Supaya panggilan tetap muncul walau HP terkunci.';
+      'Biar telepon tetap muncul walau HP terkunci.';
 
   @override
   String get permissionCameraTitle => 'Kamera';
 
   @override
   String get permissionCameraBody =>
-      'Buat wajahmu saat video call. Nggak ada yang direkam.';
+      'Buat wajahmu saat video call. Tidak ada yang direkam.';
 
   @override
   String get permissionAllow => 'Izinkan';
@@ -528,7 +529,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutPrivacyBody =>
-      'Tanpa akun dan nggak ada data yang dikirim ke internet. Semuanya tetap di HP kamu.';
+      'Tanpa akun dan tidak ada data yang dikirim ke internet. Semuanya tetap di HP kamu.';
 
   @override
   String get aboutUseTitle => 'Pakai dengan bijak';
@@ -550,9 +551,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get homeTitle => 'Fake Calling';
 
   @override
-  String get homeSubtitle => 'Jalan keluar, tinggal sekali ketuk';
-
-  @override
   String get coachSkip => 'Lewati';
 
   @override
@@ -566,7 +564,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get coachPreviewBody =>
-      'Pratinjau panggilan masuk. Ketuk fotonya buat pilih dari galeri.';
+      'Ini contoh telepon masuknya nanti. Ketuk fotonya buat pilih dari galeri.';
 
   @override
   String get coachPresetsTitle => 'Penelepon tersimpan';
@@ -640,10 +638,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get initialDurationLabel => 'Durasi awal panggilan';
 
   @override
-  String get initialDurationDescription =>
-      'Timer di layar panggilan langsung mulai dari sini, biar kelihatan sudah lama ngobrol.';
-
-  @override
   String get initialDurationZero => 'Dari 00:00';
 
   @override
@@ -669,15 +663,58 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get permissionReminderBody =>
-      'Fake Calling butuh izin-izin ini supaya telepon bisa bunyi tepat waktu, muncul di layar kunci, dan tetap jalan walau app ditutup. Tanpa izin ini, app nggak bisa berjalan sempurna.';
+      'Fake Calling butuh izin-izin ini biar telepon bisa bunyi tepat waktu, muncul di layar kunci, dan tetap jalan walau app ditutup. Tanpa izin ini, app-nya tidak bisa jalan dengan baik.';
 
   @override
   String get permissionReminderConfirm => 'Oke, paham';
 
   @override
-  String get settingsPermissions => 'Izin aplikasi';
+  String get settingsPermissions => 'Izin app';
 
   @override
   String get settingsPermissionsBody =>
       'Nyalakan semua supaya telepon palsu bunyi tepat waktu, walau app sudah ditutup.';
+
+  @override
+  String get ringtoneLabel => 'Nada dering';
+
+  @override
+  String get ringtoneApp => 'Bawaan app';
+
+  @override
+  String get ringtoneSystem => 'Nada dering HP';
+
+  @override
+  String get ringtoneSilent => 'Tanpa suara';
+
+  @override
+  String get vibrateLabel => 'Getar';
+
+  @override
+  String get previewCall => 'Coba';
+
+  @override
+  String get settingsCalls => 'Panggilan';
+
+  @override
+  String get homeSubtitle => 'Jalan keluar, tinggal sekali ketuk';
+
+  @override
+  String get updateCheck => 'Cek pembaruan';
+
+  @override
+  String get updateAvailable => 'Ada versi baru';
+
+  @override
+  String get updateLatest => 'Sudah terbaru';
+
+  @override
+  String get updateUpToDate => 'Kamu sudah pakai versi terbaru.';
+
+  @override
+  String get errorUpdateCheck =>
+      'Gagal cek pembaruan. Pastikan app dipasang dari Google Play, ya.';
+
+  @override
+  String get errorUpdate => 'Pembaruannya gagal dimulai. Coba lagi, ya.';
 }

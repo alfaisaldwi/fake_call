@@ -7,15 +7,18 @@ import '../../../../core/theme/app_theme.dart';
 class ScheduleBar extends StatelessWidget {
   final String summary;
   final VoidCallback onSchedule;
+  final VoidCallback onPreview;
 
   const ScheduleBar({
     super.key,
     required this.summary,
     required this.onSchedule,
+    required this.onPreview,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.palette.surface,
@@ -55,11 +58,36 @@ class ScheduleBar extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              FilledButton.icon(
-                onPressed: onSchedule,
-                style: AppTheme.brandButton(null),
-                icon: const Icon(Icons.phone_callback),
-                label: Text(AppLocalizations.of(context).scheduleCall),
+              Row(
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: onPreview,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 56),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      foregroundColor: context.palette.primary,
+                      side: BorderSide(color: context.palette.primary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    icon: const Icon(Icons.play_circle_outline),
+                    label: Text(l10n.previewCall),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: onSchedule,
+                      style: AppTheme.brandButton(null),
+                      icon: const Icon(Icons.phone_callback),
+                      label: Text(
+                        l10n.scheduleCall,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

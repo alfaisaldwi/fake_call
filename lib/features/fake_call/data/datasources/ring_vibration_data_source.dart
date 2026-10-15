@@ -9,7 +9,7 @@ abstract class RingVibrationDataSource {
 }
 
 class RingVibrationDataSourceImpl implements RingVibrationDataSource {
-  static const _channel = MethodChannel('com.elumi.prankcall/ring_vibration');
+  static const _channel = MethodChannel('com.elumi.fakecalling/ring_vibration');
 
   @override
   Future<void> start() => _invoke('start');

@@ -13,4 +13,6 @@ abstract class CallMediaRepository {
   Future<Either<Failure, Unit>> setPlaybackPaused(bool paused);
 
   Future<Either<Failure, Unit>> stopMedia();
+
+  Future<Either<Failure, Unit>> setProximityLock(bool enabled);
 }

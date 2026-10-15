@@ -9,7 +9,10 @@ import '../../../../core/error/exceptions.dart';
 import '../models/call_media_model.dart';
 
 abstract class CallMediaLocalDataSource {
-  Future<CallMediaModel> startMedia({String? videoPath});
+  Future<CallMediaModel> startMedia({
+    String? videoPath,
+    bool cameraEnabled = true,
+  });
 
   Future<CallMediaModel> switchCamera();
 
@@ -38,14 +41,19 @@ class CallMediaLocalDataSourceImpl implements CallMediaLocalDataSource {
   double _videoAspectRatio = 9 / 16;
   int _videoQuarterTurns = 0;
   bool _videoPlatformReady = false;
+  bool _cameraEnabled = true;
 
   CallMediaLocalDataSourceImpl({required this.videoAssetPath});
 
   @override
-  Future<CallMediaModel> startMedia({String? videoPath}) async {
+  Future<CallMediaModel> startMedia({
+    String? videoPath,
+    bool cameraEnabled = true,
+  }) async {
     await stopMedia();
     try {
       await _startCamera(cam.CameraLensDirection.front);
+      if (!cameraEnabled) await setCameraEnabled(false);
       await _startRemoteVideo(videoPath);
       return _currentMedia();
     } catch (_) {
@@ -67,6 +75,7 @@ class CallMediaLocalDataSourceImpl implements CallMediaLocalDataSource {
     _camera = null;
     await current.dispose();
     await _startCamera(nextDirection);
+    _cameraEnabled = true;
     return _currentMedia();
   }
 
@@ -78,6 +87,7 @@ class CallMediaLocalDataSourceImpl implements CallMediaLocalDataSource {
     }
     try {
       enabled ? await camera.resumePreview() : await camera.pausePreview();
+      _cameraEnabled = enabled;
     } on cam.CameraException catch (e) {
       throw MediaException(FailureReason.cameraUnavailable, e.description);
     }
@@ -102,6 +112,7 @@ class CallMediaLocalDataSourceImpl implements CallMediaLocalDataSource {
     final videoPlayerId = _videoPlayerId;
     _camera = null;
     _videoPlayerId = null;
+    _cameraEnabled = true;
     await camera?.dispose();
     if (videoPlayerId != null) await _videoPlatform.dispose(videoPlayerId);
   }
@@ -118,6 +129,7 @@ class CallMediaLocalDataSourceImpl implements CallMediaLocalDataSource {
       remoteVideoViewId: videoPlayerId,
       remoteVideoAspectRatio: _videoAspectRatio,
       remoteVideoQuarterTurns: _videoQuarterTurns,
+      isCameraOn: _cameraEnabled,
     );
   }
 

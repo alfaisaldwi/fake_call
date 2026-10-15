@@ -20,7 +20,6 @@ class CallConfig extends Equatable {
   final int autoRecallCount;
   final int autoRecallInterval;
   final ClockTime? ringAt;
-  final int initialDurationSeconds;
 
   const CallConfig({
     required this.delayInSeconds,
@@ -32,7 +31,6 @@ class CallConfig extends Equatable {
     this.autoRecallCount = 0,
     this.autoRecallInterval = 10,
     this.ringAt,
-    this.initialDurationSeconds = 0,
   });
 
   bool get isVideoCall => callType == CallType.video;
@@ -104,7 +102,6 @@ class CallConfig extends Equatable {
     int? autoRecallInterval,
     ClockTime? ringAt,
     bool clearRingAt = false,
-    int? initialDurationSeconds,
   }) {
     return CallConfig(
       delayInSeconds: delayInSeconds ?? this.delayInSeconds,
@@ -120,8 +117,6 @@ class CallConfig extends Equatable {
       autoRecallCount: autoRecallCount ?? this.autoRecallCount,
       autoRecallInterval: autoRecallInterval ?? this.autoRecallInterval,
       ringAt: clearRingAt ? null : ringAt ?? this.ringAt,
-      initialDurationSeconds:
-          initialDurationSeconds ?? this.initialDurationSeconds,
     );
   }
 
@@ -136,6 +131,5 @@ class CallConfig extends Equatable {
     autoRecallCount,
     autoRecallInterval,
     ringAt,
-    initialDurationSeconds,
   ];
 }

@@ -28,6 +28,7 @@ part 'fake_call_state.dart';
 
 class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
   static const defaultConfig = CallConfig(delayInSeconds: 10, callerName: '');
+  static const previewDelaySeconds = 3;
 
   final ScheduleFakeCall scheduleFakeCall;
   final ListenToCallEvents listenToCallEvents;
@@ -43,6 +44,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
   final FailureMessages failureMessages;
 
   StreamSubscription<int>? _ticker;
+  CallConfig? _formBeforePreview;
 
   FakeCallBloc({
     required this.scheduleFakeCall,
@@ -66,6 +68,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     on<FakeCallVideoPickRequested>(_onVideoPickRequested);
     on<FakeCallVideoRemoved>(_onVideoRemoved);
     on<FakeCallScheduleRequested>(_onScheduleRequested);
+    on<FakeCallPreviewRequested>(_onPreviewRequested);
     on<FakeCallEndRequested>(_onEndRequested);
     on<FakeCallAppResumed>(_onAppResumed);
     on<FakeCallRestoreRequested>(_onRestoreRequested);
@@ -240,12 +243,35 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
     await _schedule(state.config, emit);
   }
 
-  Future<void> _schedule(CallConfig config, Emitter<FakeCallState> emit) async {
+  Future<void> _onPreviewRequested(
+    FakeCallPreviewRequested event,
+    Emitter<FakeCallState> emit,
+  ) async {
+    if (!state.isEditable) return;
+    final form = state.config;
+    _formBeforePreview = form;
+    await _schedule(
+      form.copyWith(
+        delayInSeconds: FakeCallBloc.previewDelaySeconds,
+        clearRingAt: true,
+        autoRecallCount: 0,
+      ),
+      emit,
+      remember: false,
+    );
+    if (state is FakeCallError) _formBeforePreview = null;
+  }
+
+  Future<void> _schedule(
+    CallConfig config,
+    Emitter<FakeCallState> emit, {
+    bool remember = true,
+  }) async {
     final result = await scheduleFakeCall(config);
     result.fold(
       (failure) => emit(
         FakeCallError(
-          config,
+          _formBeforePreview ?? config,
           message: failureMessages.of(failure),
           invalidField: failure is InvalidCallConfigFailure
               ? failure.field
@@ -254,7 +280,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
       ),
       (pending) => _emitCountdown(pending, emit),
     );
-    if (result.isLeft()) return;
+    if (result.isLeft() || !remember) return;
     await rememberCallerName(config.callerName);
     await saveLastCallConfig(config);
   }
@@ -289,7 +315,13 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
 
   void _onReset(FakeCallReset event, Emitter<FakeCallState> emit) {
     _stopTicker();
-    emit(FakeCallIdle(state.config));
+    emit(FakeCallIdle(_restoreForm(state.config)));
+  }
+
+  CallConfig _restoreForm(CallConfig fallback) {
+    final form = _formBeforePreview ?? fallback;
+    _formBeforePreview = null;
+    return form;
   }
 
   void _onCountdownTicked(_CountdownTicked event, Emitter<FakeCallState> emit) {
@@ -340,7 +372,7 @@ class FakeCallBloc extends Bloc<FakeCallEvent, FakeCallState> {
       case CallEventType.ended:
       case CallEventType.cancelled:
         _stopTicker();
-        return FakeCallFinished(config, reason: event.type);
+        return FakeCallFinished(_restoreForm(config), reason: event.type);
     }
   }
 

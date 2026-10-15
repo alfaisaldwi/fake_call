@@ -5,15 +5,23 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entities/call_media.dart';
 import '../../domain/repositories/call_media_repository.dart';
 import '../datasources/call_media_local_data_source.dart';
+import '../datasources/call_screen_native_data_source.dart';
 
 class CallMediaRepositoryImpl implements CallMediaRepository {
   final CallMediaLocalDataSource dataSource;
+  final CallScreenNativeDataSource callScreen;
 
-  CallMediaRepositoryImpl({required this.dataSource});
+  CallMediaRepositoryImpl({required this.dataSource, required this.callScreen});
 
   @override
   Future<Either<Failure, CallMedia>> startMedia({String? videoPath}) {
-    return _guard(() => dataSource.startMedia(videoPath: videoPath));
+    return _guard(() async {
+      final videoOff = await callScreen.takeIncomingVideoOff();
+      return dataSource.startMedia(
+        videoPath: videoPath,
+        cameraEnabled: !videoOff,
+      );
+    });
   }
 
   @override
@@ -41,6 +49,14 @@ class CallMediaRepositoryImpl implements CallMediaRepository {
   Future<Either<Failure, Unit>> setCameraEnabled(bool enabled) {
     return _guard(() async {
       await dataSource.setCameraEnabled(enabled);
+      return unit;
+    });
+  }
+
+  @override
+  Future<Either<Failure, Unit>> setProximityLock(bool enabled) {
+    return _guard(() async {
+      await callScreen.setProximityLock(enabled);
       return unit;
     });
   }
